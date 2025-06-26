@@ -1,0 +1,441 @@
+const VisualDependencyManager = ({ tasks, dependencies, setDependencies, isModal = false }) => {
+  const [selectedDependency, setSelectedDependency] = useState(null);
+  const [dependencyType, setDependencyType] = useState('finish_to_start');
+  const [dragging, setDragging] = useState(false);
+  const [startElement, setStartElement] = useState(null);
+  const [hoveredElement, setHoveredElement] = useState(null);
+  const [editingArrow, setEditingArrow] = useState(null);
+  const [taskPositions, setTaskPositions] = useState({});
+  const [dragTask, setDragTask] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const updateXarrow = useXarrow();
+  const canvasRef = useRef(null);
+  
+  // Initialize positions for tasks that don't have them yet
+  useEffect(() => {
+    const newPositions = { ...taskPositions };
+    let updated = false;
+    
+    tasks.forEach((task, idx) => {
+      const taskId = `task-${idx}`;
+      if (!taskPositions[taskId]) {
+        // Create a grid-like initial layout
+        const col = idx % 3;
+        const row = Math.floor(idx / 3);
+        newPositions[taskId] = {
+          x: 50 + col * 300,
+          y: 50 + row * 200
+        };
+        updated = true;
+      }
+    });
+    
+    if (updated) {
+      setTaskPositions(newPositions);
+    }
+  }, [tasks]);
+  
+  // Define dependency types from the backend
+  const DEPENDENCY_TYPES = [
+    { value: 'finish_to_start', label: 'Finish to Start', description: 'Task B can\'t start until Task A completes' },
+    { value: 'start_to_start', label: 'Start to Start', description: 'Task B can\'t start until Task A starts' },
+    { value: 'finish_to_finish', label: 'Finish to Finish', description: 'Task B can\'t finish until Task A finishes' },
+    { value: 'start_to_finish', label: 'Start to Finish', description: 'Task B can\'t finish until Task A starts' }
+  ];
+  
+  const getLineColor = (type) => {
+    switch(type) {
+      case 'finish_to_start': return '#4F46E5'; // indigo
+      case 'start_to_start': return '#10B981'; // emerald
+      case 'finish_to_finish': return '#F59E0B'; // amber
+      case 'start_to_finish': return '#EF4444'; // red
+      default: return '#4F46E5';
+    }
+  };
+  
+  useEffect(() => {
+    // Update arrows when dependencies or positions change
+    updateXarrow();
+  }, [dependencies, taskPositions, updateXarrow]);
+  
+  const handleDragStart = (taskIdx, position, e) => {
+    // If holding shift, start dependency creation
+    if (e.shiftKey) {
+      setDragging(true);
+      setStartElement({ taskIdx, position });
+      e.stopPropagation();
+    }
+  };
+  
+  const handleDragEnd = (endTaskIdx, position, e) => {
+    if (!dragging || !startElement) return;
+    
+    if (e.shiftKey) {
+      const fromTaskIdx = startElement.position === 'end' ? startElement.taskIdx : endTaskIdx;
+      const toTaskIdx = startElement.position === 'end' ? endTaskIdx : startElement.taskIdx;
+      
+      if (fromTaskIdx === toTaskIdx) {
+        setDragging(false);
+        setStartElement(null);
+        return;
+      }
+      
+      createDependency(fromTaskIdx, toTaskIdx);
+      e.stopPropagation();
+    }
+    
+    setDragging(false);
+    setStartElement(null);
+  };
+  
+  // Handle dragging the task card
+  const handleTaskDragStart = (taskId, e) => {
+    if (e.target.closest('.task-connector')) return; // Don't start card drag if clicking connector
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragTask(taskId);
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+    e.stopPropagation();
+  };
+  
+  const handleTaskDragMove = (e) => {
+    if (!dragTask || dragging) return;
+    
+    if (canvasRef.current) {
+      const canvas = canvasRef.current.getBoundingClientRect();
+      const newX = e.clientX - canvas.left - dragOffset.x;
+      const newY = e.clientY - canvas.top - dragOffset.y;
+      
+      // Keep within bounds
+      const boundedX = Math.max(0, Math.min(newX, canvas.width - 200));
+      const boundedY = Math.max(0, Math.min(newY, canvas.height - 100));
+      
+      setTaskPositions(prev => ({
+        ...prev,
+        [dragTask]: { x: boundedX, y: boundedY }
+      }));
+      
+      updateXarrow();
+    }
+  };
+  
+  const handleTaskDragEnd = () => {
+    setDragTask(null);
+  };
+  
+  const createDependency = (fromTaskIdx, toTaskIdx) => {
+    const fromTaskId = tasks[fromTaskIdx]?.id || `new-${fromTaskIdx}`;
+    const toTaskId = tasks[toTaskIdx]?.id || `new-${toTaskIdx}`;
+    
+    // Check if this would create a circular dependency
+    const wouldCreateCircular = (from, to, visited = new Set()) => {
+      if (from === to) return true;
+      if (visited.has(from)) return false;
+      
+      visited.add(from);
+      
+      const nextNodes = dependencies
+        .filter(dep => dep.from_task_id === to)
+        .map(dep => dep.to_task_id);
+        
+      return nextNodes.some(node => wouldCreateCircular(from, node, visited));
+    };
+    
+    if (wouldCreateCircular(toTaskId, fromTaskId)) {
+      message.error("This would create a circular dependency");
+      return;
+    }
+    
+    // Check for existing dependency
+    const existingDepIdx = dependencies.findIndex(
+      dep => dep.from_task_id === fromTaskId && dep.to_task_id === toTaskId
+    );
+    
+    if (existingDepIdx >= 0) {
+      // Just update the dependency type
+      const newDependencies = [...dependencies];
+      newDependencies[existingDepIdx] = {
+        ...newDependencies[existingDepIdx],
+        dependency_type: dependencyType
+      };
+      setDependencies(newDependencies);
+    } else {
+      // Add new dependency
+      setDependencies([
+        ...dependencies,
+        {
+          from_task_id: fromTaskId,
+          to_task_id: toTaskId,
+          dependency_type: dependencyType,
+          lag_days: 0
+        }
+      ]);
+    }
+  };
+  
+  const handleRemoveDependency = (depIndex) => {
+    const newDependencies = [...dependencies];
+    newDependencies.splice(depIndex, 1);
+    setDependencies(newDependencies);
+    setEditingArrow(null);
+  };
+  
+  const handleChangeDependencyType = (depIndex, newType) => {
+    const newDependencies = [...dependencies];
+    newDependencies[depIndex] = {
+      ...newDependencies[depIndex],
+      dependency_type: newType
+    };
+    setDependencies(newDependencies);
+    updateXarrow();
+  };
+  
+  return (
+    <div className={`${isModal ? 'h-[80vh] overflow-hidden' : 'mt-4'} border rounded-lg p-4 bg-white`}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-medium">Task Dependencies</h3>
+        
+        {/* Dependency type selector */}
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-600">New dependency type:</span>
+          <select 
+            className="border border-gray-300 rounded-md px-2 py-1 text-sm"
+            value={dependencyType}
+            onChange={(e) => setDependencyType(e.target.value)}
+          >
+            {DEPENDENCY_TYPES.map(type => (
+              <option key={type.value} value={type.value}>{type.label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      
+      {/* Type legend */}
+      <div className="mb-3 flex flex-wrap gap-2">
+        {DEPENDENCY_TYPES.map(type => (
+          <div key={type.value} className="flex items-center text-xs bg-gray-50 px-2 py-1 rounded">
+            <div style={{ 
+              width: '20px', 
+              height: '2px', 
+              backgroundColor: getLineColor(type.value),
+              marginRight: '4px'
+            }}></div>
+            <span>{type.label}</span>
+          </div>
+        ))}
+      </div>
+      
+      {/* Instructions */}
+      <div className="mb-4 p-2 bg-blue-50 text-blue-700 rounded-md text-sm">
+        <p><strong>Tip:</strong> Drag task cards to position them. Hold SHIFT while dragging from connectors to create dependencies.</p>
+      </div>
+      
+      {/* Visual canvas with draggable tasks */}
+      <Xwrapper>
+        <div 
+          ref={canvasRef}
+          className="relative bg-gray-50 rounded-lg overflow-hidden"
+          style={{ 
+            height: isModal ? 'calc(80vh - 200px)' : '600px',
+            width: '100%',
+            minHeight: '400px'
+          }}
+          onMouseMove={handleTaskDragMove}
+          onMouseUp={handleTaskDragEnd}
+          onMouseLeave={handleTaskDragEnd}
+        >
+          {/* Task blocks that can be dragged around */}
+          {tasks.map((task, idx) => {
+            const taskId = `task-${idx}`;
+            const position = taskPositions[taskId] || { x: 0, y: 0 };
+            
+            return (
+              <div 
+                key={idx} 
+                className="absolute"
+                id={taskId}
+                style={{
+                  left: `${position.x}px`,
+                  top: `${position.y}px`,
+                  width: '250px',
+                  cursor: dragTask === taskId ? 'grabbing' : 'grab',
+                  zIndex: dragTask === taskId ? 10 : 1
+                }}
+                onMouseDown={(e) => handleTaskDragStart(taskId, e)}
+              >
+                <div className="bg-white p-4 rounded-lg shadow-md border-2 border-indigo-100">
+                  <div className="font-medium text-gray-800">{task.title || `Task ${idx + 1}`}</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {task.deadline && `Due: ${new Date(task.deadline).toLocaleDateString()}`}
+                  </div>
+                  
+                  {/* Task connection points */}
+                  <div 
+                    id={`${taskId}-start`}
+                    className="task-connector absolute top-1/2 -left-3 w-6 h-6 rounded-full bg-green-100 border-2 border-green-500 transform -translate-y-1/2 flex items-center justify-center cursor-crosshair hover:bg-green-200 transition-colors"
+                    onMouseDown={(e) => handleDragStart(idx, 'start', e)}
+                    onMouseUp={(e) => handleDragEnd(idx, 'start', e)}
+                    onMouseEnter={() => setHoveredElement({ taskIdx: idx, position: 'start' })}
+                    onMouseLeave={() => setHoveredElement(null)}
+                  >
+                    <ArrowLeftIcon className="h-3 w-3 text-green-700" />
+                  </div>
+                  
+                  <div 
+                    id={`${taskId}-end`}
+                    className="task-connector absolute top-1/2 -right-3 w-6 h-6 rounded-full bg-red-100 border-2 border-red-500 transform -translate-y-1/2 flex items-center justify-center cursor-crosshair hover:bg-red-200 transition-colors"
+                    onMouseDown={(e) => handleDragStart(idx, 'end', e)}
+                    onMouseUp={(e) => handleDragEnd(idx, 'end', e)}
+                    onMouseEnter={() => setHoveredElement({ taskIdx: idx, position: 'end' })}
+                    onMouseLeave={() => setHoveredElement(null)}
+                  >
+                    <ArrowRightIcon className="h-3 w-3 text-red-700" />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          
+          {/* Dynamic arrow while dragging */}
+          {dragging && startElement && hoveredElement && (
+            <Xarrow 
+              start={`task-${startElement.taskIdx}-${startElement.position}`}
+              end={`task-${hoveredElement.taskIdx}-${hoveredElement.position}`}
+              color={getLineColor(dependencyType)}
+              strokeWidth={2}
+              path="smooth"
+              showHead={true}
+              curveness={0.8}
+              zIndex={5}
+            />
+          )}
+          
+          {/* Dependency arrows */}
+          {dependencies.map((dep, depIdx) => {
+            const fromTaskIndex = tasks.findIndex(t => 
+              (t.id || `new-${tasks.indexOf(t)}`) === dep.from_task_id
+            );
+            const toTaskIndex = tasks.findIndex(t => 
+              (t.id || `new-${tasks.indexOf(t)}`) === dep.to_task_id
+            );
+            
+            if (fromTaskIndex < 0 || toTaskIndex < 0) return null;
+            
+            return (
+              <div key={depIdx}>
+                <Xarrow
+                  start={`task-${fromTaskIndex}-end`}
+                  end={`task-${toTaskIndex}-start`}
+                  color={getLineColor(dep.dependency_type)}
+                  strokeWidth={2}
+                  path="grid"
+                  showHead={true}
+                  curveness={0.8}
+                  headSize={5}
+                  zIndex={5}
+                  // Advanced routing options to avoid obstacles
+                  passProps={{
+                    className: "dependency-arrow",
+                    pointerEvents: "auto",
+                    onClick: () => setEditingArrow(depIdx === editingArrow ? null : depIdx)
+                  }}
+                  // Customize how the arrow avoids obstacles
+                  gridBreak="50%"
+                  dashness={
+                    dep.dependency_type === 'finish_to_start' ? false :
+                    dep.dependency_type === 'start_to_start' ? { animation: 1 } :
+                    dep.dependency_type === 'finish_to_finish' ? { strokeLen: 10, nonStrokeLen: 5 } :
+                    { strokeLen: 5, nonStrokeLen: 5 }
+                  }
+                  labels={
+                    <div 
+                      className="bg-white border border-gray-200 rounded-md p-1 shadow-sm cursor-pointer"
+                      onClick={() => setEditingArrow(depIdx === editingArrow ? null : depIdx)}
+                    >
+                      <div className="text-xs font-medium">{
+                        DEPENDENCY_TYPES.find(t => t.value === dep.dependency_type)?.label || dep.dependency_type
+                      }</div>
+                    </div>
+                  }
+                />
+                
+                {/* Editing popover for this arrow */}
+                {editingArrow === depIdx && (
+                  <div className="fixed bg-white border border-gray-300 rounded-md shadow-lg p-2 z-30"
+                    style={{
+                      top: `calc(50% - 50px)`, 
+                      left: `calc(50% - 100px)`,
+                      width: '200px'
+                    }}
+                  >
+                    <div className="flex flex-col space-y-2">
+                      <span className="text-sm font-medium">Edit Dependency</span>
+                      <select 
+                        className="border border-gray-300 rounded-md px-2 py-1 text-sm"
+                        value={dep.dependency_type}
+                        onChange={(e) => handleChangeDependencyType(depIdx, e.target.value)}
+                      >
+                        {DEPENDENCY_TYPES.map(type => (
+                          <option key={type.value} value={type.value}>{type.label}</option>
+                        ))}
+                      </select>
+                      
+                      <div className="flex justify-between pt-1">
+                        <button
+                          type="button" 
+                          className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
+                          onClick={() => handleRemoveDependency(depIdx)}
+                        >
+                          Remove
+                        </button>
+                        <button
+                          type="button"
+                          className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 ml-2"
+                          onClick={() => setEditingArrow(null)}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </Xwrapper>
+      
+      {/* Expanded instructions */}
+      <div className="text-sm text-gray-600 mt-4 p-3 bg-gray-50 rounded-lg">
+        <p className="font-medium mb-2">How to use:</p>
+        <ol className="list-decimal ml-5 space-y-1">
+          <li>Drag task cards anywhere on the canvas to position them</li>
+          <li>Hold SHIFT and drag from a connection point to another task's connection point to create dependencies</li>
+          <li>Click on any arrow or arrow label to edit or remove the dependency</li>
+          <li>Different arrow styles represent different dependency types</li>
+          <li>Arrows will automatically route to avoid obstacles</li>
+        </ol>
+        <p className="mt-2 text-blue-600 font-medium">Tasks with no dependencies will run in parallel, saving time on your project!</p>
+      </div>
+    </div>
+  );
+};
+
+
+
+In dependenciesManager
+const updateXarrow = useXarrow();
+  
+  useEffect(() => {
+    // Handle window resize to update arrows
+    const handleResize = () => {
+      updateXarrow();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [updateXarrow]);
+  

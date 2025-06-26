@@ -1,0 +1,107 @@
+/* OBSP Modal Styles */
+.obsp-modal .ant-modal-content {
+  background: var(--freelancer-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.obsp-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px 24px 16px;
+}
+
+.obsp-modal .ant-modal-title {
+  color: var(--freelancer-text-primary);
+}
+
+.obsp-modal .ant-modal-body {
+  background: transparent;
+  padding: 24px;
+}
+
+.obsp-modal .ant-modal-close {
+  color: var(--freelancer-text-secondary);
+}
+
+.obsp-modal .ant-modal-close:hover {
+  color: var(--freelancer-accent);
+}
+
+/* Progress bar animations */
+.obsp-progress .ant-progress-bg {
+  transition: all 0.3s ease;
+}
+
+/* Card hover effects */
+.obsp-card {
+  transition: all 0.3s ease;
+}
+
+.obsp-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Unlocked pack glow effect */
+.obsp-unlocked {
+  position: relative;
+}
+
+.obsp-unlocked::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--freelancer-accent), var(--freelancer-secondary));
+  border-radius: 16px;
+  z-index: -1;
+  opacity: 0.3;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.6;
+  }
+}
+
+/* Badge ribbon styles */
+.obsp-badge .ant-ribbon {
+  background: var(--freelancer-accent);
+}
+
+.obsp-badge .ant-ribbon-text {
+  color: white;
+  font-weight: 600;
+}
+
+/* Tag styles */
+.obsp-tag {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Custom scrollbar for OBSP content */
+.obsp-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.obsp-content::-webkit-scrollbar-track {
+  background: var(--freelancer-bg-card);
+  border-radius: 3px;
+}
+
+.obsp-content::-webkit-scrollbar-thumb {
+  background: var(--freelancer-secondary);
+  border-radius: 3px;
+}
+
+.obsp-content::-webkit-scrollbar-thumb:hover {
+  background: var(--freelancer-accent);
+} 

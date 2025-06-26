@@ -1,0 +1,131 @@
+:root {
+  /* Brand Colors */
+  --brand-primary: theme('colors.brand.primary');
+  --brand-secondary: theme('colors.brand.secondary');
+  --brand-tertiary: theme('colors.brand.tertiary');
+  --brand-accent: theme('colors.brand.accent');
+  --brand-neutral: theme('colors.brand.neutral');
+
+  /* Text Colors */
+  --text-primary: theme('colors.text.primary');
+  --text-secondary: theme('colors.text.secondary');
+  --text-muted: theme('colors.text.muted');
+  --text-light: theme('colors.text.light');
+
+  /* UI Colors */
+  --ui-border: theme('colors.ui.border');
+  --ui-hover: theme('colors.ui.hover');
+  --ui-focus: theme('colors.ui.focus');
+  --ui-disabled: theme('colors.ui.disabled');
+
+  /* Status Colors */
+  --status-success: theme('colors.status.success');
+  --status-error: theme('colors.status.error');
+  --status-warning: theme('colors.status.warning');
+  --status-info: theme('colors.status.info');
+
+  /* Client Colors */
+  --client-primary: theme('colors.client.primary');
+  --client-secondary: theme('colors.client.secondary');
+  --client-tertiary: theme('colors.client.tertiary');
+  --client-accent: theme('colors.client.accent');
+  --client-bg: theme('colors.client.bg.DEFAULT');
+  --client-bg-card: theme('colors.client.bg.card');
+  --client-bg-dark: theme('colors.client.bg.dark');
+  --freelancer-primary: theme('colors.freelancer.primary');
+  --freelancer-secondary: theme('colors.freelancer.secondary');
+  --freelancer-tertiary: theme('colors.freelancer.tertiary');
+  --freelancer-accent: theme('colors.freelancer.accent');
+  --freelancer-bg: theme('colors.freelancer.bg.DEFAULT');
+  --freelancer-bg-card: theme('colors.freelancer.bg.card');
+}
+
+
+/* Disable unnecessary animations */
+.ant-motion-collapse,
+.ant-motion-zoom,
+.ant-motion-fade {
+  transition: none !important;
+} 
+
+
+.custom-notification .ant-message-notice-content {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Optimize animation performance */
+.custom-notification {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Add smooth transition for hover effects */
+.custom-notification .ant-message-notice-content > div {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+} 
+
+.ant-card:hover{
+  transform:none !important;
+  }
+
+/* Add to your global CSS or component styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Optimize backdrop blur */
+@supports (backdrop-filter: blur(12px)) {
+  .backdrop-blur-xl {
+    backdrop-filter: blur(12px);
+  }
+}
+
+/* Optimize gradients */
+.bg-gradient-to-br {
+  background-image: linear-gradient(
+    to bottom right,
+    var(--client-secondary) 0%,
+    var(--client-bg-dark) 100%
+  );
+
+  
+}
+
+.ant-input-number-input{
+  color: var(--text-light) !important;
+}
+
+.ant-input-number-input::-webkit-input-placeholder {
+  color: var(--text-light);
+}
+
+.ant-input-number-input::-moz-placeholder {
+  color: var(--text-light);
+}
+
+.ant-input-number-input:-ms-input-placeholder {
+  color: var(--text-light);
+}
+
+.ant-input-number-input::placeholder {
+  color: var(--text-light);
+}
+
+
+.ant-table-placeholder{
+  background: none !important;
+}

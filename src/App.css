@@ -1,0 +1,315 @@
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+body{
+  /* overflow: hidden; */
+}
+  
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    scrollbar-color: red;
+  }
+  
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  :root {
+    --ant-primary-color: #6D28D9;
+    --ant-primary-color-hover: #5B21B6;
+    --ant-primary-color-active: #4C1D95;
+  }
+  
+
+  /* Add these 3D-related styles to your global CSS */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-gpu {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Create a depth effect shadow */
+.depth-shadow {
+  box-shadow: 0 10px 30px -5px rgba(124, 58, 237, 0.2);
+}
+
+/* Optimize animations for performance */
+@keyframes float {
+  0% { transform: translateY(0) translateZ(0); }
+  50% { transform: translateY(-10px) translateZ(20px); }
+  100% { transform: translateY(0) translateZ(0); }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .transform-gpu {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Professional Notification Styles - SCOPE TO NOTIFICATIONS ONLY */
+.professional-notification {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ONLY apply transparency to professional notifications */
+.professional-notification .ant-message-notice {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.professional-notification .ant-message-notice-content {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+
+.professional-notification .ant-message-notice-content > div {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove any wrapper backgrounds - ONLY for notifications */
+.professional-notification .ant-message {
+  background: transparent !important;
+}
+
+.professional-notification .ant-message > div {
+  background: transparent !important;
+}
+
+/* Ensure only our custom notification has background */
+.notification-custom-container {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Mobile optimizations - ONLY for notifications */
+@media (max-width: 640px) {
+  .professional-notification .ant-message-notice-content {
+    margin: 0 8px !important;
+  }
+  
+  .professional-notification .notification-content {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+}
+
+/* Smooth transitions for expand/collapse */
+.notification-expand-enter {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.notification-expand-enter-active {
+  opacity: 1;
+  max-height: 200px;
+  transition: all 0.3s ease-out;
+}
+
+.notification-expand-exit {
+  opacity: 1;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.notification-expand-exit-active {
+  opacity: 0;
+  max-height: 0;
+  transition: all 0.3s ease-in;
+}
+
+/* Link styling within notifications */
+.notification-content a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: all 0.2s ease;
+}
+
+.notification-content a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Professional button styling */
+.notification-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.notification-expand-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.1);
+}
+
+.notification-expand-btn:active {
+  transform: scale(0.95);
+}
+
+
+/* Select Style */
+
+/* Custom Select Styles for Ant Design (single & multiple) */
+.custom-select .ant-select-selector {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 12px !important;
+  color: var(--text-light, #fff) !important;
+  padding: 8px 16px !important;
+  min-height: 36px !important;
+  font-size: 15px !important;
+  font-weight: 500;
+  box-shadow: none !important;
+  transition: all 0.3s ease !important;
+}
+.custom-select .ant-select-selection-item,
+.custom-select .ant-select-selection-placeholder {
+  color: var(--text-light, #fff) !important;
+  font-weight: 500;
+  opacity: 0.95;
+}
+.custom-select .ant-select-arrow {
+  color: var(--client-accent, #00D4AA) !important;
+  opacity: 0.7;
+}
+.custom-select:hover .ant-select-selector {
+  border-color: var(--client-accent, #00D4AA) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+.custom-select.ant-select-focused .ant-select-selector {
+  border-color: var(--client-accent, #00D4AA) !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2) !important;
+}
+.custom-select .ant-select-selection-overflow {
+  gap: 4px;
+}
+.custom-select .ant-select-selection-item {
+  background: rgba(0, 212, 170, 0.12) !important;
+  border-radius: 8px !important;
+  color: var(--client-accent, #00D4AA) !important;
+  font-weight: 600;
+  padding: 2px 10px !important;
+  margin: 2px 0 !important;
+}
+.custom-select .ant-select-selection-item-remove {
+  color: var(--client-accent, #00D4AA) !important;
+}
+.custom-select .ant-select-selection-search-input {
+  color: var(--text-light, #fff) !important;
+}
+.custom-select .ant-select-multiple .ant-select-selection-item {
+  background: rgba(0, 212, 170, 0.12) !important;
+  color: var(--client-accent, #00D4AA) !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+  padding: 2px 10px !important;
+  margin: 2px 0 !important;
+}
+.custom-select .ant-select-multiple .ant-select-selection-placeholder {
+  color: var(--text-light, #fff) !important;
+  opacity: 0.7;
+}
+.custom-select .ant-select-clear {
+  color: var(--client-accent, #00D4AA) !important;
+  opacity: 0.7;
+}
+
+/* Dropdown styles */
+.custom-dropdown {
+  background: rgba(26, 27, 46, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}
+.custom-dropdown .ant-select-item {
+  color: var(--text-light, #fff) !important;
+  transition: all 0.2s ease !important;
+}
+.custom-dropdown .ant-select-item-option-selected {
+  background: rgba(0, 212, 170, 0.1) !important;
+  color: var(--client-accent, #00D4AA) !important;
+}
+.custom-dropdown .ant-select-item-option-active {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Responsive tweaks */
+@media (max-width: 767px) {
+  .custom-select .ant-select-selector {
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* Super-specific selector for AntD Select */
+.custom-select.ant-select .ant-select-selector,
+.custom-select.ant-select-multiple .ant-select-selector,
+.custom-select.ant-select-single .ant-select-selector {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 12px !important;
+  color: var(--text-light, #fff) !important;
+  padding: 8px 16px !important;
+  min-height: 36px !important;
+  font-size: 15px !important;
+  font-weight: 500;
+  box-shadow: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.custom-select .ant-select-selection-placeholder {
+  color: var(--text-light, #fff) !important;
+  opacity: 0.7;
+}
+
+.custom-select .ant-select-arrow {
+  color: var(--client-accent, #00D4AA) !important;
+  opacity: 0.7;
+}
+
+:where(.custom-select).ant-select :where(.ant-select-selector) {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.13) !important;
+  border-radius: 12px !important;
+  color: var(--text-light, #fff) !important;
+  padding: 8px 16px !important;
+  min-height: 36px !important;
+  font-size: 15px !important;
+  font-weight: 500;
+  box-shadow: none !important;
+  transition: all 0.3s ease !important;
+}
+
+
+

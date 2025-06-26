@@ -1,0 +1,52 @@
+/* Ensure table content is visible */
+.project-table {
+  background: white;
+}
+
+.project-table .ant-table-thead > tr > th {
+  background: #f8fafc;
+  color: #2d3748;
+}
+
+/* Improve search input visibility */
+.project-search-input {
+  background: white !important;
+}
+
+.project-search-input input {
+  background: white !important;
+}
+
+/* Improve select visibility */
+.project-status-select {
+  background: white !important;
+}
+
+.project-status-select .ant-select-selector {
+  background: white !important;
+}
+
+/* Ensure modal content is visible */
+.project-modal .ant-modal-content {
+  background: white;
+}
+
+/* Improve pagination visibility */
+.custom-pagination {
+  margin-top: 1rem;
+}
+
+.custom-pagination .ant-pagination-item {
+  background: white;
+}
+
+/* Optimize scrolling */
+.min-h-screen {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove any backdrop blur that might cause visibility issues */
+.backdrop-blur-sm {
+  backdrop-filter: none;
+}

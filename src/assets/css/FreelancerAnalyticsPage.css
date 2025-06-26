@@ -1,0 +1,51 @@
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth !important;
+}
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(247, 250, 252, 0.8);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(43, 108, 176, 0.5);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(43, 108, 176, 0.8);
+}
+
+/* Performance optimizations for charts */
+canvas {
+  transform: translateZ(0);
+}
+
+/* Reduce repaints for statistic cards */
+.ant-card {
+  transform: translateZ(0);
+}
+
+/* Optimize animations */
+.ant-progress-circle-trail {
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+/* Reduce layout shifts */
+.ant-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Optimize for touch devices */
+@media (hover: none) {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+}

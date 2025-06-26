@@ -1,0 +1,48 @@
+# Dependency directories
+node_modules/
+
+# Build directories
+dist/
+build/
+.next/
+out/
+
+# Cache and temp files
+.cache/
+.temp/
+.tmp/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor/IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Optional (uncomment if needed)
+# package-lock.json or yarn.lock (only if you use pnpm or another manager)
+# package-lock.json
+# yarn.lock

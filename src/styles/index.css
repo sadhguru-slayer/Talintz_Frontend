@@ -1,0 +1,13 @@
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin 'tailwind-scrollbar';
+
+
+html {
+    scroll-behavior: smooth;
+  }
+  
+
+  

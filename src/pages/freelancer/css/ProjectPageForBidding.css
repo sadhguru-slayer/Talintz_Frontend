@@ -1,0 +1,110 @@
+.custom-modal .ant-modal-content {
+  background: var(--freelancer-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+.custom-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-modal .ant-modal-title {
+  color: var(--text-light);
+}
+
+.custom-modal .ant-modal-close {
+  color: var(--text-muted);
+}
+
+.custom-modal .ant-form-item-label > label {
+  color: var(--text-light);
+}
+
+.custom-modal .ant-input,
+.custom-modal .ant-input-number,
+.custom-modal .ant-picker {
+  background: rgba(26, 27, 46, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+}
+
+.custom-modal .ant-input:hover,
+.custom-modal .ant-input-number:hover,
+.custom-modal .ant-picker:hover {
+  border-color: var(--freelancer-accent);
+  background: rgba(26, 27, 46, 0.6);
+}
+
+.custom-modal .ant-input:focus,
+.custom-modal .ant-input-number-focused,
+.custom-modal .ant-picker-focused {
+  border-color: var(--freelancer-accent);
+  background: rgba(26, 27, 46, 0.8);
+  box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
+}
+
+.custom-modal .ant-input::placeholder {
+  color: var(--text-muted);
+}
+
+.custom-modal .ant-checkbox-wrapper {
+  color: var(--text-light);
+}
+
+.custom-modal .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--freelancer-accent);
+  border-color: var(--freelancer-accent);
+}
+
+
+/* Additional fixes for the input wrapper */
+.ant-input-affix-wrapper > input.ant-input {
+  background: transparent !important;
+}
+
+/* Update these styles in your existing CSS */
+.custom-modal .ant-input-number {
+  background: var(--freelancer-primary) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-light) !important;
+}
+
+.custom-modal .ant-input-number:hover {
+  border-color: var(--freelancer-accent) !important;
+  background: var(--freelancer-primary) !important;
+}
+
+.custom-modal .ant-input-number-focused {
+  border-color: var(--freelancer-accent) !important;
+  background: var(--freelancer-primary) !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2) !important;
+}
+
+/* Also update the input number wrapper */
+.custom-modal .ant-input-number-wrapper {
+  background: transparent !important;
+}
+
+/* Update the input number input field specifically */
+.custom-modal .ant-input-number-input {
+  background: transparent !important;
+  color: var(--text-light) !important;
+}
+
+/* Update the input number controls */
+.custom-modal .ant-input-number-handler-wrap {
+  background: transparent !important;
+}
+
+.custom-modal .ant-input-number-handler {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.custom-modal .ant-input-number-handler:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
