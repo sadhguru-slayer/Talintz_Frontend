@@ -1,74 +1,63 @@
 import axios from 'axios';
 
-// Base URL configuration - easy to change for different environments
-const API_BASE_URL = {
-  // For local development
-  local: 'http://127.0.0.1:8000',
-  // When sharing on your local network
-  network: `http://${window.location.hostname}:8000`,
-  // For production (update when deployed)
-  production: 'https://your-production-api.com',
-};
+// Production API base URL (Railway backend)
+const API_BASE_URL = 'https://talintzbackend-production.up.railway.app';
 
-// Select which environment to use
-const CURRENT_ENV = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-  ? 'local' 
-  : window.location.hostname.includes('your-production-domain.com')
-    ? 'production'
-    : 'network';
-
-// Create axios instance with default config
+// Create axios instance with production config
 const api = axios.create({
-  baseURL: API_BASE_URL[CURRENT_ENV],
+  baseURL: API_BASE_URL,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add request interceptor to attach auth token
+// Attach accessToken to every request
 api.interceptors.request.use(
-  config => {
-    const accessToken = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('accessToken='))
-      ?.split('=')[1];
-      
+  (config) => {
+    const accessToken = localStorage.getItem('accessToken') || 
+      document.cookie
+        .split('; ')
+        .find(row => row.startsWith('accessToken='))
+        ?.split('=')[1];
+
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  error => Promise.reject(error)
+  (error) => Promise.reject(error)
 );
 
-// Add response interceptor for error handling
+// Handle token expiration/refresh (optional)
 api.interceptors.response.use(
-  response => response,
-  async error => {
+  (response) => response,
+  async (error) => {
     const originalRequest = error.config;
     
-    // Handle token refresh logic here if needed
-    
+    // Example: Refresh token logic (uncomment if needed)
+    // if (error.response.status === 401 && !originalRequest._retry) {
+    //   originalRequest._retry = true;
+    //   const refreshToken = localStorage.getItem('refreshToken');
+    //   const { data } = await authAPI.refreshToken(refreshToken);
+    //   localStorage.setItem('accessToken', data.access);
+    //   return api(originalRequest);
+    // }
+
     return Promise.reject(error);
   }
 );
 
-// API endpoint functions
+// API endpoints
 export const authAPI = {
-  login: (userData) => api.post('/api/login/', userData),
-  register: (userData) => api.post('/api/register/', userData),
-  refreshToken: (refreshToken) => api.post('/api/token/refresh/', { refresh: refreshToken }),
-  verifyToken: (token) => api.post('/api/token/verify/', { token }),
-  logout: () => api.post('/api/logout/'),
+  login: (userData) => api.post('/api/auth/login/', userData),
+  register: (userData) => api.post('/api/auth/register/', userData),
+  logout: () => api.post('/api/auth/logout/'),
 };
 
 export const userAPI = {
-  getProfile: (userId) => api.get(`/api/users/${userId}/`),
-  updateProfile: (userId, data) => api.patch(`/api/users/${userId}/`, data),
+  getProfile: () => api.get('/api/users/me/'),
+  updateProfile: (data) => api.patch('/api/users/me/', data),
 };
 
-// Export the base URL for direct usage if needed
-export const getBaseURL = () => API_BASE_URL[CURRENT_ENV];
-
-export default api; 
+export default api;

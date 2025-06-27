@@ -236,7 +236,7 @@ console.log(authState)
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.post(
-        "http://127.0.0.1:8000/api/send_email_verification_code/",
+        "https://talintzbackend-production.up.railway.app/api/send_email_verification_code/",
         {},
         {
           headers: {
@@ -261,7 +261,7 @@ console.log(authState)
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.post(
-        "http://127.0.0.1:8000/api/verify_email_code/",
+        "https://talintzbackend-production.up.railway.app/api/verify_email_code/",
         { code },
         {
           headers: {
@@ -287,7 +287,7 @@ console.log(authState)
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.post(
-        "http://127.0.0.1:8000/api/send_email_verification_code/",
+        "https://talintzbackend-production.up.railway.app/api/send_email_verification_code/",
         {},
         {
           headers: {
