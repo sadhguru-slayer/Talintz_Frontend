@@ -315,7 +315,7 @@ const PostedProjects = () => {
   const fetchTheProjects = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://127.0.0.1:8000/api/client/posted_projects/', {
+      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/posted_projects/', {
         headers: getAuthHeaders(),
         // Add cache control
         params: { _t: Date.now() } // Prevent caching

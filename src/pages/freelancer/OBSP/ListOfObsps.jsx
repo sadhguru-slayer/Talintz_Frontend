@@ -270,7 +270,7 @@ const ListOfObsps = () => {
   const fetchOBSPData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://127.0.0.1:8000/api/freelancer/obsps/', {
+      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/freelancer/obsps/', {
         headers: {
           'Authorization': `Bearer ${Cookies.get('accessToken')}`
         }
@@ -413,7 +413,7 @@ const ListOfObsps = () => {
     };
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/freelancer/obsp/apply/', requestData, {
+      const response = await axios.post('https://talintzbackend-production.up.railway.app/api/freelancer/obsp/apply/', requestData, {
         headers: {
           'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           'Content-Type': 'application/json'

@@ -57,7 +57,7 @@ const BrowseProjectsPage = ({ userId, role, isAuthenticated, isEditable }) => {
     const fetchBrowseProjects = async () => {
       try {
         const accessToken = Cookies.get('accessToken');
-        const response = await fetch('http://127.0.0.1:8000/api/freelancer/browse-projects/', {
+        const response = await fetch('https://talintzbackend-production.up.railway.app/api/freelancer/browse-projects/', {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
           },

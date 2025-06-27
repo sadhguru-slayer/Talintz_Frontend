@@ -223,7 +223,7 @@ const ObspPurchaseList = () => {
 
       console.log('Request headers:', headers);
 
-      const response = await axios.get('http://127.0.0.1:8000/api/obsp/api/list/', {
+      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/obsp/api/list/', {
         headers: headers,
         });
 

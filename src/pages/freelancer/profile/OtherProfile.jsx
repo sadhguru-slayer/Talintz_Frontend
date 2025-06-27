@@ -849,10 +849,10 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         let url = "";
         let headers = {};
         if (currentRole === "client") {
-          url = `http://127.0.0.1:8000/api/client/get_other_freelancer_profile_data/?userId=${userId}`;
+          url = `https://talintzbackend-production.up.railway.app/api/client/get_other_freelancer_profile_data/?userId=${userId}`;
           headers = { Authorization: `Bearer ${Cookies.get("accessToken")}` };
         } else {
-          url = `http://127.0.0.1:8000/api/freelancer/get_profile_data/?userId=${userId}`;
+          url = `https://talintzbackend-production.up.railway.app/api/freelancer/get_profile_data/?userId=${userId}`;
           headers = { Authorization: `Bearer ${Cookies.get("accessToken")}` };
         }
         const response = await axios.get(url, { headers });
@@ -874,7 +874,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         const token = Cookies.get('accessToken');
         if (!token || !userId) return;
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get_connection/${userId}/`,
+          `https://talintzbackend-production.up.railway.app/api/get_connection/${userId}/`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -899,7 +899,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         return;
       }
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/connections/${user_id}/establish_connection/`,
+        `https://talintzbackend-production.up.railway.app/api/connections/${user_id}/establish_connection/`,
         {},
         {
           headers: {
@@ -921,7 +921,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         return;
       }
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/connections/${connectionId}/accept_connection/`,
+        `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/accept_connection/`,
         {},
         {
           headers: {
@@ -939,7 +939,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
   const handleReject = async (connectionId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/connections/${connectionId}/reject_connection/`,
+        `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/reject_connection/`,
         {},
         {
           headers: {
@@ -961,7 +961,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
       const recipient_id = userId;
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/chat/start_conversation/",
+        "https://talintzbackend-production.up.railway.app/api/chat/start_conversation/",
         { sender_id, recipient_id }, // <-- Make sure this is an object, not FormData
         { headers: { Authorization: `Bearer ${token}` } }
       );

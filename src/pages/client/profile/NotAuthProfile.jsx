@@ -29,7 +29,7 @@ const LoginModal = ({ isVisible, onClose, onSuccess }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login/", {
+      const response = await axios.post("https://talintzbackend-production.up.railway.app/api/login/", {
         username,
         password
       });
@@ -185,7 +185,7 @@ const NotAuthProfile = ({userId, role, editable}) => {
     useEffect(() => {
       const fetchProfileDetails = async () => {
         try {
-          const response = await axios.get('http://127.0.0.1:8000/api/client/get_unauth_profile_data', {
+          const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_unauth_profile_data', {
             params: { userId: userId },
           });
            
@@ -251,7 +251,7 @@ const NotAuthProfile = ({userId, role, editable}) => {
           <div className="absolute -bottom-16 left-8 flex items-end space-x-6">
             <div className="relative group">
               <img 
-                src={clientInfo?.profile_picture ? `http://127.0.0.1:8000${clientInfo?.profile_picture}` : "https://www.w3schools.com/howto/img_avatar.png"} 
+                src={clientInfo?.profile_picture ? `https://talintzbackend-production.up.railway.app${clientInfo?.profile_picture}` : "https://www.w3schools.com/howto/img_avatar.png"} 
               alt="Profile"
                 className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-md"
             />

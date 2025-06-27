@@ -458,7 +458,7 @@ const DashboardOverview = () => {
         
         // Add cache control headers
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/client/dashboard_overview`,
+          `https://talintzbackend-production.up.railway.app/api/client/dashboard_overview`,
       {            headers: { 
               Authorization: `Bearer ${accessToken}`,
               'Cache-Control': 'max-age=300' // Cache for 5 minutes

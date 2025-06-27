@@ -116,7 +116,7 @@ const EditProfile = () => {
     try {
       const accessToken = Cookies.get('accessToken');
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/freelancer/get_profile_data/?tab=${tab}`,
+        `https://talintzbackend-production.up.railway.app/api/freelancer/get_profile_data/?tab=${tab}`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       
@@ -253,7 +253,7 @@ const EditProfile = () => {
     
     try {
       const accessToken = Cookies.get('accessToken');
-      const endpoint = `http://127.0.0.1:8000/api/freelancer/update_profile/${activeTab}/`;
+      const endpoint = `https://talintzbackend-production.up.railway.app/api/freelancer/update_profile/${activeTab}/`;
 
       const response = await axios.put(endpoint, changedFields, {
         headers: { Authorization: `Bearer ${accessToken}` }
@@ -367,7 +367,7 @@ const EditProfile = () => {
               
               try {
                 const accessToken = Cookies.get('accessToken');
-                const endpoint = `http://127.0.0.1:8000/api/freelancer/update_profile/${activeTab}/`;
+                const endpoint = `https://talintzbackend-production.up.railway.app/api/freelancer/update_profile/${activeTab}/`;
 
                 const response = await axios.put(endpoint, changedFields, {
                   headers: { Authorization: `Bearer ${accessToken}` }
@@ -492,7 +492,7 @@ const EditProfile = () => {
                 
                 try {
                   const accessToken = Cookies.get('accessToken');
-                  const endpoint = `http://127.0.0.1:8000/api/freelancer/update_profile/${activeTab}/`;
+                  const endpoint = `https://talintzbackend-production.up.railway.app/api/freelancer/update_profile/${activeTab}/`;
 
                   const response = await axios.put(endpoint, changedFields, {
                     headers: { Authorization: `Bearer ${accessToken}` }
@@ -594,7 +594,7 @@ const EditProfile = () => {
 
       const accessToken = Cookies.get('accessToken');
       const response = await axios.put(
-        'http://127.0.0.1:8000/api/freelancer/update_profile_picture/',
+        'https://talintzbackend-production.up.railway.app/api/freelancer/update_profile_picture/',
         formData,
         {
           headers: { 

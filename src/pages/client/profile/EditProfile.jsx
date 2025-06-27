@@ -609,7 +609,7 @@ const EditProfile = () => {
         }
         
         const response = await axios.put(
-            "http://127.0.0.1:8000/api/client/update_profile/",
+            "https://talintzbackend-production.up.railway.app/api/client/update_profile/",
             formData,
             {
                 headers: {
@@ -689,7 +689,7 @@ const EditProfile = () => {
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.put(
-        'http://127.0.0.1:8000/api/client/update_terms_acceptance',
+        'https://talintzbackend-production.up.railway.app/api/client/update_terms_acceptance',
         { terms_accepted: true },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -876,7 +876,7 @@ const EditProfile = () => {
 
   const handleDocumentView = (document) => {
     if (document.document_file?.url) {
-      window.open(`http://127.0.0.1:8000${document.document_file.url}`, '_blank');
+      window.open(`https://talintzbackend-production.up.railway.app${document.document_file.url}`, '_blank');
     } else if (document.preview_url) {
       window.open(document.preview_url, '_blank');
     }
@@ -901,7 +901,7 @@ const EditProfile = () => {
             try {
               const accessToken = Cookies.get("accessToken");
               const response = await axios.delete(
-                `http://127.0.0.1:8000/api/client/delete_document/${currentDoc.id}/`,
+                `https://talintzbackend-production.up.railway.app/api/client/delete_document/${currentDoc.id}/`,
                 { 
                   headers: { 
                     Authorization: `Bearer ${accessToken}`,
@@ -992,7 +992,7 @@ const EditProfile = () => {
                     <img
                       src={
                         showingProfilePicture || 
-                        (clientInfo.profile_picture ? `http://127.0.0.1:8000${clientInfo.profile_picture}` : "https://www.w3schools.com/howto/img_avatar.png")
+                        (clientInfo.profile_picture ? `https://talintzbackend-production.up.railway.app${clientInfo.profile_picture}` : "https://www.w3schools.com/howto/img_avatar.png")
                       }
                       alt="Profile"
                       className={`rounded-full object-cover border-4 border-white shadow-xl ${

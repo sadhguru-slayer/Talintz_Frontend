@@ -127,7 +127,7 @@ const ProjectPageForBidding = () => {
       setError(null);
       
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/freelancer/projects/${projectId}/`,
+        `https://talintzbackend-production.up.railway.app/api/freelancer/projects/${projectId}/`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -255,7 +255,7 @@ const ProjectPageForBidding = () => {
       });
 
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/freelancer/bids/',
+        'https://talintzbackend-production.up.railway.app/api/freelancer/bids/',
         formData,
         {
           headers: {
@@ -295,7 +295,7 @@ const ProjectPageForBidding = () => {
       setRespondingToAssignment(true);
       
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/freelancer/invitations/${pendingAssignment.id}/respond_to_assignment/`,
+        `https://talintzbackend-production.up.railway.app/api/freelancer/invitations/${pendingAssignment.id}/respond_to_assignment/`,
         {
           action: action,
           message: assignmentResponse

@@ -49,7 +49,7 @@ const ReferralsPage = ({ role, userId, isAuthenticated, isEditable }) => {
     try {
       const accessToken = Cookies.get("accessToken");
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/referrals/user-data/",
+        "https://talintzbackend-production.up.railway.app/api/referrals/user-data/",
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

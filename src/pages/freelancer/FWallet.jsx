@@ -65,7 +65,7 @@ const FWallet = ({ userId, role,isAuthenticated, isEditable }) => {
   };
   useEffect(() => {
     setLoading(true);
-    axios.get('http://127.0.0.1:8000/api/finance/wallet/freelancer-details/', {
+    axios.get('https://talintzbackend-production.up.railway.app/api/finance/wallet/freelancer-details/', {
       headers: {
         'Authorization': `Bearer ${Cookies.get('accessToken')}`
       }

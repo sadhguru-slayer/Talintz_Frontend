@@ -49,7 +49,7 @@ const ProfilingPage = () => {
             throw new Error('Token refresh failed');
           }
         }
-        const response = await axios.get('http://127.0.0.1:8000/api/profile/', {
+        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/profile/', {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
         const { is_profiled, role } = response.data.user;
@@ -90,7 +90,7 @@ const ProfilingPage = () => {
         }
       }
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/categories/', {
+        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/categories/', {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
         setCategories(response.data);
@@ -106,7 +106,7 @@ const ProfilingPage = () => {
     setSelectedCategory(categoryName);
     setSelectedSkills([]);
     if (categoryName) {
-      axios.get(`http://127.0.0.1:8000/api/categories/${categoryName}/skills/`, {
+      axios.get(`https://talintzbackend-production.up.railway.app/api/categories/${categoryName}/skills/`, {
         headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
       }).then((response) => {
         setSkills(response.data);
@@ -152,7 +152,7 @@ const ProfilingPage = () => {
         category: selectedCategory,
         skills: selectedSkills,
       };
-      axios.post('http://127.0.0.1:8000/api/save_skills/', payload, {
+      axios.post('https://talintzbackend-production.up.railway.app/api/save_skills/', payload, {
         headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
       })
         .then(() => {
@@ -168,7 +168,7 @@ const ProfilingPage = () => {
       formData.append('dob', dob);
       formData.append('profile_picture', profilePic);
 
-      axios.post('http://127.0.0.1:8000/api/save_additional_details/', formData, {
+      axios.post('https://talintzbackend-production.up.railway.app/api/save_additional_details/', formData, {
         headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
       })
         .then(() => {
@@ -182,7 +182,7 @@ const ProfilingPage = () => {
         cvv: paymentInfo.cvv,
       };
       console.log(paymentData);
-      axios.post('http://127.0.0.1:8000/api/save_payment_info/', paymentData, {
+      axios.post('https://talintzbackend-production.up.railway.app/api/save_payment_info/', paymentData, {
         headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
       })
         .then(() => {

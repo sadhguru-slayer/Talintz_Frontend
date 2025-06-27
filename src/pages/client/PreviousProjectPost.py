@@ -444,7 +444,7 @@ const ProjectPost = ({userId, role, MAX_TASKS=3}) => {
     const fetchDomains = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/categories/",
+          "https://talintzbackend-production.up.railway.app/api/categories/",
           {
             headers: getAuthHeaders(),
           }
@@ -489,7 +489,7 @@ const ProjectPost = ({userId, role, MAX_TASKS=3}) => {
     }
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/skills/${selectedDomain.value}/`,
+        `https://talintzbackend-production.up.railway.app/api/skills/${selectedDomain.value}/`,
         {
           headers: getAuthHeaders(),
         }
@@ -844,7 +844,7 @@ useEffect(() => {
   const fetchWalletBalance = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/finance/wallet/balance/",
+        "https://talintzbackend-production.up.railway.app/api/finance/wallet/balance/",
         { headers: getAuthHeaders() }
       );
       setWalletBalance(response.data.balance);
@@ -915,7 +915,7 @@ useEffect(() => {
       };
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/post_project/",
+        "https://talintzbackend-production.up.railway.app/api/post_project/",
         payload,
         { headers: getAuthHeaders() }
       );

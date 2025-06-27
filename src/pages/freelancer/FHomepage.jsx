@@ -280,7 +280,7 @@ const FHomepage = ({ userId, role, isAuthenticated, isEditable }) => {
     const fetchUser = async () => {
       setUserLoading(true);
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/profile/', {
+        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/profile/', {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
         setUser(response.data.user);

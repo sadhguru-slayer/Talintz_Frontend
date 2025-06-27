@@ -44,7 +44,7 @@ const FConnectionRequests = ({ userId, role, isAuthenticated, isEditable }) => {
     const fetchConnections = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/freelancer/get_connection_requests', {
+        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/freelancer/get_connection_requests', {
           headers: {
             'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           },
@@ -67,7 +67,7 @@ const FConnectionRequests = ({ userId, role, isAuthenticated, isEditable }) => {
   const handleAccept = async (connectionId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/freelancer/connections/${connectionId}/accept_connection/`,
+        `https://talintzbackend-production.up.railway.app/api/freelancer/connections/${connectionId}/accept_connection/`,
         {},
         {
           headers: {
@@ -97,7 +97,7 @@ const FConnectionRequests = ({ userId, role, isAuthenticated, isEditable }) => {
   const handleReject = async (connectionId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/freelancer/connections/${connectionId}/reject_connection/`,
+        `https://talintzbackend-production.up.railway.app/api/freelancer/connections/${connectionId}/reject_connection/`,
         {},
         {
           headers: {

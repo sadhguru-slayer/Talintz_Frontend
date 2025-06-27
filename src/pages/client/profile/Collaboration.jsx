@@ -42,7 +42,7 @@ const Collaborations = () => {
     const accessToken = Cookies.get("accessToken");
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/client/get_collaborations",
+        "https://talintzbackend-production.up.railway.app/api/client/get_collaborations",
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

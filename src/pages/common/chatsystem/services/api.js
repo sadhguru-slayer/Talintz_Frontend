@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const API_BASE = "http://127.0.0.1:8000/api"; // adjust if your API base is different
+const API_BASE = "https://talintzbackend-production.up.railway.app/api"; // adjust if your API base is different
 
 export async function createConversationAndSendMessage(currentUserId, userId, text) {
   const token = Cookies.get("accessToken");

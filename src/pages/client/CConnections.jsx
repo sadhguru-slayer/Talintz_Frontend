@@ -45,7 +45,7 @@ const CConnections = ({ userId, role }) => {
     const fetchConnections = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/client/get_connections', {
+        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_connections', {
           headers: {
             'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           },

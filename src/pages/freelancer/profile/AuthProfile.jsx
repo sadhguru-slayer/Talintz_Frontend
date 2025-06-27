@@ -811,7 +811,7 @@ const role = originalRole === 'student' ? 'freelancer' : originalRole;
       try {
         const accessToken = Cookies.get('accessToken');
         const response = await axios.get(
-          'http://127.0.0.1:8000/api/freelancer/get_profile_data/',
+          'https://talintzbackend-production.up.railway.app/api/freelancer/get_profile_data/',
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
         setProfileData(response.data);

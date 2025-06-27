@@ -21,7 +21,7 @@ const FindTalent = ({ userId, role }) => {
 
   // Fetch freelancers from API
   useEffect(() => {
-    const url = `http://127.0.0.1:8000/api/client/freelancers/?tab=${activeTab}`;
+    const url = `https://talintzbackend-production.up.railway.app/api/client/freelancers/?tab=${activeTab}`;
     axios
       .get(url, {
         headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` }

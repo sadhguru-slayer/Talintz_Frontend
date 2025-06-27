@@ -72,7 +72,7 @@ const CNotifications = ({ userId, role }) => {
 
   const fetchNotifications = useCallback(async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/notifications/', {
+      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/notifications/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (Array.isArray(response.data)) {
@@ -85,7 +85,7 @@ const CNotifications = ({ userId, role }) => {
 
   const fetchConnectionRequestCount = useCallback(async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/client/get_connection_requests', {
+      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_connection_requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setConnectionRequestCount(Array.isArray(response.data) ? response.data.length : 0);
@@ -109,7 +109,7 @@ const CNotifications = ({ userId, role }) => {
   const markAsRead = async (id) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/notifications/${id}/mark-as-read/`,
+        `https://talintzbackend-production.up.railway.app/api/notifications/${id}/mark-as-read/`,
         {},
         { headers: { Authorization: `Bearer ${token}` }}
       );
@@ -126,7 +126,7 @@ const CNotifications = ({ userId, role }) => {
   // Delete a notification
   const deleteNotification = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/notifications/${id}/`, {
+      await axios.delete(`https://talintzbackend-production.up.railway.app/api/notifications/${id}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(prev => prev.filter(notif => notif.id !== id));

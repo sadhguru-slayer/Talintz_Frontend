@@ -67,7 +67,7 @@ const SpendingsInternal = () => {
       const accessToken = Cookies.get('accessToken');
       const csrftoken = Cookies.get('csrftoken');
       
-      const response = await axios.get(`http://127.0.0.1:8000/api/client/spending_data/`, {
+      const response = await axios.get(`https://talintzbackend-production.up.railway.app/api/client/spending_data/`, {
         params: { time_frame: timeFrame },
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -91,7 +91,7 @@ const SpendingsInternal = () => {
       try {
         const accessToken = Cookies.get('accessToken');
         const csrftoken = Cookies.get('csrftoken');
-        const response = await axios.get('http://127.0.0.1:8000/api/client/spending_distribution_by_project/', {
+        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/spending_distribution_by_project/', {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'X-CSRFToken': csrftoken,

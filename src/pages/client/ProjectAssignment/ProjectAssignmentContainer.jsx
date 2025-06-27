@@ -24,7 +24,7 @@ const ProjectAssignmentContainer = ({ projectId }) => {
       setError(null);
       
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/client/get_project/${projectId}`,
+        `https://talintzbackend-production.up.railway.app/api/client/get_project/${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,

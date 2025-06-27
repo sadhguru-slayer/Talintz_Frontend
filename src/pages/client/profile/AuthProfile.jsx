@@ -488,7 +488,7 @@ const AuthProfile = () => {
                     <div className="relative">
                       <Avatar 
                         size={isMobile ? 96 : 120}
-                        src={clientInfo?.profile_picture ? `http://127.0.0.1:8000${clientInfo?.profile_picture}` : null}
+                        src={clientInfo?.profile_picture ? `https://talintzbackend-production.up.railway.app${clientInfo?.profile_picture}` : null}
                         icon={<UserOutlined />}
                         className="border-4 border-white/20 shadow-xl transition-transform duration-300 group-hover:scale-105"
               />

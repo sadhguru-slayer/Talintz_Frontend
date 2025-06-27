@@ -71,7 +71,7 @@ const ClientUpcomingEvents = () => {
     try {
       const deleteEventData = { id: eventdataId, type: eventType };
       await axios.delete(
-        `http://127.0.0.1:8000/api/client/events/delete_event/`,
+        `https://talintzbackend-production.up.railway.app/api/client/events/delete_event/`,
         {
           headers: getAuthHeaders(),
           data: deleteEventData,
@@ -88,7 +88,7 @@ const ClientUpcomingEvents = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/client/events/', {
+      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/events/', {
         headers: getAuthHeaders(),
       });
       const groupedEvents = { Meeting: [], Deadline: [], Others: [] };
@@ -129,7 +129,7 @@ const ClientUpcomingEvents = () => {
 
       try {
         await axios.post(
-          'http://127.0.0.1:8000/api/client/events/create_event/',
+          'https://talintzbackend-production.up.railway.app/api/client/events/create_event/',
           newEventData,
           { headers: getAuthHeaders() }
         );
@@ -173,7 +173,7 @@ const ClientUpcomingEvents = () => {
 
         try {
             await axios.put(
-                `http://127.0.0.1:8000/api/client/events/update_event/`,
+                `https://talintzbackend-production.up.railway.app/api/client/events/update_event/`,
                 updatedEventData,
                 { headers: getAuthHeaders() }
             );

@@ -77,7 +77,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
         if (!userId || !accessToken) return;
         setLoading(true);
         try {
-          const response = await axios.get('http://127.0.0.1:8000/api/client/get_profile_data',
+          const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_profile_data',
             {
               params: { userId: userId },
               headers: { Authorization: `Bearer ${accessToken}` },
@@ -121,7 +121,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
           return;
         }
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/connections/${user_id}/establish_connection/`,
+          `https://talintzbackend-production.up.railway.app/api/connections/${user_id}/establish_connection/`,
           {},
           {
             headers: {
@@ -143,7 +143,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
             return;
           }
           const response = await axios.post(
-            `http://127.0.0.1:8000/api/connections/${connectionId}/accept_connection/`,
+            `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/accept_connection/`,
             {},
             {
               headers: {
@@ -162,7 +162,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
       const handleReject = async (connectionId) => {
         try {
           const response = await axios.post(
-            `http://127.0.0.1:8000/api/connections/${connectionId}/reject_connection/`,
+            `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/reject_connection/`,
             {},
             {
               headers: {
@@ -267,7 +267,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
                   <div className="relative">
                     <Avatar 
                       size={isMobile ? 96 : 120}
-                      src={clientInfo?.profile_picture ? `http://127.0.0.1:8000${clientInfo?.profile_picture}` : null}
+                      src={clientInfo?.profile_picture ? `https://talintzbackend-production.up.railway.app${clientInfo?.profile_picture}` : null}
                       icon={<UserOutlined />}
                       className="border-4 border-white/20 shadow-xl transition-transform duration-300 group-hover:scale-105"
                     />

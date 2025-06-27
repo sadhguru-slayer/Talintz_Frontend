@@ -82,7 +82,7 @@ const PremiumAssignment = ({ project, onBack, onAssign, onBidSelect, timeRemaini
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/client/get_bids_on_project/${project.id}`,
+        `https://talintzbackend-production.up.railway.app/api/client/get_bids_on_project/${project.id}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -114,7 +114,7 @@ const PremiumAssignment = ({ project, onBack, onAssign, onBidSelect, timeRemaini
       if (isCurrentlyShortlisted) {
         // If currently under review, move back to submitted
         const success = await axios.post(
-          `http://127.0.0.1:8000/api/client/mark_bid_submitted/`,
+          `https://talintzbackend-production.up.railway.app/api/client/mark_bid_submitted/`,
           { 
             bid_id: bidId,
             project_complexity: project.complexity_level
@@ -132,7 +132,7 @@ const PremiumAssignment = ({ project, onBack, onAssign, onBidSelect, timeRemaini
       } else {
         // If currently submitted, move to under review
         const success = await axios.post(
-          `http://127.0.0.1:8000/api/client/mark_bid_under_review/`,
+          `https://talintzbackend-production.up.railway.app/api/client/mark_bid_under_review/`,
           { 
             bid_id: bidId,
             project_complexity: project.complexity_level
@@ -172,7 +172,7 @@ const PremiumAssignment = ({ project, onBack, onAssign, onBidSelect, timeRemaini
       
       // Create interview invitations
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/client/invitations/create_interview_request/`,
+        `https://talintzbackend-production.up.railway.app/api/client/invitations/create_interview_request/`,
         { 
           bid_ids: bidIds,
           message: interviewMessage,
@@ -200,7 +200,7 @@ const PremiumAssignment = ({ project, onBack, onAssign, onBidSelect, timeRemaini
     try {
       // Create project assignment invitation
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/client/invitations/create_project_assignment/`,
+        `https://talintzbackend-production.up.railway.app/api/client/invitations/create_project_assignment/`,
         { 
           bid_id: bid.id,
           message: `Congratulations! You have been selected for the project "${project.title}". Please review the terms and accept the assignment.`,

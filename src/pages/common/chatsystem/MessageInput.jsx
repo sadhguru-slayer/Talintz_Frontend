@@ -13,7 +13,7 @@ const uploadFile = async (file, onProgress, conversationId) => {
   const token = Cookies.get('accessToken');
 
   try {
-    const response = await axios.post("http://127.0.0.1:8000/api/chat/messages/upload/", formData, {
+    const response = await axios.post("https://talintzbackend-production.up.railway.app/api/chat/messages/upload/", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data"
@@ -70,7 +70,7 @@ const MessageInput = ({ conversation, onSend, replyingTo, onCancelReply }) => {
 
           const token = Cookies.get('accessToken');
           const res = await axios.post(
-            "http://127.0.0.1:8000/api/chat/messages/upload/",
+            "https://talintzbackend-production.up.railway.app/api/chat/messages/upload/",
             formData,
             {
               headers: {

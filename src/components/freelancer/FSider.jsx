@@ -72,7 +72,7 @@ const FSider = ({
       return;
     }
 
-      await axios.post('http://127.0.0.1:8000/api/logout/',
+      await axios.post('https://talintzbackend-production.up.railway.app/api/logout/',
         { accessToken, refreshToken },
         { headers: { Authorization: `Bearer ${accessToken}` }}
       );

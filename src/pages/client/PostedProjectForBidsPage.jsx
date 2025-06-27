@@ -71,7 +71,7 @@ const PostedProjectForBidsPage = ({ userId, role }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/client/get_project/${projectId}`,
+          `https://talintzbackend-production.up.railway.app/api/client/get_project/${projectId}`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -129,7 +129,7 @@ const PostedProjectForBidsPage = ({ userId, role }) => {
     setBidsLoading(true);
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/client/get_bids_on_project/${parseInt(projectId)}`,
+        `https://talintzbackend-production.up.railway.app/api/client/get_bids_on_project/${parseInt(projectId)}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -504,7 +504,7 @@ const PostedProjectForBidsPage = ({ userId, role }) => {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/client/${endpoints[action]}`,
+        `https://talintzbackend-production.up.railway.app/api/client/${endpoints[action]}`,
         { 
           bid_id: bidId,
           project_complexity: complexityLevel,

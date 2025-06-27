@@ -28,7 +28,7 @@ const ReviewsRatings = ({ userId, role }) => {
     const fetchReviews = async () => {
       const accessToken = Cookies.get('accessToken');
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/client/get_reviews', {
+        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_reviews', {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const data = response.data;
@@ -63,7 +63,7 @@ const ReviewsRatings = ({ userId, role }) => {
     const accessToken = Cookies.get('accessToken');
     try {
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/client/post_reply/',
+        'https://talintzbackend-production.up.railway.app/api/client/post_reply/',
         {
           review_id: replyReviewId,
           reply_text: replyText,

@@ -42,7 +42,7 @@ export default function useMessages(conversationId, userId, role) {
       try {
         const token = Cookies.get("accessToken");
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/chat/conversations/${conversationId}/messages/`,
+          `https://talintzbackend-production.up.railway.app/api/chat/conversations/${conversationId}/messages/`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -61,7 +61,7 @@ export default function useMessages(conversationId, userId, role) {
             if (msg.file) {
               fileUrl = msg.file.startsWith("http") 
                 ? msg.file 
-                : `http://127.0.0.1:8000${msg.file}`;
+                : `https://talintzbackend-production.up.railway.app${msg.file}`;
             }
 
             return {
@@ -84,7 +84,7 @@ export default function useMessages(conversationId, userId, role) {
                 fileUrl: msg.reply_to.file 
                   ? (msg.reply_to.file.startsWith("http") 
                     ? msg.reply_to.file 
-                    : `http://127.0.0.1:8000${msg.reply_to.file}`)
+                    : `https://talintzbackend-production.up.railway.app${msg.reply_to.file}`)
                   : null,
                 senderName: msg.reply_to.sender?.first_name
                   ? `${msg.reply_to.sender.first_name} ${msg.reply_to.sender.last_name}`.trim()

@@ -31,7 +31,7 @@ const CConnectionRequests = ({userId, role}) => {
       setError(null);
       try {
         const response = await axios.get(
-          'http://127.0.0.1:8000/api/client/get_connection_requests',
+          'https://talintzbackend-production.up.railway.app/api/client/get_connection_requests',
           {
             headers: {
               'Authorization': `Bearer ${Cookies.get('accessToken')}`,
@@ -58,7 +58,7 @@ const CConnectionRequests = ({userId, role}) => {
   const handleAccept = async (connectionId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/client/connections/${connectionId}/accept_connection/`,
+        `https://talintzbackend-production.up.railway.app/api/client/connections/${connectionId}/accept_connection/`,
         {},
         {
           headers: {
@@ -86,7 +86,7 @@ const CConnectionRequests = ({userId, role}) => {
   const handleReject = async (connectionId) => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/client/connections/${connectionId}/reject_connection/`,
+        `https://talintzbackend-production.up.railway.app/api/client/connections/${connectionId}/reject_connection/`,
         {},
         {
           headers: {

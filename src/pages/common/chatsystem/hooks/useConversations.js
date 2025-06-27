@@ -37,7 +37,7 @@ export default function useConversations(userId, role, setConversations, setLoad
       setLoading(true);
       try {
         const token = Cookies.get("accessToken");
-        const response = await axios.get("http://127.0.0.1:8000/api/chat/conversations/", {
+        const response = await axios.get("https://talintzbackend-production.up.railway.app/api/chat/conversations/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

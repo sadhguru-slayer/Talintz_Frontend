@@ -193,7 +193,7 @@ const ChatWindow = ({ conversation, pinnedMessages, handlePinMessage, isMobile, 
     try {
       const token = Cookies.get("accessToken");
       await axios.post(
-        `http://127.0.0.1:8000/api/chat/messages/${messageId}/delete_for_me/`,
+        `https://talintzbackend-production.up.railway.app/api/chat/messages/${messageId}/delete_for_me/`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -211,7 +211,7 @@ const ChatWindow = ({ conversation, pinnedMessages, handlePinMessage, isMobile, 
 
       const token = Cookies.get("accessToken");
       await axios.post(
-        `http://127.0.0.1:8000/api/chat/messages/${messageId}/delete_for_everyone/`,
+        `https://talintzbackend-production.up.railway.app/api/chat/messages/${messageId}/delete_for_everyone/`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

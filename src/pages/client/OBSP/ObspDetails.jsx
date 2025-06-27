@@ -162,7 +162,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/obsp/api/${id}/`,
+          `https://talintzbackend-production.up.railway.app/api/obsp/api/${id}/`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -202,7 +202,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
       try {
         setFieldsLoading(true);
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/obsp/api/${id}/fields/${selectedLevel}/`,
+          `https://talintzbackend-production.up.railway.app/api/obsp/api/${id}/fields/${selectedLevel}/`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -230,7 +230,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
   const fetchWalletBalance = useCallback(async () => {
     try {
       setWalletLoading(true);
-      const response = await axios.get('http://127.0.0.1:8000/api/finance/wallet/balance/', {
+      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/finance/wallet/balance/', {
         headers: {
           Authorization: `Bearer ${Cookies.get('accessToken')}`,
         },
@@ -290,7 +290,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
     try {
       setCheckingEligibility(true);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/obsp/api/${id}/check-eligibility/${level}/`,
+        `https://talintzbackend-production.up.railway.app/api/obsp/api/${id}/check-eligibility/${level}/`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -340,7 +340,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
         };
 
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/obsp/api/${id}/submit/`,
+          `https://talintzbackend-production.up.railway.app/api/obsp/api/${id}/submit/`,
           responseData,
           {
             headers: {
@@ -379,7 +379,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
     try {
       setDraftLoading(true);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/obsp/api/${id}/draft/${level}/`,
+        `https://talintzbackend-production.up.railway.app/api/obsp/api/${id}/draft/${level}/`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -469,7 +469,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
       const totalAmount = basePrice + totalAddOns;
 
       // Atomic wallet balance check - fresh API call
-      const walletResponse = await axios.get('http://127.0.0.1:8000/api/finance/wallet/balance/', {
+      const walletResponse = await axios.get('https://talintzbackend-production.up.railway.app/api/finance/wallet/balance/', {
         headers: {
           Authorization: `Bearer ${Cookies.get('accessToken')}`,
         },
@@ -495,7 +495,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
         };
 
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/obsp/api/${id}/submit/`,
+          `https://talintzbackend-production.up.railway.app/api/obsp/api/${id}/submit/`,
           responseData,
           {
             headers: {
@@ -530,7 +530,7 @@ const LevelCard = React.memo(({ level, data, isSelected, onSelect }) => {
         };
 
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/obsp/api/${id}/submit/`,
+          `https://talintzbackend-production.up.railway.app/api/obsp/api/${id}/submit/`,
           responseData,
           {
             headers: {

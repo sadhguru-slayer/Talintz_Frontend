@@ -45,7 +45,7 @@ const RecentActivity = () => {
       const accessTokens = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/client/specified_recent_activity",
+          "https://talintzbackend-production.up.railway.app/api/client/specified_recent_activity",
           {
             params: { activity_type: "payment" },
             headers: { Authorization: `Bearer ${accessTokens}` },
@@ -61,7 +61,7 @@ const RecentActivity = () => {
       const accessTokens = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/client/specified_recent_activity",
+          "https://talintzbackend-production.up.railway.app/api/client/specified_recent_activity",
           {
             params: { activity_type: "project" },
             headers: { Authorization: `Bearer ${accessTokens}` },
@@ -77,7 +77,7 @@ const RecentActivity = () => {
       const accessTokens = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/client/other_recent_activity",
+          "https://talintzbackend-production.up.railway.app/api/client/other_recent_activity",
           {
             params: { activity_type: "other" },
             headers: { Authorization: `Bearer ${accessTokens}` },
