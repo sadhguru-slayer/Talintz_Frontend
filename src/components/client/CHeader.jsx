@@ -203,7 +203,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
     }
 
       await axios.post(
-        "http://localhost:8000/api/logout/",
+        "https://talintzbackend-production.up.railway.app/api/logout/",
         { refreshToken, accessToken },
         {
         headers: { Authorization: `Bearer ${accessToken}` },
