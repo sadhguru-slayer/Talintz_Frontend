@@ -8,56 +8,61 @@ const EmailVerificationBanner = ({ username, email, role, onVerify }) => {
 
   if (!visible) return null;
 
-  // Determine the color scheme based on the role
+  // Role-based color scheme with dark theme defaults
   const roleColors = {
     client: {
-      bg: "bg-client-bg-card",
-      text: "text-client-text-primary",
+      bg: "bg-client-dark", // Dark background for client
+      text: "text-client-accent", // Client accent color for text
       buttonBg: "bg-client-accent",
-      buttonHover: "hover:bg-client-accent/90",
-      border: "border-client-border-DEFAULT",
+      buttonHover: "hover:bg-client-accent/80",
+      border: "border-client-accent/30",
+      highlight: "text-client-accent" // For emphasized text
     },
     freelancer: {
-      bg: "bg-freelancer-bg-card",
-      text: "text-freelancer-text-primary",
+      bg: "bg-freelancer-dark", // Dark background for freelancer
+      text: "text-freelancer-accent", // Freelancer accent color for text
       buttonBg: "bg-freelancer-accent",
-      buttonHover: "hover:bg-freelancer-accent/90",
-      border: "border-freelancer-border-DEFAULT",
+      buttonHover: "hover:bg-freelancer-accent/80",
+      border: "border-freelancer-accent/30",
+      highlight: "text-freelancer-accent"
     },
+    default: {
+      bg: "bg-gray-900", // Fallback dark background
+      text: "text-brand-accent", // Default accent color
+      buttonBg: "bg-brand-accent",
+      buttonHover: "hover:bg-brand-accent/80",
+      border: "border-gray-700",
+      highlight: "text-brand-accent"
+    }
   };
 
-  const colors = roleColors[role] || {
-    bg: "bg-brand-neutral",
-    text: "text-text-primary",
-    buttonBg: "bg-brand-accent",
-    buttonHover: "hover:bg-brand-accent/90",
-    border: "border-ui-border",
-  };
+  const colors = roleColors[role] || roleColors.default;
 
   // Adjust text size based on screen size
   const textSize = isMobile ? "text-sm" : isTablet ? "text-base" : "text-lg";
 
   return (
     <div
-      className={`fixed bottom-20 right-6 z-50 ${colors.bg} ${colors.border} bg-brand-dark border rounded-lg shadow-md p-2 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 max-w-[80%]`}
+      className={`fixed bottom-20 right-6 z-50 ${colors.bg} ${colors.border} border rounded-lg shadow-lg p-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 max-w-[90%]`}
     >
-      <span className={`text-brand-neutral ${textSize}`}>
-        <b className="text-client-accent">{username}</b>, please verify your email <b className="text-client-accent">{email}</b> to unlock all features.
+      <span className={`${colors.text} ${textSize}`}>
+        <b className={colors.highlight}>{username}</b>, please verify your email <b className={colors.highlight}>{email}</b> to unlock all features.
       </span>
       <div className="flex gap-2">
-      <button
-        onClick={onVerify}
-        className={`bg-brand-accent text-white px-4 py-2 rounded transition-colors ${textSize}`}
-      >
-        Verify
-      </button>
-      <button
-        onClick={() => setVisible(false)}
-        className="text-gray-500 hover:text-gray-700 text-lg cursor-pointer"
-        aria-label="Close"
-      >
-        ×
-      </button></div>
+        <button
+          onClick={onVerify}
+          className={`${colors.buttonBg} ${colors.buttonHover} text-gray-900 font-medium px-4 py-2 rounded-md transition-colors ${textSize}`}
+        >
+          Verify
+        </button>
+        <button
+          onClick={() => setVisible(false)}
+          className={`${colors.text} hover:opacity-80 text-lg cursor-pointer transition-opacity`}
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
     </div>
   );
 };
