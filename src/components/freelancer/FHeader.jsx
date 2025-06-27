@@ -327,7 +327,7 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
             <button
               onClick={() => {
                 setIsMessagesOpen(false);
-                navigate('/freelancer/messages');
+                navigate('/freelancer/chat');
               }}
               className="w-full py-2 text-center text-xs text-freelancer-accent hover:text-freelancer-accent/80 transition-colors"
             >
@@ -652,7 +652,7 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
                   >
                     <div className="relative p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200">
                       <RiMessage3Fill className={`text-sm ${
-                        location.pathname.includes('/freelancer/messages')
+                        location.pathname.includes('/freelancer/chat')
                           ? 'text-freelancer-accent'
                           : 'text-white/60 group-hover:text-white'
                       } transition-colors`} />
