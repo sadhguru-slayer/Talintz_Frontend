@@ -302,7 +302,7 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
               <button
                 onClick={() => {
                     setIsMessagesOpen(false);
-                    navigate('/freelancer/messages');
+                    navigate('/freelancer/chat');
                 }}
                 className="text-xs text-freelancer-accent hover:text-freelancer-accent/80 transition-colors"
               >
