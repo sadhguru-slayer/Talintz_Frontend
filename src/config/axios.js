@@ -3,6 +3,9 @@ import axios from 'axios';
 // Production API base URL (Railway backend)
 const API_BASE_URL = 'https://talintzbackend-production.up.railway.app';
 
+// Export the base URL for use in other files
+export const getBaseURL = () => API_BASE_URL;
+
 // Create axios instance with production config
 const api = axios.create({
   baseURL: API_BASE_URL,
