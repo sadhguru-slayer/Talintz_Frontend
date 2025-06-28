@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import axios from 'axios';
 import { verifyToken, refreshToken } from '../utils/auth';
-import { FaShieldAlt, FaBolt, FaProjectDiagram } from 'react-icons/fa';
+import { FaShieldAlt, FaBolt, FaProjectDiagram, FaChartLine, FaUsers, FaClock, FaCode, FaGithub, FaSlack, FaTrello, FaJira, FaBuilding, FaGlobe, FaFigma, FaAws } from 'react-icons/fa';
 import bgImage from '/herobg.png';
 
 const HomePage = () => {
@@ -65,108 +65,213 @@ const HomePage = () => {
     navigate('/login');
   };
   
-  // 👉 Minimal feature data
+  // Enhanced features data
   const features = [
     {
       icon: <FaShieldAlt className="w-6 h-6" />,
-      title: 'Secure Workflow',
-      description: 'Enterprise-grade encryption keeps your projects and files protected.'
+      title: 'Enterprise Security',
+      description: 'Bank-grade encryption and compliance with ISO 27001, SOC 2 Type II, and GDPR standards.'
     },
     {
       icon: <FaProjectDiagram className="w-6 h-6" />,
       title: 'Smart Project Hub',
-      description: 'Organise tasks, files and chat in one intuitive workspace.'
+      description: 'Centralized workspace with real-time collaboration, file sharing, and task management.'
     },
+    
     {
-      icon: <FaBolt className="w-6 h-6" />,
-      title: 'AI Insights',
-      description: 'Nova AI highlights risks and suggests optimisations in real time.'
+      icon: <FaChartLine className="w-6 h-6" />,
+      title: 'Advanced Analytics',
+      description: 'Comprehensive reporting and analytics to track project progress and team performance.'
     }
   ];
 
+  const integrations = [
+  { 
+    icon: <FaGithub className="w-8 h-8 text-[#6366F1]" />, 
+    name: 'GitHub',
+    description: 'Version control & code collaboration',
+    bgColor: 'bg-[#6366F1]/10',
+    borderColor: 'hover:border-[#6366F1]',
+    iconColor: 'text-[#6366F1]'
+  },
+  { 
+    icon: <FaFigma className="w-8 h-8 text-[#00D4AA]" />,
+    name: 'Figma',
+    description: 'Design & prototyping integration',
+    bgColor: 'bg-[#00D4AA]/10',
+    borderColor: 'hover:border-[#00D4AA]',
+    iconColor: 'text-[#00D4AA]'
+  },
+  { 
+    icon: <FaJira className="w-8 h-8 text-[#6366F1]" />, 
+    name: 'Jira',
+    description: 'Project tracking & management',
+    bgColor: 'bg-[#6366F1]/10',
+    borderColor: 'hover:border-[#6366F1]',
+    iconColor: 'text-[#6366F1]'
+  },
+  { 
+    icon: <FaAws className="w-8 h-8 text-[#00D4AA]" />,
+    name: 'AWS',
+    description: 'Cloud deployment & scaling',
+    bgColor: 'bg-[#00D4AA]/10',
+    borderColor: 'hover:border-[#00D4AA]',
+    iconColor: 'text-[#00D4AA]'
+  }
+];
+
+  // Testimonials data
+  const testimonials = [
+    {
+      quote: "Talintz has transformed how we manage our remote teams. The AI insights are game-changing.",
+      author: "Sarah Chen",
+      role: "CTO at TechFlow",
+      image: "https://randomuser.me/api/portraits/women/1.jpg"
+    },
+    {
+      quote: "The most comprehensive project management solution we've used. Worth every penny.",
+      author: "Michael Rodriguez",
+      role: "Project Lead at InnovateCorp",
+      image: "https://randomuser.me/api/portraits/men/2.jpg"
+    }
+  ];
+
+  // Enhanced parallax effect with spring physics
+  const { scrollY } = useScroll();
+  
+  // Create smooth spring-based transforms
+  const springConfig = { stiffness: 100, damping: 30, mass: 0.2 };
+  
+  // Background parallax with spring physics
+  const bgYSpring = useSpring(
+    useTransform(scrollY, [0, 1000], ['0%', '15%']),
+    springConfig
+  );
+  
+  // Text parallax with different spring config for layered effect
+  const textYSpring = useSpring(
+    useTransform(scrollY, [0, 1000], [1,1.05]),
+    { ...springConfig, stiffness: 120 }
+  );
+
+  // Opacity parallax for fade effect
+  const opacitySpring = useSpring(
+    useTransform(scrollY, [0, 400], [1, 0.2]),
+    { ...springConfig, stiffness: 80 }
+  );
+
   return (
-    <div className="relative min-h-screen bg-brand-dark overflow-hidden">
-      {/* Hero Section with Background Image */}
-      <div className="relative min-h-screen">
-        {/* Background with wave pattern - ONLY for hero */}
-        <div className="absolute inset-0 overflow-hidden">
+    <div className="relative min-h-screen bg-brand-dark">
+      {/* Hero Section with Enhanced Parallax */}
+      <div className="relative min-h-screen !overflow-hidden">
+        {/* Background with enhanced parallax */}
+        <motion.div 
+          className="absolute inset-0"
+          style={{ 
+            y: bgYSpring,
+            scale: useSpring(useTransform(scrollY, [0, 1000], [1, 1.05]), springConfig)
+          }}
+        >
           {/* Dark base layer */}
-          <div className="absolute inset-0 bg-brand-dark/90" />
+          <div className="absolute inset-0" />
         
-          {/* Wave pattern from the image - ONLY in hero */}
-          <div 
-            className="absolute inset-0 opacity-70"
+          {/* Wave pattern from the image with enhanced mask */}
+          <motion.div 
+            className="absolute inset-0"
             style={{
               backgroundImage: `url(${bgImage})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
+              opacity: opacitySpring,
+              maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
             }}
           />
           
-          {/* Animated gradient overlay */}
-        <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0.4, 0.5, 0.4] }}
-            transition={{ 
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+          {/* Enhanced gradient overlay */}
+          <motion.div 
             className="absolute inset-0"
-              style={{ 
+            style={{ 
               background: `
                 linear-gradient(
-                  135deg,
-                  rgba(109, 40, 217, 0.2) 0%,
-                  rgba(37, 99, 235, 0.2) 100%
+                  to bottom,
+                  rgba(10, 10, 26, 0) 0%,
+                  rgba(10, 10, 26, 0.2) 50%,
+                  rgba(10, 10, 26, 0.8) 85%,
+                  rgba(10, 10, 26, 1) 100%
                 )
-              `
-              }}
-        />
-        </div>
+              `,
+              opacity: opacitySpring
+            }}
+          />
+        </motion.div>
 
         {/* Navigation */}
         <nav className="relative z-20 px-6 py-6">
           <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center">
-              <Link to="/" className="text-2xl font-bold text-white">
-                Talintz
+              <Link 
+                to="/" 
+                className="text-2xl font-bold text-white relative group"
+              >
+                <span className="bg-gradient-to-r from-[#6366F1] to-[#00D4AA] bg-clip-text text-transparent">
+                  Talintz
+                </span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
+                  group-hover:w-full transition-all duration-300"></span>
               </Link>
-              <div className="flex items-center gap-8">
-                <div className="hidden md:flex items-center gap-8">
-                  <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-                  <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
-                  <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
-                </div>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={handleLogin}
-                    className="px-5 py-2 text-gray-300 hover:text-white transition-colors"
-                  >
-                    Login
-                  </button>
-                  <motion.button
-                    onClick={handleGetStarted}
-                    whileHover={{ scale: 1.02 }}
+              
+              <div className="flex items-center gap-6">
+                <motion.button
+                  onClick={handleLogin}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                    className="px-5 py-2 bg-brand-purple text-white rounded-lg font-medium 
-                      hover:bg-brand-purple-dark transition-colors"
-                  >
-                    Get Started
-                  </motion.button>
-                </div>
+                  className="px-5 py-2.5 text-white relative group overflow-hidden"
+                >
+                  <span className="relative z-10">Login</span>
+                  <span className="absolute inset-0 w-0 bg-gradient-to-r from-[#6366F1]/10 to-[#00D4AA]/10 
+                    group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
+                    group-hover:w-full transition-all duration-300"></span>
+                </motion.button>
+
+                <motion.button
+                  onClick={handleGetStarted}
+                  whileHover={{ 
+                    scale: 1.02,
+                    boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)'
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-2.5 bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
+                    text-white rounded-lg font-medium relative overflow-hidden group"
+                >
+                  <span className="relative z-10">Get Started</span>
+                  <motion.span
+                    initial={{ x: '-100%' }}
+                    whileHover={{ x: '100%' }}
+                    transition={{ duration: 0.6 }}
+                    className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"
+                  />
+                </motion.button>
               </div>
             </div>
           </div>
         </nav>
-
-        {/* Hero Content */}
-        <main className="relative z-10 px-6 min-h-[calc(100vh-80px)] flex items-center justify-center">
+        
+        {/* Hero Content with enhanced parallax */}
+        <motion.main 
+          className="relative z-10 px-6 min-h-[calc(100vh-80px)] flex items-center justify-center"
+          style={{ 
+            y: textYSpring,
+            scale: useSpring(useTransform(scrollY, [0, 1000], [1, 1.02]), springConfig)
+          }}
+        >
           <div className="max-w-7xl mx-auto text-center">
-          <motion.div
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              style={{scale:textYSpring}}
               className="max-w-4xl mx-auto"
             >
           <motion.div 
@@ -174,250 +279,552 @@ const HomePage = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
                 className="inline-flex items-center px-3 py-1 mb-8 rounded-full 
-                  border border-brand-purple/30 bg-brand-purple/10"
-              >
-                <span className="w-2 h-2 rounded-full bg-brand-purple mr-2"></span>
-                <span className="text-sm text-brand-purple-light">Launching Soon</span>
+                  border border-[#6366F1]/30 bg-[#6366F1]/10"
+            >
+                <span className="w-2 h-2 rounded-full bg-[#6366F1] mr-2"></span>
+                <span className="text-sm text-[#6366F1]">Launching Soon</span>
               </motion.div>
 
               <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-8">
-                The <span className="bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent">
+                The <span className="bg-gradient-to-r from-[#6366F1] to-[#00D4AA] bg-clip-text text-transparent">
                   Smarter Way
                 </span> to
                 <br />Collaborate on Projects
               </h1>
-              <p className="text-xl text-gray-300 mb-12 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-xl text-white mb-12 leading-relaxed max-w-2xl mx-auto">
                 Connect with top talent, manage projects efficiently, and grow your business 
                 with our AI-powered collaboration platform.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button
                 onClick={handleGetStarted}
-                  whileHover={{ scale: 1.02 }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-gradient-to-r from-brand-purple to-brand-blue 
-                    text-white rounded-lg font-medium shadow-lg shadow-brand-purple/25"
-                >
-                  Get Started Free
+                className="px-8 py-4 bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
+                  text-white rounded-lg font-medium shadow-lg shadow-[#6366F1]/25"
+              >
+                Get Started Free
               </motion.button>
-              <motion.button
-                  whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 border border-brand-purple/30 text-white rounded-lg 
-                    font-medium hover:bg-brand-purple/10 transition-all"
-                >
-                  Learn More
-              </motion.button>
-              </div>
             </motion.div>
           </div>
-        </main>
-            </div>
-            
-      {/* Rest of the sections with GitHub-inspired design */}
-      <div className="relative bg-[#0A0A1A]">
-        {/* Features Section - Inspired by GitHub's feature showcase */}
+        </motion.main>
+      </div>
+
+      {/* Rest of the sections */}
+      <div className="relative z-20 bg-brand-dark">
+        {/* Enhanced Features Section */}
         <section className="relative z-10 py-24" id="features">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               {/* Left side - Feature Description */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-6">
-                  Streamline Your Project Management
-                </h2>
-                <p className="text-gray-400 text-lg mb-8">
-                  Built for modern teams, our platform combines powerful project management tools with intuitive collaboration features.
-                </p>
-                <div className="space-y-6">
-                  {features.map((feature) => (
-                    <div key={feature.title} className="flex items-start gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-[#6366F1]/10 flex items-center justify-center flex-shrink-0 mt-1">
-                        <div className="text-[#6366F1]">{feature.icon}</div>
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="space-y-8"
+                >
+                  <div className="inline-flex items-center px-3 py-1 rounded-full 
+                    border border-[#6366F1]/30 bg-[#6366F1]/10">
+                    <span className="w-2 h-2 rounded-full bg-[#6366F1] mr-2"></span>
+                    <span className="text-sm text-[#6366F1]">Enterprise Ready</span>
+              </div>
+              
+                  <h2 className="text-3xl sm:text-4xl font-semibold text-white">
+                    Streamline Your Project
+                    <span className="bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
+                      bg-clip-text text-transparent"> Management</span>
+                  </h2>
+                  
+                  <p className="text-gray-400 text-lg leading-relaxed">
+                    Built for modern teams, our platform combines powerful project management tools 
+                    with intuitive collaboration features and AI-driven insights.
+                  </p>
+
+                  <div className="space-y-6">
+                    {features.map((feature, index) => (
+                      <motion.div
+                        key={feature.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-start gap-4 p-4 rounded-xl 
+                          bg-white/5 border border-white/10 hover:border-[#6366F1]/30 
+                          transition-all duration-300"
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-[#6366F1]/10 
+                          flex items-center justify-center flex-shrink-0">
+                          <div className="text-[#6366F1]">{feature.icon}</div>
+                      </div>
+                        <div>
+                          <h3 className="text-white font-medium text-lg mb-2">
+                            {feature.title}
+                          </h3>
+                          <p className="text-gray-400 leading-relaxed">
+                            {feature.description}
+                          </p>
                     </div>
-                      <div>
-                        <h3 className="text-white font-medium mb-1">{feature.title}</h3>
-                        <p className="text-gray-400">{feature.description}</p>
-                  </div>
-                    </div>
-                  ))}
-                </div>
+                      </motion.div>
+                    ))}
+                      </div>
               </motion.div>
-                
-              {/* Right side - Interactive Demo/Screenshot */}
-          <motion.div 
+
+              {/* Right side - Interactive Demo */}
+              <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 className="relative"
               >
                 <div className="relative rounded-xl overflow-hidden border border-white/10">
-                  {/* Replace with your actual app screenshot or demo */}
-                  <div className="aspect-[4/3] bg-gradient-to-br from-[#0A0A1A] to-[#1A1A2E] p-6">
-                    <div className="absolute inset-0 bg-grid-white/5"></div>
-                    {/* Add your app demo/screenshot here */}
+                  {/* Dashboard Preview */}
+                  <div className="aspect-[4/3] bg-[#161B22] p-6 relative">
+                    {/* Browser-like top bar */}
+                    <div className="absolute top-0 left-0 right-0 h-8 bg-[#0D1117] 
+                      flex items-center px-4 border-b border-white/10">
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
                   </div>
+                  
+                    {/* Dashboard Content */}
+                    <div className="mt-8 grid grid-cols-2 gap-4">
+                      {/* Project Stats Card */}
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="bg-[#1F2937] p-4 rounded-lg border border-white/10"
+                      >
+                        <div className="flex justify-between items-center mb-4">
+                          <h4 className="text-white font-medium">Project Stats</h4>
+                          <FaChartLine className="text-[#00D4AA]" />
+                      </div>
+                      <div className="space-y-2">
+                          <div className="h-2 bg-[#00D4AA]/20 rounded-full">
+                            <div className="h-full w-3/4 bg-[#00D4AA] rounded-full"></div>
+                      </div>
+                          <div className="h-2 bg-[#6366F1]/20 rounded-full">
+                            <div className="h-full w-1/2 bg-[#6366F1] rounded-full"></div>
+                    </div>
+                  </div>
+                      </motion.div>
+                  
+                      {/* Team Activity Card */}
+            <motion.div 
+                        whileHover={{ scale: 1.02 }}
+                        className="bg-[#1F2937] p-4 rounded-lg border border-white/10"
+                      >
+                        <div className="flex justify-between items-center mb-4">
+                          <h4 className="text-white font-medium">Team Activity</h4>
+                          <FaUsers className="text-[#6366F1]" />
+                      </div>
+                        <div className="flex -space-x-2">
+                          {[1, 2, 3, 4].map((i) => (
+                            <div
+                              key={i}
+                              className="w-8 h-8 rounded-full bg-gradient-to-r 
+                                from-[#6366F1] to-[#00D4AA] border-2 border-[#1F2937]"
+                            ></div>
+                          ))}
+                    </div>
+                  </motion.div>
+                  
+                      {/* Timeline Card */}
+                <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="col-span-2 bg-[#1F2937] p-4 rounded-lg border border-white/10"
+                    >
+                          <div className="flex justify-between items-center mb-4">
+                            <h4 className="text-white font-medium">Project Timeline</h4>
+                            <FaClock className="text-[#6366F1]" />
+                      </div>
+                          <div className="space-y-3">
+                            {[1, 2, 3].map((i) => (
+                              <div key={i} className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-[#00D4AA]"></div>
+                                <div className="flex-1 h-1 bg-[#00D4AA]/20 rounded-full">
+                                  <div className={`h-full w-${i * 2}/6 bg-[#00D4AA] rounded-full`}></div>
                 </div>
+                </div>
+                          ))}
+                    </div>
+                      </motion.div>
+                </div>
+                
+                    {/* Floating Elements */}
+                    <motion.div
+                      animate={{
+                        y: [0, -10, 0],
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+              }}
+                      className="absolute -top-4 -right-4 w-24 h-24 bg-[#6366F1]/20 
+                        rounded-full blur-xl"
+                    />
+            <motion.div 
+                      animate={{
+                        y: [0, 10, 0],
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                  }}
+                      className="absolute -bottom-4 -left-4 w-32 h-32 bg-[#00D4AA]/20 
+                        rounded-full blur-xl"
+                    />
+                  </div>
+                    </div>
+                
+                
               </motion.div>
-            </div>
+          </div>
           </div>
         </section>
-          
-        {/* How It Works - Modern Step-by-Step Guide */}
+
+        {/* How It Works - Minimal & Professional Design */}
         <section className="relative z-10 py-24 bg-[#0D1117]">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-16">
+            {/* Section Header */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-20"
+            >
+              <div className="inline-flex items-center px-3 py-1 rounded-full 
+                border border-[#00D4AA]/30 bg-[#00D4AA]/5 mb-6">
+                <span className="text-sm text-[#00D4AA]">Simple Process</span>
+              </div>
               <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4">
-                Get Started in Minutes
+                Get Started in{" "}
+                <span className="bg-gradient-to-r from-[#6366F1] to-[#00D4AA] bg-clip-text text-transparent">
+                  Minutes
+                </span>
               </h2>
-              <p className="text-gray-400 text-lg">
-                Three simple steps to transform your project management
+              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                Our streamlined onboarding process gets you from signup to success in three simple steps
               </p>
-            </div>
+            </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  step: '01',
-                  title: 'Create Your Profile',
-                  description: 'Sign up and build your professional profile in minutes',
-                  icon: '👤'
-                },
-                {
-                  step: '02',
-                  title: 'Connect & Collaborate',
-                  description: 'Find the perfect match for your project needs',
-                  icon: '🤝'
-                },
-                {
-                  step: '03',
-                  title: 'Achieve Together',
-                  description: 'Work efficiently and celebrate successful project completion',
-                  icon: '🚀'
-                }
-              ].map((item, index) => (
-          <motion.div 
-                  key={item.step}
+            {/* Steps Container */}
+            <div className="relative">
+              {/* Connecting Line */}
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-[#6366F1]/20 via-[#00D4AA]/20 to-[#6366F1]/20 
+                transform -translate-y-1/2 hidden md:block"></div>
+
+              <div className="grid md:grid-cols-3 gap-12 relative">
+                {[
+                  {
+                    step: '01',
+                    title: 'Create Account',
+                    description: 'Quick signup with email or social login. No credit card required.',
+                    icon: (
+                      <div className="w-12 h-12 rounded-xl bg-[#6366F1]/10 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-[#6366F1]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      </div>
+                    )
+                  },
+                  {
+                    step: '02',
+                    title: 'Build Profile',
+                    description: 'Customize your workspace and set preferences for optimal workflow.',
+                    icon: (
+                      <div className="w-12 h-12 rounded-xl bg-[#00D4AA]/10 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-[#00D4AA]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      </div>
+                    )
+                  },
+                  {
+                    step: '03',
+                    title: 'Start Working',
+                    description: 'Connect with clients or freelancers and begin collaborating instantly.',
+                    icon: (
+                      <div className="w-12 h-12 rounded-xl bg-[#6366F1]/10 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-[#6366F1]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                    )
+                  }
+                ].map((item, index) => (
+                <motion.div 
+                    key={item.step}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 }}
-                  className="relative bg-[#161B22] rounded-lg p-6 border border-white/10"
+                    className="relative"
+                  >
+                    {/* Step Card */}
+                    <div className="bg-[#161B22] rounded-xl p-6 border border-white/10 
+                      hover:border-[#6366F1]/30 transition-all duration-300
+                      group hover:bg-[#161B22]/80">
+                      {/* Step Number */}
+                      <div className="flex items-center gap-4 mb-6">
+                        {item.icon}
+                        <span className="text-sm font-medium text-gray-400 group-hover:text-[#6366F1] transition-colors">
+                          Step {item.step}
+                        </span>
+                      </div>
+
+                      {/* Content */}
+                      <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-[#6366F1] transition-colors">
+                        {item.title}
+                    </h3>
+                      <p className="text-gray-400 leading-relaxed">
+                        {item.description}
+                    </p>
+
+                      {/* Hover Effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1]/5 to-[#00D4AA]/5 
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                </div>
+
+                    {/* Connection Dots for Desktop */}
+                    <div className="hidden md:block absolute top-1/2 -translate-y-1/2 
+                      w-3 h-3 rounded-full bg-[#6366F1] 
+                      left-[calc(50%-6px)] z-10"></div>
+              </motion.div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Bottom CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-16 text-center"
+            >
+                <motion.button
+                onClick={handleGetStarted}
+                whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                className="px-8 py-3 bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
+                  text-white rounded-lg font-medium shadow-lg hover:shadow-xl
+                  transition-all duration-300"
                 >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="text-2xl">{item.icon}</div>
-                    <div className="text-sm font-medium text-[#00D4AA]">Step {item.step}</div>
-        </div>
-                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                  <p className="text-gray-400">{item.description}</p>
+                Start Your Journey
+                </motion.button>
             </motion.div>
-            ))}
-          </div>
           </div>
         </section>
 
         {/* Statistics Section - Clean and Professional */}
         <section className="relative z-10 py-24">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="grid md:grid-cols-4 gap-8">
-              {[
-                { number: '10K+', label: 'Active Users' },
-                { number: '5K+', label: 'Projects Completed' },
-                { number: '95%', label: 'Success Rate' },
-                { number: '24/7', label: 'Support' }
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-3xl font-bold text-white mb-2">{stat.number}</div>
-                  <div className="text-gray-400">{stat.label}</div>
-                </div>
-            ))}
-          </div>
-        </div>
-        </section>
-
-        {/* Trust Section - Similar to GitHub's social proof */}
-        <section className="relative z-10 py-24 bg-[#0D1117]">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl font-semibold text-white mb-8">
-                Trusted by leading companies worldwide
-            </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-75">
-                {/* Replace with actual company logos */}
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-12 bg-white/5 rounded-lg"></div>
+            <div className="text-center max-w-3xl mx-auto">
+              <h2 className="text-3xl font-semibold text-white mb-6">
+                Building the Future of <span className="bg-gradient-to-r from-[#6366F1] to-[#00D4AA] bg-clip-text text-transparent">Tech Collaboration</span>
+              </h2>
+              <p className="text-gray-400 text-lg mb-8">
+                We're just getting started on our mission to revolutionize how tech and creative teams work together. Join us in shaping the future of project collaboration.
+              </p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {integrations.map((tool) => (
+                  <motion.div
+                    key={tool.name}
+                    whileHover={{ scale: 1.05 }}
+                    className="bg-[#161B22] p-6 rounded-xl border border-white/10 hover:border-[#6366F1]/30 transition-all"
+                  >
+                    <div className="flex flex-col items-center text-center">
+                      <div className="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center mb-4">
+                        {tool.icon}
+                      </div>
+                      <h3 className="text-white font-medium mb-2">{tool.name}</h3>
+                      <p className="text-gray-400 text-sm">{tool.description}</p>
+                    </div>
+                  </motion.div>
                 ))}
+              </div>
+              <div className="mt-12 text-center">
+                <span className="text-gray-400 text-sm">
+                  More integrations coming soon...
+                </span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* CTA Section - Clean and Impactful */}
-        <section className="relative z-10 py-24">
+        {/* Final CTA Section - Premium Design */}
+        <section className="relative z-10 py-32 overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-[#0A0A1A]"></div>
+            <motion.div
+              animate={{
+                scale: [1, 1.05, 1],
+                opacity: [0.1, 0.15, 0.1]
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute top-1/2 left-1/2 w-[200%] h-[200%] bg-gradient-radial from-[#6366F1]/10 to-transparent"
+              style={{
+                transform: 'translate(-50%, -50%)'
+              }}
+            />
+          </div>
+
           <div className="max-w-7xl mx-auto px-6">
-            <div className="bg-[#161B22] rounded-2xl p-12 relative overflow-hidden">
-              <div className="relative z-10 max-w-3xl mx-auto text-center">
-                <h2 className="text-3xl font-semibold text-white mb-6">
-                  Ready to transform your project workflow?
+            <div className="relative bg-[#161B22]/80 backdrop-blur-lg rounded-3xl border border-white/10 overflow-hidden">
+              {/* Decorative Elements */}
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#6366F1]/10 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-[#00D4AA]/10 rounded-full blur-3xl"></div>
+              
+              <div className="relative z-10 py-20 px-8 sm:px-16 text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                >
+                  <div className="inline-flex items-center px-4 py-2 rounded-full border border-[#6366F1]/30 bg-[#6366F1]/10 mb-6">
+                    <span className="w-2 h-2 rounded-full bg-[#6366F1] mr-2"></span>
+                    <span className="text-sm text-[#6366F1]">Get Started Today</span>
+                  </div>
+
+                  <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+                    Ready to <span className="bg-gradient-to-r from-[#6366F1] to-[#00D4AA] bg-clip-text text-transparent">transform</span> your workflow?
                 </h2>
-                <p className="text-gray-400 text-lg mb-8">
-                  Join thousands of teams already using our platform to accelerate their projects.
+                
+                <p className="text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
+                  Join thousands of teams who have already revolutionized their project management with our platform.
                 </p>
+                
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.button
               onClick={handleGetStarted}
-                    whileHover={{ scale: 1.02 }}
+              whileHover={{ 
+                    scale: 1.03,
+                      boxShadow: '0 10px 25px -5px rgba(99, 102, 241, 0.3)'
+              }}
                   whileTap={{ scale: 0.98 }}
-                    className="px-8 py-3 bg-[#6366F1] text-white rounded-lg font-medium"
+                    className="px-8 py-4 bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
+                      text-white rounded-xl font-semibold text-lg shadow-lg
+                      transition-all duration-300 relative overflow-hidden"
                 >
-                    Get started free
+                    <span className="relative z-10">Start Free Trial</span>
+                    <motion.span
+                      initial={{ x: '-100%' }}
+                      whileHover={{ x: '100%' }}
+                      transition={{ duration: 0.6 }}
+                      className="absolute inset-0 bg-gradient-to-r from-[#6366F1]/20 to-[#00D4AA]/20"
+                    />
                 </motion.button>
+                
                 <motion.button
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ 
+                      scale: 1.03,
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)'
+                    }}
                   whileTap={{ scale: 0.98 }}
-                    className="px-8 py-3 border border-white/10 text-white rounded-lg font-medium
-                      hover:bg-white/5"
+                    className="px-8 py-4 border border-white/10 text-white rounded-xl 
+                      font-semibold text-lg hover:border-[#6366F1]/30 transition-all"
                 >
-                    Contact sales
+                    Schedule Demo
                 </motion.button>
-                </div>
-                    </div>
+              </div>
+
+                <div className="mt-8 text-gray-400 text-sm">
+                  No credit card required • 14-day free trial • Cancel anytime
+                  </div>
+                </motion.div>
                   </div>
                     </div>
+                  </div>
         </section>
-                  
-        {/* Footer - Clean and Organized */}
+
+        {/* Modern Minimal Footer */}
         <footer className="relative z-10 border-t border-white/10 bg-[#0D1117] py-16">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="grid md:grid-cols-4 gap-12">
-                    <div>
-                <h3 className="text-white font-semibold mb-4">Product</h3>
-                <div className="space-y-3">
-                  <a href="#" className="block text-gray-400 hover:text-white">Features</a>
-                  <a href="#" className="block text-gray-400 hover:text-white">Security</a>
-                  <a href="#" className="block text-gray-400 hover:text-white">Team</a>
-                  <a href="#" className="block text-gray-400 hover:text-white">Enterprise</a>
-                </div>
+            <div className="flex flex-col items-center">
+              {/* Logo and Tagline */}
+              <div className="flex flex-col items-center mb-12">
+                <Link to="/" className="text-2xl font-bold text-white mb-4">
+                  Talintz
+                </Link>
+                <p className="text-gray-400 text-center max-w-md">
+                  The smarter way to collaborate on projects
+                </p>
               </div>
-              {/* Add more footer columns as needed */}
+
+              {/* Social Links - Minimal and Clean */}
+              <div className="flex items-center justify-center gap-6 mb-12">
+                {[
+                  { 
+                    name: "Twitter", 
+                    icon: (
+                      <svg className="w-5 h-5 text-gray-400 hover:text-[#1DA1F2]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                      </svg>
+                    ),
+                    url: "https://twitter.com/talintz"
+                  },
+                  { 
+                    name: "LinkedIn", 
+                    icon: (
+                      <svg className="w-5 h-5 text-gray-400 hover:text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                      </svg>
+                    ),
+                    url: "https://linkedin.com/company/talintz"
+                  },
+                  { 
+                    name: "Instagram", 
+                    icon: (
+                      <svg className="w-5 h-5 text-gray-400 hover:text-[#E4405F]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                      </svg>
+                    ),
+                    url: "https://instagram.com/talintz"
+                  },
+                  { 
+                    name: "Email", 
+                    icon: (
+                      <svg className="w-5 h-5 text-gray-400 hover:text-[#00D4AA]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z" />
+                      </svg>
+                    ),
+                    url: "mailto:hello@talintz.com"
+                  }
+                ].map((social) => (
+                  <motion.a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -2 }}
+                    className="p-2 rounded-full hover:bg-white/5 transition-colors"
+                    aria-label={social.name}
+                  >
+                    {social.icon}
+                  </motion.a>
+                ))}
+              </div>
+
+              {/* Minimal Copyright and Legal */}
+              <div className="flex flex-col items-center gap-4 text-gray-400 text-sm">
+                <div>© {new Date().getFullYear} Talintz. All rights reserved.</div>
+              </div>
             </div>
-            <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="text-gray-400">
-                © 2024 Talintz. All rights reserved.
-          </div>
-              <div className="flex gap-6">
-                <a href="#" className="text-gray-400 hover:text-white">Terms</a>
-                <a href="#" className="text-gray-400 hover:text-white">Privacy</a>
-                <a href="#" className="text-gray-400 hover:text-white">Status</a>
-              </div>
-          </div>
           </div>
         </footer>
-        </div>
+      </div>
     </div>
   );
 };
