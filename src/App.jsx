@@ -644,7 +644,7 @@ const App = () => {
     const isStudent = userRole === 'student';
     const effectiveRole = isStudent ? 'freelancer' : userRole;
 
-    const socketUrl = getBaseURL().replace('http://', 'ws://');
+    const socketUrl = getBaseURL().replace('http://', 'wss://');
     let socket;
     
     if (effectiveRole === 'freelancer') {

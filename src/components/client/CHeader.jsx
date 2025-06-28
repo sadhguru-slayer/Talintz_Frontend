@@ -87,7 +87,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
   // Optimize WebSocket connection for search with debounce
   useEffect(() => {
     const connectWebSocket = () => {
-      socketRef.current = new WebSocket("ws://localhost:8000/ws/search/");
+      socketRef.current = new WebSocket("wss://talintzbackend-production.up.railway.app/ws/search/");
       
       socketRef.current.onopen = () => {
         const token = Cookies.get("accessToken");
@@ -270,7 +270,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
                       >
                         {user.profile_picture ? (
                           <img 
-                            src={`http://localhost:8000${user.profile_picture}`} 
+                            src={`wss://talintzbackend-production.up.railway.app${user.profile_picture}`} 
                             alt="" 
                             className="w-8 h-8 rounded-full object-cover border border-white/20"
                           />
@@ -515,7 +515,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
                               >
                                 {user.profile_picture ? (
                                   <img 
-                                    src={`http://localhost:8000/${user.profile_picture}`} 
+                                    src={`wss://talintzbackend-production.up.railway.app/${user.profile_picture}`} 
                                     alt="" 
                                     className="w-6 h-6 rounded-full object-cover border border-white/20"
                                   />
@@ -661,7 +661,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
                   >
                     {user?.profile_picture ? (
                       <img 
-                        src={`http://localhost:8000${user.profile_picture}`} 
+                        src={`wss://talintzbackend-production.up.railway.app/${user.profile_picture}`} 
                         alt="" 
                         className="w-6 h-6 object-cover rounded-full"
                       />
@@ -686,7 +686,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
                             <div className="w-8 h-8 rounded-full bg-client-accent flex items-center justify-center">
                               {user?.profile_picture ? (
                                 <img 
-                                  src={`http://localhost:8000${user.profile_picture}`} 
+                                  src={`wss://talintzbackend-production.up.railway.app/${user.profile_picture}`} 
                                   alt="" 
                                   className="w-8 h-8 object-cover rounded-full"
                                 />

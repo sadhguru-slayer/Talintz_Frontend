@@ -68,7 +68,7 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
 
   useEffect(() => {
     const socket = new WebSocket(
-        `ws://localhost:8000/ws/freelancer/notification_count/?token=${Cookies.get('accessToken')}`
+        `wss://talintzbackend-production.up.railway.app/ws/freelancer/notification_count/?token=${Cookies.get('accessToken')}`
     );
 
     socket.onmessage = function (event) {
