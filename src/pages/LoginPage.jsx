@@ -200,121 +200,127 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen  bg-gradient-to-br from-gray-900 via-black to-gray-950 text-white">
-      {/* Navigation - Made more visible on mobile */}
-      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-10">
-        <button
+    <div className="min-h-screen bg-[#0A0A1A] text-white overflow-hidden">
+      {/* Back Navigation */}
+      <div className="absolute top-6 left-6 z-50">
+        <motion.button
           onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-sm text-gray-300 hover:text-brand-primary 
-                     transition-colors group bg-white/10 shadow-md hover:shadow-lg
-                     px-4 py-2.5 rounded-lg backdrop-blur-sm border border-white/20"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-2 text-sm text-gray-300 
+            bg-white/5 hover:bg-white/10 border border-white/10 
+            px-4 py-2.5 rounded-xl backdrop-blur-sm transition-all duration-300"
         >
-          <ArrowLeftOutlined className="text-xs group-hover:transform group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeftOutlined className="text-xs" />
           <span className="font-medium">Back to Home</span>
-        </button>
+        </motion.button>
       </div>
 
       {/* Main Content */}
-      <div className="min-h-screen flex flex-col lg:flex-row relative !overflow-hidden">
-        {/* Added abstract background shapes */}
-        <div className="absolute inset-0">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl -mr-48 -mt-48 animate-float"></div>
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-brand-primary/10 rounded-full blur-2xl -ml-40 -mb-40 animate-float-delayed"></div>
-        </div>
-
-        {/* Left Panel - Branding (Updated styles for dark theme) */}
-        <div className="lg:hidden w-full bg-gradient-to-b from-gray-800 to-gray-900 
-                        py-12 px-6 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/path/to/pattern.svg')] opacity-10"></div>
-          <div className="relative z-10">
-            <LogoCode width="60" height="60" className="mx-auto mb-6 text-white" />
-            <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-white/90 text-sm max-w-xs mx-auto">
-              Your gateway to professional opportunities
-            </p>
+      <div className="min-h-screen flex flex-col lg:flex-row relative">
+        {/* Background Effects */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Dark base layer */}
+          <div className="absolute inset-0 bg-[#0A0A1A]" />
+          
+          {/* Wave pattern from the image - similar to homepage */}
+          <div className="absolute inset-0 opacity-70">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-[#00D4AA]/10" />
           </div>
+          
+          {/* Animated gradient overlay */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.3, 0.4, 0.3] }}
+            transition={{ 
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute inset-0"
+            style={{ 
+              background: `
+                linear-gradient(
+                  135deg,
+                  rgba(99, 102, 241, 0.1) 0%,
+                  rgba(0, 212, 170, 0.1) 100%
+                )
+              `
+            }}
+          />
         </div>
 
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-primary to-brand-accent 
-                        items-center justify-center p-12 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/path/to/pattern.svg')] opacity-10"></div>
-          <div className="relative z-10 max-w-lg text-white space-y-8">
-            <LogoCode width="80" height="80" className="mb-8 text-white" />
-            <h1 className="text-5xl font-bold leading-tight">
-              Welcome Back to Talintz
-            </h1>
-            <p className="text-xl text-white/90 leading-relaxed">
-              Connect with top talent and opportunities in one professional platform.
-              Your next big opportunity awaits.
-            </p>
+        {/* Left Panel - Branding */}
+        <div className="hidden lg:flex lg:w-1/2 relative z-10 items-center justify-center p-16">
+          <div className="max-w-xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              <LogoCode width="80" height="80" className="text-white" />
+              <h1 className="text-5xl font-bold leading-tight">
+                Welcome Back to{" "}
+                <span className="bg-gradient-to-r from-[#00D4AA] to-[#6366F1] bg-clip-text text-transparent">
+                  Talintz
+                </span>
+              </h1>
+              <p className="text-xl text-gray-300 leading-relaxed">
+                Connect with top talent and opportunities in one professional platform.
+                Your next big opportunity awaits.
+              </p>
+            </motion.div>
           </div>
         </div>
 
         {/* Right Panel - Login Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 lg:p-12 relative z-10">
-          <div className="w-full max-w-md">
-            <Card className="shadow-xl border border-white/10 overflow-hidden rounded-xl bg-white/5 backdrop-blur-xl">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 lg:p-16 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full max-w-md"
+          >
+            <Card className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur-xl">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold text-white">Sign In</h2>
-                  <p className="text-sm text-gray-300 mt-2">
+                  <h2 className="text-2xl font-bold text-white mb-2">Sign In</h2>
+                  <p className="text-gray-400">
                     Access your Talintz account
                   </p>
                 </div>
 
+                {/* Error Message */}
                 {errors.api && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-red-700/30 border-l-4 border-red-400 p-4 rounded-lg text-red-300"
+                    className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl"
                   >
-                    <div className="flex flex-col gap-2">
-                      <p className="text-sm text-red-300">{errors.api}</p>
-                      {alternativeIdentifier && (
-                        <div className="flex items-center gap-2 mt-1">
-                          {alternativeIdentifier.type === 'register' ? (
-                            <button
-                              type="button"
-                              onClick={() => navigate('/register')}
-                              className="text-sm font-medium text-brand-primary hover:text-brand-accent transition-colors"
-                            >
-                              Create an account
-                            </button>
-                          ) : (
-                            <p className="text-sm text-gray-400">
-                              {alternativeIdentifier.message}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                    <p className="text-red-400 text-sm">{errors.api}</p>
+                    {alternativeIdentifier && (
+                      <p className="text-sm text-gray-400 mt-1">
+                        {alternativeIdentifier.message}
+                      </p>
+                    )}
                   </motion.div>
                 )}
 
                 {/* Identifier Input */}
-                <div className="space-y-1">
-                  <label htmlFor="identifier" className="block text-sm font-medium text-gray-300">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">
                     Email or Username
                   </label>
                   <input
-                    id="identifier"
                     name="identifier"
                     type="text"
-                    autoComplete="email"
-                    className={`
-                      w-full px-4 py-3 rounded-xl
-                      border ${errors.identifier ? 'border-red-300' : 'border-gray-700'}
-                      focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary
-                      text-white bg-gray-800
-                      transition-all duration-200
-                      placeholder-gray-500
-                    `}
-                    placeholder="Enter your email or username"
                     value={formData.identifier}
-                    onChange={(e) => {
-                      handleInputChange(e);
-                      setAlternativeIdentifier(null);
-                    }}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10
+                      focus:border-[#6366F1] focus:ring-[#6366F1]/20 focus:ring-2
+                      text-white placeholder-gray-500 transition-all duration-200"
+                    placeholder="Enter your email or username"
                   />
                   {errors.identifier && (
                     <motion.p 
@@ -328,66 +334,56 @@ const LoginPage = () => {
                 </div>
 
                 {/* Password Input */}
-                <div className="space-y-1">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">
                     Password
                   </label>
                   <div className="relative">
                     <input
-                      id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
-                      className={`
-                        w-full px-4 py-3 rounded-xl
-                        border ${errors.password ? 'border-red-300' : 'border-gray-700'}
-                        focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary
-                        text-white bg-gray-800
-                        transition-all duration-200
-                        placeholder-gray-500
-                      `}
-                      placeholder="Enter your password"
                       value={formData.password}
                       onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10
+                        focus:border-[#6366F1] focus:ring-[#6366F1]/20 focus:ring-2
+                        text-white placeholder-gray-500 transition-all duration-200"
+                      placeholder="Enter your password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 
-                                hover:text-gray-300 focus:outline-none"
+                        hover:text-gray-300 transition-colors"
                     >
                       {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                     </button>
                   </div>
                   {errors.password && (
-                    <motion.p 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-xs text-red-400 mt-1"
-                    >
+                    <motion.p className="text-xs text-red-400 mt-1">
                       {errors.password}
                     </motion.p>
                   )}
                 </div>
 
-                {/* Utilities */}
-                <div className="flex items-center justify-between pt-2">
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between">
                   <label className="flex items-center">
                     <input
                       type="checkbox"
                       name="rememberMe"
                       checked={formData.rememberMe}
                       onChange={handleInputChange}
-                      className="h-4 w-4 rounded border-gray-600 text-brand-primary 
-                               focus:ring-brand-primary/30 bg-gray-800 checked:bg-brand-primary"
+                      className="w-4 h-4 rounded border-white/10 bg-white/5 
+                        checked:bg-[#6366F1] checked:border-[#6366F1] 
+                        focus:ring-[#6366F1]/20 transition-all duration-200"
                     />
                     <span className="ml-2 text-sm text-gray-300">Remember me</span>
                   </label>
                   <button
                     type="button"
                     onClick={() => navigate('/forgot-password')}
-                    className="text-sm font-medium text-brand-primary hover:text-brand-accent 
-                             transition-colors"
+                    className="text-sm font-medium text-[#6366F1] hover:text-[#00D4AA] 
+                      transition-colors"
                   >
                     Forgot password?
                   </button>
@@ -398,21 +394,16 @@ const LoginPage = () => {
                   type="submit"
                   disabled={loading}
                   whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  className={`
-                    w-full py-3 px-4 rounded-xl
-                    bg-brand-primary hover:bg-brand-primary/90
-                    text-white font-medium text-base
-                    transition-all duration-200
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#00D4AA]
+                    text-white font-medium shadow-lg hover:shadow-[#6366F1]/25
                     disabled:opacity-50 disabled:cursor-not-allowed
-                    shadow-lg hover:shadow-xl
-                    mt-6
-                  `}
+                    transition-all duration-300 mt-6"
                 >
                   {loading ? (
-                    <span className="flex items-center justify-center">
+                    <span className="flex items-center justify-center gap-2">
                       <span className="w-5 h-5 border-2 border-white/30 border-t-white 
-                                     rounded-full animate-spin mr-2" />
+                        rounded-full animate-spin" />
                       Signing in...
                     </span>
                   ) : (
@@ -423,28 +414,28 @@ const LoginPage = () => {
                 {/* Divider */}
                 <div className="relative my-8">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-700"></div>
+                    <div className="w-full border-t border-white/10"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-gray-800 text-gray-400">or</span>
+                    <span className="px-2 bg-[#0A0A1A] text-gray-400">or</span>
                   </div>
                 </div>
 
                 {/* Sign Up Link */}
-                <p className="text-center text-sm text-gray-300">
+                <p className="text-center text-gray-300">
                   New to Talintz?{" "}
                   <button
                     type="button"
                     onClick={() => navigate('/register')}
-                    className="font-medium text-brand-primary hover:text-brand-accent 
-                             transition-colors"
+                    className="font-medium text-[#6366F1] hover:text-[#00D4AA] 
+                      transition-colors"
                   >
                     Create an account
                   </button>
                 </p>
               </form>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

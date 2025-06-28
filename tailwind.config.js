@@ -7,12 +7,32 @@ export default {
       colors: {
         // Brand Foundation Colors
         brand: {
-          primary: '#1A365D',    // Deep blue - conveys trust and stability
-          secondary: '#2C5282',  // Rich navy - professionalism
-          tertiary: '#E2E8F0',   // Lighter gray for better contrast
-          accent: '#3182CE',     // Clear blue - reliability
-          neutral: '#F7FAFC',    // Crisp neutral background
-          dark: '#2D3748',       // Sophisticated dark blue
+          primary: '#0A0A1A',    // Darker background
+          secondary: '#6D28D9',  // Rich purple
+          tertiary: '#2563EB',   // Vibrant blue
+          accent: '#8B5CF6',     // Lighter purple
+          neutral: '#F7FAFC',    // Keep existing neutral
+          dark: '#050510',       // Even darker background
+          // Update color palette
+          purple: {
+            light: '#A78BFA',
+            DEFAULT: '#8B5CF6',
+            dark: '#6D28D9'
+          },
+          blue: {
+            light: '#60A5FA',
+            DEFAULT: '#2563EB',
+            dark: '#1E40AF'
+          },
+          // Add new colors without breaking existing structure
+          teal: '#00D4AA',      
+          orange: '#F59E0B',    
+          darkPrimary: '#0F0F23',
+          darkSecondary: '#1A1B2E',
+          darkTertiary: '#2D3748',
+          lightPrimary: '#FFFFFF',
+          lightSecondary: '#A0AEC0',
+          lightMuted: '#718096',
         },
 
         // Text Colors - Enhanced for better readability
