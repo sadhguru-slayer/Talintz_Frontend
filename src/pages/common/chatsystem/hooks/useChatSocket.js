@@ -11,7 +11,7 @@ export default function useChatSocket(conversationId, onMessage, currentUserId) 
     if (isConnectingRef.current || !conversationId) return;
 
     isConnectingRef.current = true;
-    const wsUrl = `ws://127.0.0.1:8000/ws/chat/${conversationId}/?token=${token}`;
+    const wsUrl = `wss://talintzbackend-production.up.railway.app/ws/chat/${conversationId}/?token=${token}`;
 
     const socket = new WebSocket(wsUrl);
 

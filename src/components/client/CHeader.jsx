@@ -65,7 +65,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
   // Optimize WebSocket connection for notifications
   useEffect(() => {
     const socket = new WebSocket(
-      `ws://localhost:8000/ws/notification_count/?token=${Cookies.get('accessToken')}`
+      `wss://talintzbackend-production.up.railway.app/ws/notification_count/?token=${Cookies.get('accessToken')}`
     );
   
     socket.onmessage = function (event) {

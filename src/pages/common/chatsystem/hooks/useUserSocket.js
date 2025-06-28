@@ -8,7 +8,7 @@ export default function useUserSocket(userId, onConversationUpdate) {
     if (!userId) return;
 
     const token = Cookies.get("accessToken");
-    const wsUrl = `ws://127.0.0.1:8000/ws/user/${userId}/?token=${token}`;
+    const wsUrl = `wss://talintzbackend-production.up.railway.app/ws/user/${userId}/?token=${token}`;
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
