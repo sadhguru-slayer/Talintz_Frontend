@@ -87,7 +87,7 @@ export default {
           primary: '#0F0F23',    // Deep dark background from design
           secondary: '#6366F1',  // Purple/indigo from design
           tertiary: '#1A1B2E',   // Secondary dark background
-          accent: '#00D4AA',     // Bright teal accent
+          accent: '#6366F1',     // Bright teal accent
           orange: '#F59E0B',     // Orange accent from design
           purple: '#8B5CF6',     // Purple variant
           bg: {
