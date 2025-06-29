@@ -403,18 +403,7 @@ const ObspDetails = () => {
                               {levelData.score || 0}/100
                             </div>
                           </div>
-                          {levelData.reasons && levelData.reasons.length > 0 && (
-                            <div>
-                              <Text strong className="!text-text-light block mb-1">Reasons:</Text>
-                              <ul className="space-y-2">
-                                {levelData.reasons.map((reason, idx) => (
-                                  <li key={idx} className="text-text-secondary text-sm">
-                                    • {reason}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                          
                         </div>
                       </Card>
 
