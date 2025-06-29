@@ -175,10 +175,12 @@ const RegistrationForm = () => {
         requestData.referral_code = formData.referralCode;
       }
 
-      const response = await axios.post(
-        `${getBaseURL()}/api/register/create_user/`,
-        requestData
-      );
+      // const response = await axios.post(
+      //   `${getBaseURL()}/api/register/create_user/`,
+      //   requestData
+      // );
+
+      const reponse = null;
 
       if (response.data.access && response.data.refresh) {
         const cookieOptions = {
