@@ -10,4 +10,27 @@ html {
   }
   
 
+/* Add these cursor-related styles */
+* {
+  cursor: none !important;
+}
+
+/* Hide cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    cursor: auto !important;
+  }
+  .custom-cursor {
+    display: none !important;
+  }
+}
+
+/* Ensure smooth cursor movement */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
   

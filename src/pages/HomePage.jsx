@@ -6,6 +6,7 @@ import axios from 'axios';
 import { verifyToken, refreshToken } from '../utils/auth';
 import { FaShieldAlt, FaBolt, FaProjectDiagram, FaChartLine, FaUsers, FaClock, FaCode, FaGithub, FaSlack, FaTrello, FaJira, FaBuilding, FaGlobe, FaFigma, FaAws } from 'react-icons/fa';
 import bgImage from '/herobg.png';
+import CustomCursor from '../components/ui/CustomCursor';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -150,7 +151,7 @@ const HomePage = () => {
   
   // Text parallax with different spring config for layered effect
   const textYSpring = useSpring(
-    useTransform(scrollY, [0, 1000], [1,1.05]),
+    useTransform(scrollY, [0, 1000], [1,0.8]),
     { ...springConfig, stiffness: 120 }
   );
 
@@ -161,7 +162,8 @@ const HomePage = () => {
   );
 
   return (
-    <div className="relative min-h-screen bg-brand-dark">
+    <div className="relative min-h-screen bg-brand-dark cursor-none">
+      <CustomCursor />
       {/* Hero Section with Enhanced Parallax */}
       <div className="relative min-h-screen !overflow-hidden">
         {/* Background with enhanced parallax */}
@@ -220,7 +222,7 @@ const HomePage = () => {
                   className="w-8 h-8 rounded-full object-cover border border-white/10"
                 />
                 <span className="text-2xl font-bold relative">
-                  <span className="bg-gradient-to-r from-[#1b1b1c] to-[#00D4AA] bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#6366F1] to-[#00D4AA] bg-clip-text text-transparent">
                     Talintz
                   </span>
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
@@ -250,7 +252,8 @@ const HomePage = () => {
                   }}
                   whileTap={{ scale: 0.98 }}
                   className="px-6 py-2.5 bg-gradient-to-r from-[#6366F1] to-[#00D4AA] 
-                    text-white rounded-lg font-medium relative overflow-hidden group"
+                    text-white rounded-lg font-medium relative overflow-hidden group
+                    cursor-none hover:cursor-none"
                 >
                   <span className="relative z-10">Get Started</span>
                   <motion.span
