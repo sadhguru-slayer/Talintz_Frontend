@@ -4,23 +4,22 @@
 @tailwind utilities;
 @plugin 'tailwind-scrollbar';
 
-
 html {
     scroll-behavior: smooth;
   }
   
 
-/* Add these cursor-related styles */
-* {
+/* Add these cursor-related styles scoped to homepage */
+.homepage * {
   cursor: none !important;
 }
 
-/* Hide cursor on touch devices */
+/* Hide cursor on touch devices within homepage */
 @media (hover: none) and (pointer: coarse) {
-  * {
+  .homepage * {
     cursor: auto !important;
   }
-  .custom-cursor {
+  .homepage .custom-cursor {
     display: none !important;
   }
 }

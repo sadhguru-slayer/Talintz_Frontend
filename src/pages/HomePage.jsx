@@ -11,6 +11,17 @@ import CustomCursor from '../components/ui/CustomCursor';
 const HomePage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Detect if the device is desktop for cursor rendering
+  useEffect(() => {
+    const checkDevice = () => {
+      setIsDesktop(window.innerWidth >= 1024 && !('ontouchstart' in window));
+    };
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
 
   // Keep the authentication logic intact
   useEffect(() => {
@@ -162,8 +173,8 @@ const HomePage = () => {
   );
 
   return (
-    <div className="relative min-h-screen bg-brand-dark cursor-none">
-      <CustomCursor />
+    <div className="relative min-h-screen bg-brand-dark homepage">
+      {isDesktop && <CustomCursor />}
       {/* Hero Section with Enhanced Parallax */}
       <div className="relative min-h-screen !overflow-hidden">
         {/* Background with enhanced parallax */}
