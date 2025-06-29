@@ -308,7 +308,7 @@ const ObspDetails = () => {
                     {obspData.budget_range ? (
                       obspData.budget_range.min === obspData.budget_range.max
                         ? `₹${obspData.budget_range.min}K`
-                        : `₹${obspData.budget_range.min}K - ₹${obspData.budget_range.max}K`
+                        : `₹${obspData.budget_range.min}K - ₹${obspData.budget_range.max}`
                     ) : 'N/A'}
                   </Text>
                   <Text className="!text-text-secondary text-sm">
