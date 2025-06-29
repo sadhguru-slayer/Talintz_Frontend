@@ -305,10 +305,14 @@ const ObspDetails = () => {
               <div className="grid grid-cols-1 gap-4">
                 <div className="text-center p-4 bg-freelancer-bg-card/50 rounded-lg border border-white/10">
                   <Text className="text-freelancer-accent font-bold text-lg block">
-                    {obspData.price_range ? `₹${obspData.price_range.min}K - ₹${obspData.price_range.max}K` : 'N/A'}
+                    {obspData.budget_range ? (
+                      obspData.budget_range.min === obspData.budget_range.max
+                        ? `₹${obspData.budget_range.min}K`
+                        : `₹${obspData.budget_range.min}K - ₹${obspData.budget_range.max}K`
+                    ) : 'N/A'}
                   </Text>
                   <Text className="!text-text-secondary text-sm">
-                    Budget Range
+                    {obspData.budget_range && obspData.budget_range.min === obspData.budget_range.max ? 'Min Budget' : 'Budget Range'}
                   </Text>
                 </div>
                 <div className="text-center p-4 bg-freelancer-bg-card/50 rounded-lg border border-white/10">
@@ -345,7 +349,7 @@ const ObspDetails = () => {
 
           {/* Tabs */}
           <Tabs 
-            defaultActiveKey="easy" 
+            defaultActiveKey={Object.keys(eligibilityAnalysis)[0] || 'easy'} 
             onChange={setSelectedLevel}
             className="custom-tabs"
             tabBarStyle={{
@@ -355,8 +359,7 @@ const ObspDetails = () => {
               borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
             }}
           >
-            {['easy', 'medium', 'hard'].map((level) => {
-              const levelData = eligibilityAnalysis[level] || {};
+            {Object.entries(eligibilityAnalysis).map(([level, levelData]) => {
               const isEligible = levelData.is_eligible || false;
               const isApplied = levelData.is_applied || false;
               return (
