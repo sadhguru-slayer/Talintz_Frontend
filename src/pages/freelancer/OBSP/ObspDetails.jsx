@@ -47,6 +47,7 @@ const ObspDetails = () => {
             'Authorization': `Bearer ${Cookies.get('accessToken')}`
           }
         });
+        console.log(response.data.data)
         if (response.data && response.data.success) {
           setObspData(response.data.data.obsp);
           setEligibilityAnalysis(response.data.data.eligibility_analysis)
