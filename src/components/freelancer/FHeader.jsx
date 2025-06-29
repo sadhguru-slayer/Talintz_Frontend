@@ -483,10 +483,12 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
             to="/freelancer/homepage"
             className="flex items-center gap-2"
           >
-            <div className="w-7 h-7 bg-freelancer-accent rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">F</span>
-            </div>
-            <span className="text-white font-semibold text-lg hidden sm:block">Freelancer</span>
+            <img 
+              src="/logo.png" 
+              alt="Talintz Logo" 
+              className="w-8 h-8 rounded-full object-cover border border-white/10"
+            />
+            <span className="text-white font-semibold text-lg hidden sm:block">Talintz</span>
           </Link>
         </div>
 

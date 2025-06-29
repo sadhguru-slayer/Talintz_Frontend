@@ -457,9 +457,11 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
             to="/client/homepage" 
             className="flex items-center gap-2"
           >
-            <div className="w-7 h-7 bg-client-accent rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">T</span>
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Talintz Logo" 
+              className="w-8 h-8 rounded-full object-cover border border-white/10"
+            />
             <span className="text-white font-semibold text-lg hidden sm:block">Talintz</span>
           </Link>
         </div>
