@@ -275,7 +275,7 @@ const LoginPage = () => {
         </div>
 
         {/* Right Panel - Login Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 lg:p-16 relative z-10">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 lg:p-16 relative z-10 mt-16 lg:mt-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

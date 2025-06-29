@@ -315,7 +315,7 @@ const RegistrationForm = () => {
         </div>
 
         {/* Right Panel - Registration Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 lg:p-16 relative z-10">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-8 lg:p-16 relative z-10 mt-16 lg:mt-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -334,7 +334,7 @@ const RegistrationForm = () => {
                       </span>
                     )}
                   </label>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-2">
                     {/* Work Button */}
                     <motion.button
                       type="button"
