@@ -30,7 +30,6 @@ const CustomCursor = () => {
 
   return (
     <>
-      {/* Main cursor */}
       <motion.div
         className="fixed pointer-events-none z-50 mix-blend-difference"
         animate={{
@@ -47,27 +46,6 @@ const CustomCursor = () => {
       >
         <div className="w-3 h-3 bg-white rounded-full" />
       </motion.div>
-
-      {/* Cursor trail - Removed to eliminate shadow effect */}
-      {/* 
-      <motion.div
-        className="fixed pointer-events-none z-40"
-        animate={{
-          x: mousePosition.x - (isHovering ? 40 : 20),
-          y: mousePosition.y - (isHovering ? 40 : 20),
-          scale: isHovering ? 4 : 1,
-          opacity: isHovering ? 0.6 : 0.3,
-        }}
-        transition={{
-          type: "spring",
-          mass: 0.7,
-          stiffness: 150,
-          damping: 15,
-        }}
-      >
-        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#6366F1]/30 to-[#00D4AA]/30 blur-sm" />
-      </motion.div>
-      */}
     </>
   );
 };

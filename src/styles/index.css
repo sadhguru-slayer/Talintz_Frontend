@@ -14,7 +14,6 @@ html {
   cursor: none !important;
 }
 
-/* Hide cursor on touch devices within homepage */
 @media (hover: none) and (pointer: coarse) {
   .homepage * {
     cursor: auto !important;
