@@ -20,7 +20,7 @@ import {
   ReloadOutlined
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-
+import {getBaseURL} from '../../config/axios';
 // Skeleton component for loading state
 const NotificationsSkeleton = ({ isMobile }) => (
   <div className={`flex-1 overflow-auto p-4 ${isMobile ? 'md:p-6' : 'p-6'} bg-client-bg`}>
@@ -72,7 +72,7 @@ const CNotifications = ({ userId, role }) => {
 
   const fetchNotifications = useCallback(async () => {
     try {
-      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/notifications/', {
+      const response = await axios.get(`${getBaseURL()}/api/notifications/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (Array.isArray(response.data)) {
@@ -85,7 +85,7 @@ const CNotifications = ({ userId, role }) => {
 
   const fetchConnectionRequestCount = useCallback(async () => {
     try {
-      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_connection_requests', {
+      const response = await axios.get(`${getBaseURL()}/api/get_connection_requests`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setConnectionRequestCount(Array.isArray(response.data) ? response.data.length : 0);
@@ -109,7 +109,7 @@ const CNotifications = ({ userId, role }) => {
   const markAsRead = async (id) => {
     try {
       await axios.patch(
-        `https://talintzbackend-production.up.railway.app/api/notifications/${id}/mark-as-read/`,
+        `${getBaseURL()}/api/notifications/${id}/mark-as-read/`,
         {},
         { headers: { Authorization: `Bearer ${token}` }}
       );
@@ -126,7 +126,7 @@ const CNotifications = ({ userId, role }) => {
   // Delete a notification
   const deleteNotification = async (id) => {
     try {
-      await axios.delete(`https://talintzbackend-production.up.railway.app/api/notifications/${id}/`, {
+      await axios.delete(`${getBaseURL()}/api/notifications/${id}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(prev => prev.filter(notif => notif.id !== id));
@@ -185,7 +185,7 @@ const CNotifications = ({ userId, role }) => {
                   <div className="flex gap-3">
                     {connectionRequestCount > 0 && (
                       <Button
-                        onClick={() => navigate('/client/connection-requests')}
+                        onClick={() => navigate('/client/connection_requests')}
                         className="bg-client-secondary text-white border-0 hover:bg-client-secondary/80 flex items-center gap-2"
                       >
                         <TeamOutlined />

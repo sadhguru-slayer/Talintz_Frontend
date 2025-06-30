@@ -39,16 +39,25 @@ const FConnectionRequests = ({ userId, role, isAuthenticated, isEditable }) => {
     setActiveProfileComponent(profileComponent);
   };
 
+  useEffect(() => {
+    const printIt = async () =>{
+      console.log("object")
+    }
+  printIt();
+  }, [])
+  
+
   // Fetch connections data
   useEffect(() => {
     const fetchConnections = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${getBaseURL()}/api/freelancer/get_connection_requests`, {
+        const response = await axios.get(`${getBaseURL()}/api/get_connection_requests`, {
           headers: {
             'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           },
         });
+        console.log(response.data)
         setConnections(response.data);
       } catch (error) {
         console.error("Error fetching connections", error);
@@ -67,7 +76,7 @@ const FConnectionRequests = ({ userId, role, isAuthenticated, isEditable }) => {
   const handleAccept = async (connectionId) => {
     try {
       const response = await axios.post(
-        `${getBaseURL()}/api/freelancer/connections/${connectionId}/accept_connection/`,
+        `${getBaseURL()}/api/connections/${connectionId}/accept_connection/`,
         {},
         {
           headers: {
@@ -97,7 +106,7 @@ const FConnectionRequests = ({ userId, role, isAuthenticated, isEditable }) => {
   const handleReject = async (connectionId) => {
     try {
       const response = await axios.post(
-        `${getBaseURL()}/api/freelancer/connections/${connectionId}/reject_connection/`,
+        `${getBaseURL()}/api/connections/${connectionId}/reject_connection/`,
         {},
         {
           headers: {

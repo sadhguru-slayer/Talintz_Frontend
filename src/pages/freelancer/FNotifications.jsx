@@ -187,7 +187,7 @@ const FNotifications = ({ userId, role, isAuthenticated, isEditable }) => {
         )
       );
 
-      navigate('/freelancer/connections_requests');
+      navigate('/freelancer/connection_requests');
     } catch (error) {
       console.error('Error marking connection requests as read:', error);
     }
@@ -353,7 +353,7 @@ const FNotifications = ({ userId, role, isAuthenticated, isEditable }) => {
                                   whileTap={{ scale: 0.98 }}
                                   onClick={async () => {
                                     await markAsRead(notification.id);
-                                    navigate('/freelancer/connections_requests');
+                                    navigate('/freelancer/connection_requests');
                                   }}
                                   className="flex items-center gap-2 px-3 py-1.5 bg-freelancer-primary/20 
                                     text-freelancer-accent rounded-lg hover:bg-freelancer-primary/30 

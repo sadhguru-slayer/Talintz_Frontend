@@ -73,7 +73,7 @@ const clientRoutes = [
     allowedRoles: ["client"],
   },
   {
-    path: "connection-requests",
+    path: "connection_requests",
     component: lazy(() => import("./pages/client/CConnectionRequests")),
     allowedRoles: ["client"],
   },
@@ -907,7 +907,7 @@ const App = () => {
                 }
               />
               <Route
-                path="connection-requests"
+                path="connection_requests"
                 element={
                   <PrivateRoute
                     element={CConnectionRequests}
@@ -1040,11 +1040,12 @@ const App = () => {
               />
 
               <Route
-                path="connection-requests"
+                path="connection_requests"
                 element={
-                  <PrivateRoute allowedRoles={["freelancer", "student"]}>
-                    <FConnectionRequests />
-                  </PrivateRoute>
+                  <PrivateRoute
+                    element={FConnectionRequests}
+                    allowedRoles={["freelancer", "student"]}
+                  />
                 }
               />
 
