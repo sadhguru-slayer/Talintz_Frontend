@@ -5,7 +5,7 @@ import CSider from "../../components/client/CSider";
 import IndividualLoadingComponent from "../../components/IndividualLoadingComponent";
 import Cookies from "js-cookie";
 import axios from "axios";
-import api from '../../config/axios';
+import api,{getBaseURL} from '../../config/axios';
 
 import { useMediaQuery } from "react-responsive";
 import { motion } from "framer-motion";
@@ -45,7 +45,7 @@ const CProfile = ({ userId, role, isAuthenticated, isEditable }) => {
   useEffect(() => {
     const fetchCurrentUser = async () => {  // Add async here
       try {
-        const profileResponse = await api.get('/api/profile/', {
+        const profileResponse = await api.get(`${getBaseURL()}/api/profile/`, {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
         setCurrentUserId(profileResponse.data.user.id)
@@ -61,7 +61,7 @@ const CProfile = ({ userId, role, isAuthenticated, isEditable }) => {
     if (userId) {
       const fetchAndCheckRole = async () => {
         try {
-          const response = await api.get(`/api/profile/${userId}/`);
+          const response = await api.get(`${getBaseURL()}/api/profile/${userId}/`);
           const actualRole = response.data.user.role;
           setOtherProfileRole(actualRole);
 

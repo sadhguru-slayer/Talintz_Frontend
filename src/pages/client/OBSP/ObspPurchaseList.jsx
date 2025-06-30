@@ -4,6 +4,8 @@ import {
   Radio, Space, Badge, Progress, Avatar, InputNumber, message, Select, Spin, Alert
 } from 'antd';
 import Cookies from 'js-cookie'
+import {getBaseURL} from '../../../config/axios';
+
 import { 
   DollarOutlined, ClockCircleOutlined,
   StarOutlined, CrownOutlined, RocketOutlined, ThunderboltOutlined,
@@ -223,7 +225,7 @@ const ObspPurchaseList = () => {
 
       console.log('Request headers:', headers);
 
-      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/obsp/api/list/', {
+      const response = await axios.get(`${getBaseURL()}/api/obsp/api/list/`, {
         headers: headers,
         });
 

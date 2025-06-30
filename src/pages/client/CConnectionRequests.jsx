@@ -9,6 +9,7 @@ import { FaTimes, FaCheck } from "react-icons/fa";
 import { motion } from 'framer-motion';
 import { UserOutlined, ClockCircleOutlined, GlobalOutlined } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
+import {getBaseURL} from '../../config/axios';
 
 const CConnectionRequests = ({userId, role}) => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const CConnectionRequests = ({userId, role}) => {
       setError(null);
       try {
         const response = await axios.get(
-          'https://talintzbackend-production.up.railway.app/api/client/get_connection_requests',
+          `${getBaseURL()}/api/client/get_connection_requests`,
           {
             headers: {
               'Authorization': `Bearer ${Cookies.get('accessToken')}`,
@@ -58,7 +59,7 @@ const CConnectionRequests = ({userId, role}) => {
   const handleAccept = async (connectionId) => {
     try {
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/client/connections/${connectionId}/accept_connection/`,
+        `${getBaseURL()}/api/client/connections/${connectionId}/accept_connection/`,
         {},
         {
           headers: {
@@ -86,7 +87,7 @@ const CConnectionRequests = ({userId, role}) => {
   const handleReject = async (connectionId) => {
     try {
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/client/connections/${connectionId}/reject_connection/`,
+        `${getBaseURL()}/api/client/connections/${connectionId}/reject_connection/`,
         {},
         {
           headers: {

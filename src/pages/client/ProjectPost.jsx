@@ -19,7 +19,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { getCurrentToken, setupAxiosInterceptors } from '../../utils/auth';
-import api from '../../config/axios';
+import api,{getBaseURL} from '../../config/axios';
 import { useRazorpayWallet } from '../../hooks/useRazorpayWallet';
 const { startWalletDeposit } = useRazorpayWallet();
 
@@ -583,7 +583,7 @@ const ProjectPost = ({userId, role}) => {
     if (selectedOption) {
       try {
         const response = await api.get(
-          `/api/skills/${selectedOption.value}`,
+          `${getBaseURL()}/api/skills/${selectedOption.value}`,
           { headers: getAuthHeaders() }
         );
 
@@ -974,7 +974,7 @@ const ProjectPost = ({userId, role}) => {
   // Move fetchWalletBalance BEFORE formSubmit
   const fetchWalletBalance = useCallback(async () => {
     try {
-      const response = await api.get("/api/finance/wallet/balance/");
+      const response = await api.get(`${getBaseURL()}/api/finance/wallet/balance/`);
       console.log(response)
       if (response.data) {
         setWalletBalance(response.data.balance || 0);
@@ -1066,7 +1066,7 @@ const ProjectPost = ({userId, role}) => {
 
       // Use the enhanced api instance with automatic token refresh
       const response = await api.post(
-        "/api/post_project/",
+        `${getBaseURL()}/api/post_project/`,
         payload
       );
       
@@ -1556,7 +1556,7 @@ const ProjectPost = ({userId, role}) => {
   // Enhanced domain fetching with better error handling
   const fetchDomains = useCallback(async () => {
     try {
-      const response = await api.get("/api/categories/");
+      const response = await api.get(`${getBaseURL()}/api/categories/`);
 
       if (Array.isArray(response.data)) {
         const domainOptions = response.data.map((category) => ({

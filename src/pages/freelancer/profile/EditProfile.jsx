@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { motion } from "framer-motion";
 import Cookies from 'js-cookie';
 import axios from "axios";
+import {getBaseURL} from '../../../config/axios';
 import './css/EditProfile.css'
 import {
   Form,
@@ -116,7 +117,7 @@ const EditProfile = () => {
     try {
       const accessToken = Cookies.get('accessToken');
       const response = await axios.get(
-        `https://talintzbackend-production.up.railway.app/api/freelancer/get_profile_data/?tab=${tab}`,
+        `${getBaseURL()}/api/freelancer/get_profile_data/?tab=${tab}`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       
@@ -253,7 +254,7 @@ const EditProfile = () => {
     
     try {
       const accessToken = Cookies.get('accessToken');
-      const endpoint = `https://talintzbackend-production.up.railway.app/api/freelancer/update_profile/${activeTab}/`;
+      const endpoint = `${getBaseURL()}/api/freelancer/update_profile/${activeTab}/`;
 
       const response = await axios.put(endpoint, changedFields, {
         headers: { Authorization: `Bearer ${accessToken}` }
@@ -367,7 +368,7 @@ const EditProfile = () => {
               
               try {
                 const accessToken = Cookies.get('accessToken');
-                const endpoint = `https://talintzbackend-production.up.railway.app/api/freelancer/update_profile/${activeTab}/`;
+                const endpoint = `${getBaseURL()}/api/freelancer/update_profile/${activeTab}/`;
 
                 const response = await axios.put(endpoint, changedFields, {
                   headers: { Authorization: `Bearer ${accessToken}` }
@@ -492,7 +493,7 @@ const EditProfile = () => {
                 
                 try {
                   const accessToken = Cookies.get('accessToken');
-                  const endpoint = `https://talintzbackend-production.up.railway.app/api/freelancer/update_profile/${activeTab}/`;
+                  const endpoint = `${getBaseURL()}/api/freelancer/update_profile/${activeTab}/`;
 
                   const response = await axios.put(endpoint, changedFields, {
                     headers: { Authorization: `Bearer ${accessToken}` }
@@ -594,7 +595,7 @@ const EditProfile = () => {
 
       const accessToken = Cookies.get('accessToken');
       const response = await axios.put(
-        'https://talintzbackend-production.up.railway.app/api/freelancer/update_profile_picture/',
+        `${getBaseURL()}/api/freelancer/update_profile_picture/`,
         formData,
         {
           headers: { 

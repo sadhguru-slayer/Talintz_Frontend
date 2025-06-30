@@ -43,7 +43,7 @@ import { LuBuilding2 } from "react-icons/lu";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import moment from "moment";
-import api from "../../../config/axios";
+import api,{getBaseURL} from "../../../config/axios";
 import { useMediaQuery } from 'react-responsive';
 const customStyles = {
   tabActiveColor: 'var(--client-primary)',
@@ -145,7 +145,7 @@ const EditProfile = () => {
     const fetchProfileDetails = async () => {
       const accessToken = Cookies.get("accessToken");
       try {
-        const response = await api.get(`/api/client/get_profile_data`, {
+        const response = await api.get(`${getBaseURL()}/api/client/get_profile_data`, {
           params: { userId: userId },
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -609,7 +609,7 @@ const EditProfile = () => {
         }
         
         const response = await axios.put(
-            "https://talintzbackend-production.up.railway.app/api/client/update_profile/",
+            `${getBaseURL()}/api/client/update_profile/`,
             formData,
             {
                 headers: {
@@ -689,7 +689,7 @@ const EditProfile = () => {
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.put(
-        'https://talintzbackend-production.up.railway.app/api/client/update_terms_acceptance',
+        `${getBaseURL()}/api/client/update_terms_acceptance`,
         { terms_accepted: true },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -901,7 +901,7 @@ const EditProfile = () => {
             try {
               const accessToken = Cookies.get("accessToken");
               const response = await axios.delete(
-                `https://talintzbackend-production.up.railway.app/api/client/delete_document/${currentDoc.id}/`,
+                `${getBaseURL()}/api/client/delete_document/${currentDoc.id}/`,
                 { 
                   headers: { 
                     Authorization: `Bearer ${accessToken}`,

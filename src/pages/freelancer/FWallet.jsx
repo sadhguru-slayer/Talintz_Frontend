@@ -35,7 +35,7 @@ import Cookies from 'js-cookie';
 import FSider from '../../components/freelancer/FSider';
 import FHeader from '../../components/freelancer/FHeader';
 import axios from 'axios';
-
+import {getBaseURL} from '../../config/axios';
 const FWallet = ({ userId, role,isAuthenticated, isEditable }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
@@ -65,7 +65,7 @@ const FWallet = ({ userId, role,isAuthenticated, isEditable }) => {
   };
   useEffect(() => {
     setLoading(true);
-    axios.get('https://talintzbackend-production.up.railway.app/api/finance/wallet/freelancer-details/', {
+    axios.get(`${getBaseURL()}/api/finance/wallet/freelancer-details/`, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('accessToken')}`
       }

@@ -25,6 +25,8 @@ import axios from "axios";
 import { IoSchoolOutline } from 'react-icons/io5';
 import { GrConnect } from 'react-icons/gr';
 import { BiSolidMessageRounded } from 'react-icons/bi';
+import { getBaseURL } from '../../../config/axios';
+
 
 // Add these motion variants
 const cardVariants = {
@@ -849,10 +851,10 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         let url = "";
         let headers = {};
         if (currentRole === "client") {
-          url = `https://talintzbackend-production.up.railway.app/api/client/get_other_freelancer_profile_data/?userId=${userId}`;
+          url = `${getBaseURL()}/api/client/get_other_freelancer_profile_data/?userId=${userId}`;
           headers = { Authorization: `Bearer ${Cookies.get("accessToken")}` };
         } else {
-          url = `https://talintzbackend-production.up.railway.app/api/freelancer/get_profile_data/?userId=${userId}`;
+          url = `${getBaseURL()}/api/freelancer/get_profile_data/?userId=${userId}`;
           headers = { Authorization: `Bearer ${Cookies.get("accessToken")}` };
         }
         const response = await axios.get(url, { headers });
@@ -874,7 +876,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         const token = Cookies.get('accessToken');
         if (!token || !userId) return;
         const response = await axios.get(
-          `https://talintzbackend-production.up.railway.app/api/get_connection/${userId}/`,
+          `${getBaseURL()}/api/get_connection/${userId}/`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -899,7 +901,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         return;
       }
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/connections/${user_id}/establish_connection/`,
+        `${getBaseURL()}/api/connections/${user_id}/establish_connection/`,
         {},
         {
           headers: {
@@ -921,7 +923,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
         return;
       }
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/accept_connection/`,
+        `${getBaseURL()}/api/connections/${connectionId}/accept_connection/`,
         {},
         {
           headers: {
@@ -939,7 +941,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
   const handleReject = async (connectionId) => {
     try {
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/reject_connection/`,
+        `${getBaseURL()}/api/connections/${connectionId}/reject_connection/`,
         {},
         {
           headers: {
@@ -961,7 +963,7 @@ const OtherProfile = ({ userId, role, currentRole, currentUserId,isAuthenticated
       const recipient_id = userId;
 
       const response = await axios.post(
-        "https://talintzbackend-production.up.railway.app/api/chat/start_conversation/",
+        `${getBaseURL()}/api/chat/start_conversation/`,
         { sender_id, recipient_id }, // <-- Make sure this is an object, not FormData
         { headers: { Authorization: `Bearer ${token}` } }
       );

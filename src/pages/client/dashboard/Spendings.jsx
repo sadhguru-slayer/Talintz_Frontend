@@ -28,6 +28,8 @@ import {
 import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import {getBaseURL} from '../../../config/axios';
+
 
 // Register Chart.js components properly
 ChartJS.register(
@@ -67,7 +69,7 @@ const SpendingsInternal = () => {
       const accessToken = Cookies.get('accessToken');
       const csrftoken = Cookies.get('csrftoken');
       
-      const response = await axios.get(`https://talintzbackend-production.up.railway.app/api/client/spending_data/`, {
+      const response = await axios.get(`${getBaseURL()}/api/client/spending_data/`, {
         params: { time_frame: timeFrame },
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -91,7 +93,7 @@ const SpendingsInternal = () => {
       try {
         const accessToken = Cookies.get('accessToken');
         const csrftoken = Cookies.get('csrftoken');
-        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/spending_distribution_by_project/', {
+        const response = await axios.get(`${getBaseURL()}/api/client/spending_distribution_by_project/`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'X-CSRFToken': csrftoken,

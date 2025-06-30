@@ -12,6 +12,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useMediaQuery } from 'react-responsive';
 import './PostedProjects.css'
+import {getBaseURL} from '../../../config/axios';
+
 
 const { Option } = Select;
 
@@ -315,7 +317,7 @@ const PostedProjects = () => {
   const fetchTheProjects = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/posted_projects/', {
+      const response = await axios.get(`${getBaseURL()}/api/client/posted_projects/`, {
         headers: getAuthHeaders(),
         // Add cache control
         params: { _t: Date.now() } // Prevent caching

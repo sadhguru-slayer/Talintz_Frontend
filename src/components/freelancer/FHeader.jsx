@@ -11,7 +11,7 @@ import { useMediaQuery } from 'react-responsive';
 import { RiMessage3Fill } from "react-icons/ri";
 import PropTypes from 'prop-types';
 import DOMPurify from "dompurify";
-import api from '../../config/axios';
+import api,{getBaseURL} from '../../config/axios';
 
 // Add debounce implementation
 const debounce = (func, wait) => {
@@ -99,7 +99,7 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await api.get('/api/profile/', {
+        const response = await api.get(`${getBaseURL()}/api/profile/`, {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
         setUser(response.data.user);
@@ -162,7 +162,7 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
     let isMounted = true;
     const fetchWalletBalance = async () => {
       try {
-        const response = await api.get('/api/finance/wallet/balance/', {
+        const response = await api.get(`${getBaseURL()}/api/finance/wallet/balance/`, {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
         if (isMounted) {
@@ -203,7 +203,7 @@ const FHeader = ({ userId, role, isAuthenticated, isEditable, sidebarCollapsed =
     }
 
       await axios.post(
-        "http://localhost:8000/api/logout/",
+        `${getBaseURL()}/api/logout/`,
         { refreshToken, accessToken },
         {
         headers: { Authorization: `Bearer ${accessToken}` },

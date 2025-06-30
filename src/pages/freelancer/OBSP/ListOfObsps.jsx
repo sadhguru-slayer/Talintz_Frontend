@@ -15,7 +15,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './OBSP.css';
-
+import {getBaseURL} from '../../../config/axios';
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
@@ -270,7 +270,7 @@ const ListOfObsps = () => {
   const fetchOBSPData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/freelancer/obsps/', {
+      const response = await axios.get(`${getBaseURL()}/api/freelancer/obsps/`, {
         headers: {
           'Authorization': `Bearer ${Cookies.get('accessToken')}`
         }
@@ -413,7 +413,7 @@ const ListOfObsps = () => {
     };
 
     try {
-      const response = await axios.post('https://talintzbackend-production.up.railway.app/api/freelancer/obsp/apply/', requestData, {
+      const response = await axios.post(`${getBaseURL()}/api/freelancer/obsp/apply/`, requestData, {
         headers: {
           'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           'Content-Type': 'application/json'

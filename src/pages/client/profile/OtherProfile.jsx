@@ -9,6 +9,7 @@ import { BiSolidMessageRounded } from "react-icons/bi";
 import { FaUserClock } from "react-icons/fa6";
 import { FaTimes,FaCheck } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { getBaseURL } from '../../../config/axios';
 import { FaUserPlus, FaRegBell, FaBell,FaGraduationCap  } from "react-icons/fa";
 import { 
   UserOutlined, 
@@ -37,6 +38,7 @@ import { Tooltip, Progress, Tabs, Card, Statistic, Tag, Avatar } from "antd";
 import { useMediaQuery } from 'react-responsive';
 const { TabPane } = Tabs;
 import { useParams } from 'react-router-dom';
+import { use } from 'react';
 
 const OtherProfile = ({userRole,currentUserId}) => {
     const navigate = useNavigate();
@@ -77,7 +79,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
         if (!userId || !accessToken) return;
         setLoading(true);
         try {
-          const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_profile_data',
+          const response = await axios.get(`${getBaseURL()}/api/client/get_profile_data`,
             {
               params: { userId: userId },
               headers: { Authorization: `Bearer ${accessToken}` },
@@ -121,7 +123,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
           return;
         }
         const response = await axios.post(
-          `https://talintzbackend-production.up.railway.app/api/connections/${user_id}/establish_connection/`,
+          `${getBaseURL()}/api/connections/${user_id}/establish_connection/`,
           {},
           {
             headers: {
@@ -143,7 +145,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
             return;
           }
           const response = await axios.post(
-            `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/accept_connection/`,
+            `${getBaseURL()}/api/connections/${connectionId}/accept_connection/`,
             {},
             {
               headers: {
@@ -162,7 +164,7 @@ const OtherProfile = ({userRole,currentUserId}) => {
       const handleReject = async (connectionId) => {
         try {
           const response = await axios.post(
-            `https://talintzbackend-production.up.railway.app/api/connections/${connectionId}/reject_connection/`,
+            `${getBaseURL()}/api/connections/${connectionId}/reject_connection/`,
             {},
             {
               headers: {
@@ -190,6 +192,27 @@ const OtherProfile = ({userRole,currentUserId}) => {
         console.error('Error following user:', error);
         setIsFollowing(!isFollowing);
         message.error('Failed to update follow status');
+      }
+    };
+
+    const handleMessageClick = async () => {
+      try {
+        const token = Cookies.get("accessToken");
+        if (!token) return;
+        const sender_id = currentUserId;
+        const recipient_id = userId;
+
+        const response = await axios.post(
+          `${getBaseURL()}/api/chat/start_conversation/`,
+          { sender_id, recipient_id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const conversation_id = response.data.conversation_id;
+        console.log("User Role:",userRole)
+        navigate(`/${userRole === "client" ? "freelancer" : "client"}/chat`, { state: { conversation_id } });
+      } catch (error) {
+        console.error("Failed to start conversation:", error);
+        message.error("Failed to start conversation");
       }
     };
 
@@ -411,10 +434,10 @@ const OtherProfile = ({userRole,currentUserId}) => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => message.success("Message feature coming soon")}
-                      className="flex items-center gap-2 px-6 py-2 bg-client-accent/90 hover:bg-client-accent text-white border-none shadow-lg transition-all duration-300 hover:scale-110"
+                    onClick={handleMessageClick}
+                    className="flex items-center gap-2 px-6 py-2 bg-client-accent/90 hover:bg-client-accent text-white border-none shadow-lg transition-all duration-300 hover:scale-110"
                   >
-                      <MessageOutlined />
+                    <MessageOutlined />
                     Message
                   </motion.button>
                 )}

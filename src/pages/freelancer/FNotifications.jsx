@@ -20,7 +20,7 @@ import {
   DeleteOutlined,
   LoadingOutlined
 } from '@ant-design/icons';
-
+import {getBaseURL} from '../../config/axios';
 const FNotifications = ({ userId, role, isAuthenticated, isEditable }) => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
@@ -68,7 +68,7 @@ const FNotifications = ({ userId, role, isAuthenticated, isEditable }) => {
     const fetchNotifications = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/notifications/', {
+        const response = await axios.get(`${getBaseURL()}/api/notifications/`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (Array.isArray(response.data)) {
@@ -120,7 +120,7 @@ const FNotifications = ({ userId, role, isAuthenticated, isEditable }) => {
   const markAsRead = async (id) => {
     try {
       await axios.patch(
-        `https://talintzbackend-production.up.railway.app/api/notifications/${id}/mark-as-read/`,
+        `${getBaseURL()}/api/notifications/${id}/mark-as-read/`,
         {},
         { headers: { Authorization: `Bearer ${token}` }}
       );
@@ -137,7 +137,7 @@ const FNotifications = ({ userId, role, isAuthenticated, isEditable }) => {
   // Delete notification
   const deleteNotification = async (id) => {
     try {
-      await axios.delete(`https://talintzbackend-production.up.railway.app/api/notifications/${id}/`, {
+      await axios.delete(`${getBaseURL()}/api/notifications/${id}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(prev => prev.filter(notif => notif.id !== id));
@@ -172,7 +172,7 @@ const FNotifications = ({ userId, role, isAuthenticated, isEditable }) => {
       await Promise.all(
         connectionRequestIds.map(id =>
           axios.patch(
-            `https://talintzbackend-production.up.railway.app/api/notifications/${id}/mark-as-read/`,
+            `${getBaseURL()}/api/notifications/${id}/mark-as-read/`,
             {},
             { headers: { Authorization: `Bearer ${token}` }}
           )

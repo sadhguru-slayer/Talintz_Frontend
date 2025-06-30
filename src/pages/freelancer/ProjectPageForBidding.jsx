@@ -63,7 +63,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import './css/ProjectPageForBidding.css';
-
+import {getBaseURL} from '../../config/axios';
 const { Dragger } = Upload;
 const { Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -127,7 +127,7 @@ const ProjectPageForBidding = () => {
       setError(null);
       
       const response = await axios.get(
-        `https://talintzbackend-production.up.railway.app/api/freelancer/projects/${projectId}/`,
+        `${getBaseURL()}/api/freelancer/projects/${projectId}/`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -255,7 +255,7 @@ const ProjectPageForBidding = () => {
       });
 
       const response = await axios.post(
-        'https://talintzbackend-production.up.railway.app/api/freelancer/bids/',
+        `${getBaseURL()}/api/freelancer/bids/`,
         formData,
         {
           headers: {
@@ -295,7 +295,7 @@ const ProjectPageForBidding = () => {
       setRespondingToAssignment(true);
       
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/freelancer/invitations/${pendingAssignment.id}/respond_to_assignment/`,
+        `${getBaseURL()}/api/freelancer/invitations/${pendingAssignment.id}/respond_to_assignment/`,
         {
           action: action,
           message: assignmentResponse

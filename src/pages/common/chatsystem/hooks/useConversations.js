@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { getBaseURL } from '../../../../config/axios';
 
 // Dummy data for now
 const DUMMY_CONVERSATIONS = [
@@ -37,7 +38,7 @@ export default function useConversations(userId, role, setConversations, setLoad
       setLoading(true);
       try {
         const token = Cookies.get("accessToken");
-        const response = await axios.get("https://talintzbackend-production.up.railway.app/api/chat/conversations/", {
+        const response = await axios.get(`${getBaseURL()}/api/chat/conversations/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

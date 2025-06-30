@@ -17,7 +17,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-
+import {getBaseURL} from '../../../config/axios';
 const { Title, Text, Paragraph } = Typography;
 
 const ObspDetails = () => {
@@ -42,7 +42,7 @@ const ObspDetails = () => {
         setLoading(true);
         setError(null);
         
-        const response = await axios.get(`https://talintzbackend-production.up.railway.app/api/freelancer/obsps/${id}/`, {
+        const response = await axios.get(`${getBaseURL()}/api/freelancer/obsps/${id}/`, {
           headers: {
             'Authorization': `Bearer ${Cookies.get('accessToken')}`
           }
@@ -162,7 +162,7 @@ const ObspDetails = () => {
       pitch: `I am interested in working on the ${obspData.title} project at ${selectedLevelValue} level. I have the required skills and experience to deliver high-quality results.`
     };
     try {
-      const response = await axios.post('https://talintzbackend-production.up.railway.app/api/freelancer/obsp/apply/', requestData, {
+      const response = await axios.post(`${getBaseURL()}/api/freelancer/obsp/apply/`, requestData, {
         headers: {
           'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           'Content-Type': 'application/json'

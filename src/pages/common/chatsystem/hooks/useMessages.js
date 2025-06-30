@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {getBaseURL} from '../../../../config/axios'
 
 // Dummy messages for each conversation
 const DUMMY_MESSAGES = {
@@ -42,7 +43,7 @@ export default function useMessages(conversationId, userId, role) {
       try {
         const token = Cookies.get("accessToken");
         const response = await axios.get(
-          `https://talintzbackend-production.up.railway.app/api/chat/conversations/${conversationId}/messages/`,
+          `${getBaseURL()}/api/chat/conversations/${conversationId}/messages/`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

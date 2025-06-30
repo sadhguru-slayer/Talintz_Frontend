@@ -47,6 +47,7 @@ import { FaEye, FaCheckCircle, FaBriefcase } from 'react-icons/fa';
 
 import { RiAwardLine, RiUserStarLine } from 'react-icons/ri';
 import { IoSchoolOutline } from 'react-icons/io5';
+import {getBaseURL} from '../../../config/axios';
 
 const { TabPane } = Tabs;
 
@@ -268,7 +269,7 @@ const AuthProfile = () => {
       setLoading(true); // Start loading indicator
 
       try {
-        const response = await api.get("/api/client/get_profile_data", {
+        const response = await api.get(`${getBaseURL()}/api/client/get_profile_data`, {
           params: { userId: userId }, // Passing userId as query parameter
           headers: {
             Authorization: `Bearer ${accessToken}`, // Passing the access token as Authorization header

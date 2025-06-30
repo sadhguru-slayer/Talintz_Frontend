@@ -17,6 +17,7 @@ import {
 import { SidebarLink } from './navigation/SidebarLink';
 import { MobileNavigation } from './navigation/MobileNavigation';
 import { DropdownSection } from './navigation/DropdownSection';
+import { getBaseURL } from '../../config/axios';
 
 const FSider = ({ 
   userId, 
@@ -72,7 +73,7 @@ const FSider = ({
       return;
     }
 
-      await axios.post('https://talintzbackend-production.up.railway.app/api/logout/',
+      await axios.post(`${getBaseURL()}/api/logout/`,
         { accessToken, refreshToken },
         { headers: { Authorization: `Bearer ${accessToken}` }}
       );

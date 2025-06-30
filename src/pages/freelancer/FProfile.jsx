@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
 import { motion } from "framer-motion";
+import {getBaseURL} from '../../config/axios';
 import { jwtDecode } from "jwt-decode";
 import { verifyToken, refreshToken as refreshTokenFunction } from '../../utils/auth';
 import NotAuthProfile from './profile/NotAuthProfile';
@@ -29,7 +30,7 @@ const FProfile = ({ userId, isAuthenticated, isEditable, otherProfileRole }) => 
           return;
         }
 
-        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/profile/', {
+        const response = await axios.get(`${getBaseURL()}/api/profile/`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         
@@ -165,7 +166,7 @@ const FProfile = ({ userId, isAuthenticated, isEditable, otherProfileRole }) => 
               isEditable={isEditable}
             />
             <div className="flex-1 overflow-auto bg-freelancer-primary/50 flex justify-center w-full p-4">
-              <ClientOtherProfile userId={userId} role="client" currentUserId={currentUserId} isEditable={false} />
+              <ClientOtherProfile userId={userId} userRole="client" currentUserId={currentUserId} isEditable={false} />
             </div>
           </div>
         </div>

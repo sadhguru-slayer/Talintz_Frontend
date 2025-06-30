@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../config/axios';
+import api,{getBaseURL} from '../config/axios';
 
 export const useWalletDetails = () => {
     const [walletData, setWalletData] = useState(null);
@@ -9,7 +9,7 @@ export const useWalletDetails = () => {
     const fetchWalletDetails = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/api/finance/wallet/details/');
+            const response = await api.get(`${getBaseURL()}/api/finance/wallet/details/`);
             console.log(response.data)
             setWalletData(response.data);
             setError(null);

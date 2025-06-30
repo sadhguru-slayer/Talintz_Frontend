@@ -12,7 +12,7 @@ import TalentTabs from "./findtalent/TalentTabs";
 import TalentEmptyState from "./findtalent/TalentEmptyState";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
-
+import {getBaseURL} from '../../config/axios';
 const FindTalent = ({ userId, role }) => {
   const [freelancers, setFreelancers] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
@@ -21,7 +21,7 @@ const FindTalent = ({ userId, role }) => {
 
   // Fetch freelancers from API
   useEffect(() => {
-    const url = `https://talintzbackend-production.up.railway.app/api/client/freelancers/?tab=${activeTab}`;
+    const url = `${getBaseURL()}/api/client/freelancers/?tab=${activeTab}`;
     axios
       .get(url, {
         headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` }

@@ -14,7 +14,7 @@ import { Select, Button, Input, Card, Avatar, Row, Col, Tag } from 'antd';
 import { useMediaQuery } from 'react-responsive';
 import './css/BrowseProjectsPage.css';
 import Cookies from 'js-cookie';
-
+import {getBaseURL} from '../../config/axios';
 const { Search } = Input;
 
 // Helper to strip HTML tags and slice to 150 chars
@@ -57,7 +57,7 @@ const BrowseProjectsPage = ({ userId, role, isAuthenticated, isEditable }) => {
     const fetchBrowseProjects = async () => {
       try {
         const accessToken = Cookies.get('accessToken');
-        const response = await fetch('https://talintzbackend-production.up.railway.app/api/freelancer/browse-projects/', {
+        const response = await fetch(`${getBaseURL()}/api/freelancer/browse-projects/`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
           },

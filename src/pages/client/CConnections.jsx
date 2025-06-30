@@ -13,7 +13,7 @@ import {
   ClockCircleOutlined
 } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
-
+import {getBaseURL} from '../../config/axios';
 const CConnections = ({ userId, role }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ const CConnections = ({ userId, role }) => {
     const fetchConnections = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_connections', {
+        const response = await axios.get(`${getBaseURL()}/api/client/get_connections`, {
           headers: {
             'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           },

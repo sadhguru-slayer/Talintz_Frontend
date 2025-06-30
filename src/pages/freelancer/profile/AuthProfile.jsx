@@ -9,6 +9,7 @@ import {
 import {
   FaEdit, FaBriefcase, FaGithub, FaLinkedin, FaGlobe
 } from "react-icons/fa";
+import {getBaseURL} from '../../../config/axios';
 import {
   UserOutlined, EditOutlined, ProjectOutlined, StarOutlined,
   CheckCircleOutlined, EyeOutlined, SecurityScanOutlined,
@@ -811,7 +812,7 @@ const role = originalRole === 'student' ? 'freelancer' : originalRole;
       try {
         const accessToken = Cookies.get('accessToken');
         const response = await axios.get(
-          'https://talintzbackend-production.up.railway.app/api/freelancer/get_profile_data/',
+          `${getBaseURL()}/api/freelancer/get_profile_data/`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
         setProfileData(response.data);

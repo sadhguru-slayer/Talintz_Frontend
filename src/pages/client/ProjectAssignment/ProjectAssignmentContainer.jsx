@@ -7,6 +7,7 @@ import TierDetermination from './TierDetermination';
 import QuickAssignment from './QuickAssignment';
 import StandardAssignment from './StandardAssignment';
 import PremiumAssignment from './PremiumAssignment';
+import {getBaseURL} from '../../../config/axios';
 
 const ProjectAssignmentContainer = ({ projectId }) => {
   const [project, setProject] = useState(null);
@@ -24,7 +25,7 @@ const ProjectAssignmentContainer = ({ projectId }) => {
       setError(null);
       
       const response = await axios.get(
-        `https://talintzbackend-production.up.railway.app/api/client/get_project/${projectId}`,
+        `${getBaseURL()}/api/client/get_project/${projectId}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,

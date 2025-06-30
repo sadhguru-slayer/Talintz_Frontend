@@ -5,6 +5,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Button, Modal, Input, message, Table, Select, Badge, Tag } from 'antd';
+import {getBaseURL} from '../../../config/axios';
+
 import { 
   PlusOutlined, 
   EditOutlined, 
@@ -71,7 +73,7 @@ const ClientUpcomingEvents = () => {
     try {
       const deleteEventData = { id: eventdataId, type: eventType };
       await axios.delete(
-        `https://talintzbackend-production.up.railway.app/api/client/events/delete_event/`,
+        `${getBaseURL()}/api/client/events/delete_event/`,
         {
           headers: getAuthHeaders(),
           data: deleteEventData,
@@ -88,7 +90,7 @@ const ClientUpcomingEvents = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/events/', {
+      const response = await axios.get(`${getBaseURL()}/api/client/events/`, {
         headers: getAuthHeaders(),
       });
       const groupedEvents = { Meeting: [], Deadline: [], Others: [] };
@@ -129,7 +131,7 @@ const ClientUpcomingEvents = () => {
 
       try {
         await axios.post(
-          'https://talintzbackend-production.up.railway.app/api/client/events/create_event/',
+          `${getBaseURL()}/api/client/events/create_event/`,
           newEventData,
           { headers: getAuthHeaders() }
         );
@@ -173,7 +175,7 @@ const ClientUpcomingEvents = () => {
 
         try {
             await axios.put(
-                `https://talintzbackend-production.up.railway.app/api/client/events/update_event/`,
+                `${getBaseURL()}/api/client/events/update_event/`,
                 updatedEventData,
                 { headers: getAuthHeaders() }
             );

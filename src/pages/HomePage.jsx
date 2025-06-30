@@ -7,7 +7,7 @@ import { verifyToken, refreshToken } from '../utils/auth';
 import { FaShieldAlt, FaBolt, FaProjectDiagram, FaChartLine, FaUsers, FaClock, FaCode, FaGithub, FaSlack, FaTrello, FaJira, FaBuilding, FaGlobe, FaFigma, FaAws } from 'react-icons/fa';
 import bgImage from '/herobg.png';
 import CustomCursor from '../components/ui/CustomCursor';
-
+import {getBaseURL} from '../config/axios';
 const HomePage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ const HomePage = () => {
           }
         }
 
-        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/profile/', {
+        const response = await axios.get(`${getBaseURL()}/api/profile/`, {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
 

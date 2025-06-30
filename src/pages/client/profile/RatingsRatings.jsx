@@ -8,6 +8,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import { useMediaQuery } from 'react-responsive';
+import {getBaseURL} from '../../../config/axios';
 
 const ReviewsRatings = ({ userId, role }) => {
   const [reviewsList, setReviewsList] = useState([]);
@@ -28,7 +29,7 @@ const ReviewsRatings = ({ userId, role }) => {
     const fetchReviews = async () => {
       const accessToken = Cookies.get('accessToken');
       try {
-        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_reviews', {
+        const response = await axios.get(`${getBaseURL()}/api/client/get_reviews`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const data = response.data;
@@ -63,7 +64,7 @@ const ReviewsRatings = ({ userId, role }) => {
     const accessToken = Cookies.get('accessToken');
     try {
       const response = await axios.post(
-        'https://talintzbackend-production.up.railway.app/api/client/post_reply/',
+        `${getBaseURL()}/api/client/post_reply/`,
         {
           review_id: replyReviewId,
           reply_text: replyText,

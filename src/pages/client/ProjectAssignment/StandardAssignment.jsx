@@ -16,7 +16,7 @@ import {
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import moment from 'moment';
-
+import {getBaseURL} from '../../../config/axios';
 const { TextArea } = Input;
 
 const StandardAssignment = ({ 
@@ -101,7 +101,7 @@ const StandardAssignment = ({
       if (isCurrentlyShortlisted) {
         // Un-shortlist: move back to submitted
         const success = await axios.post(
-          `https://talintzbackend-production.up.railway.app/api/client/mark_bid_submitted/`,
+          `${getBaseURL()}/api/client/mark_bid_submitted/`,
           { bid_id: bidId },
           { headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` } }
         );
@@ -113,7 +113,7 @@ const StandardAssignment = ({
       } else {
         // Shortlist: move to under_review
         const success = await axios.post(
-          `https://talintzbackend-production.up.railway.app/api/client/mark_bid_under_review/`,
+          `${getBaseURL()}/api/client/mark_bid_under_review/`,
           { bid_id: bidId },
           { headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` } }
         );
@@ -142,7 +142,7 @@ const StandardAssignment = ({
       
       // Create interview invitations
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/client/invitations/create_interview_request/`,
+        `${getBaseURL()}/api/client/invitations/create_interview_request/`,
         { 
           bid_ids: bidIds,
           message: interviewMessage,
@@ -170,7 +170,7 @@ const StandardAssignment = ({
     try {
       // Create project assignment invitation
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/client/invitations/create_project_assignment/`,
+        `${getBaseURL()}/api/client/invitations/create_project_assignment/`,
         { 
           bid_id: bid.id,
           message: `Congratulations! You have been selected for the project "${project.title}". Please review the terms and accept the assignment.`,

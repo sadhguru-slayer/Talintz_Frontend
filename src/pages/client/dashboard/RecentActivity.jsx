@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import {getBaseURL} from '../../../config/axios';
 
 const { Option } = Select;
 
@@ -45,7 +46,7 @@ const RecentActivity = () => {
       const accessTokens = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          "https://talintzbackend-production.up.railway.app/api/client/specified_recent_activity",
+          `${getBaseURL()}/api/client/specified_recent_activity`,
           {
             params: { activity_type: "payment" },
             headers: { Authorization: `Bearer ${accessTokens}` },
@@ -61,7 +62,7 @@ const RecentActivity = () => {
       const accessTokens = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          "https://talintzbackend-production.up.railway.app/api/client/specified_recent_activity",
+          `${getBaseURL()}/api/client/specified_recent_activity`,
           {
             params: { activity_type: "project" },
             headers: { Authorization: `Bearer ${accessTokens}` },
@@ -77,7 +78,7 @@ const RecentActivity = () => {
       const accessTokens = Cookies.get("accessToken");
       try {
         const response = await axios.get(
-          "https://talintzbackend-production.up.railway.app/api/client/other_recent_activity",
+          `${getBaseURL()}/api/client/other_recent_activity`,
           {
             params: { activity_type: "other" },
             headers: { Authorization: `Bearer ${accessTokens}` },

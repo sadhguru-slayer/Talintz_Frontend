@@ -1,12 +1,22 @@
 import axios from 'axios';
 
-// Production API base URL (Railway backend)
-const API_BASE_URL = 'https://talintzbackend-production.up.railway.app';
+// Fallback URLs if environment variables are not defined
+const DEFAULT_DEV_URL = 'http://127.0.0.1:8000';
+const DEFAULT_PROD_URL = 'https://talintzbackend-production.up.railway.app';
+
+// Safely determine the base URL
+const isDevelopment = 
+  typeof process !== 'undefined' && 
+  process.env.NODE_ENV === 'development';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL_DEV || 
+                     import.meta.env.VITE_API_BASE_URL_PROD || 
+                     DEFAULT_PROD_URL;
 
 // Export the base URL for use in other files
 export const getBaseURL = () => API_BASE_URL;
 
-// Create axios instance with production config
+// Create axios instance with dynamic config
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 15000,
@@ -37,16 +47,13 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
-    // Example: Refresh token logic (uncomment if needed)
-    // if (error.response.status === 401 && !originalRequest._retry) {
-    //   originalRequest._retry = true;
-    //   const refreshToken = localStorage.getItem('refreshToken');
-    //   const { data } = await authAPI.refreshToken(refreshToken);
-    //   localStorage.setItem('accessToken', data.access);
-    //   return api(originalRequest);
-    // }
-
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem('refreshToken');
+      const { data } = await authAPI.refreshToken(refreshToken);
+      localStorage.setItem('accessToken', data.access);
+      return api(originalRequest);
+    }
     return Promise.reject(error);
   }
 );

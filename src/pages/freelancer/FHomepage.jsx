@@ -44,7 +44,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import React from 'react';
 import ReferralTab from "../../components/ReferralTab";
-
+import {getBaseURL} from '../../config/axios';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -280,7 +280,7 @@ const FHomepage = ({ userId, role, isAuthenticated, isEditable }) => {
     const fetchUser = async () => {
       setUserLoading(true);
       try {
-        const response = await axios.get('https://talintzbackend-production.up.railway.app/api/profile/', {
+        const response = await axios.get(`${getBaseURL()}/api/profile/`, {
           headers: { Authorization: `Bearer ${Cookies.get('accessToken')}` },
         });
         setUser(response.data.user);
@@ -951,7 +951,7 @@ const FHomepage = ({ userId, role, isAuthenticated, isEditable }) => {
                   ].map((item, index) => (
                     <div key={index} className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
                       <div className="flex items-center gap-2 mb-2">
-                        <Avatar size="small" src={`/api/placeholder/24/24?${index}`} className="border border-freelancer-accent/30"/>
+                        <Avatar size="small" src={`${getBaseURL()}/api/placeholder/24/24?${index}`} className="border border-freelancer-accent/30"/>
                         <h4 className="text-white font-semibold">{item.client}</h4>
                         <div className="flex items-center gap-1">
                           <StarOutlined className="text-freelancer-accent text-sm" />

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip, Spin } from 'antd';
 import { RiMessage3Fill } from "react-icons/ri";
 import { useMediaQuery } from 'react-responsive';
-import api from '../../config/axios';
+import api,{getBaseURL} from '../../config/axios';
 import { VideoCameraOutlined, PhoneOutlined, MoreOutlined } from '@ant-design/icons';
 
 // Add debounce implementation
@@ -203,7 +203,7 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
     }
 
       await axios.post(
-        "https://talintzbackend-production.up.railway.app/api/logout/",
+        `${getBaseURL()}/api/logout/`,
         { refreshToken, accessToken },
         {
         headers: { Authorization: `Bearer ${accessToken}` },

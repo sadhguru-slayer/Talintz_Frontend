@@ -21,6 +21,7 @@ import FreelancerNotAuthProfile from './pages/freelancer/profile/NotAuthProfile'
 import ClientNotAuthProfile from './pages/client/profile/NotAuthProfile';
 import EmailVerificationBanner from "./components/EmailVerificationBanner";
 import EmailCodeEntryModal from "./components/EmailCodeEntryModal";
+import { getBaseURL } from './config/axios';
 
 // Setup axios interceptors once when the module loads
 setupAxiosInterceptors();
@@ -97,7 +98,7 @@ const PrivateRoute = ({ element: Component, allowedRoles = [], ...rest }) => {
         // Fetch user profile with retry mechanism
         let profileResponse;
         try {
-          profileResponse = await api.get('/api/profile/', {
+          profileResponse = await api.get(`${getBaseURL()}/api/profile/`, {
             headers: { Authorization: `Bearer ${currentToken}` },
           });
         } catch (profileError) {
@@ -105,7 +106,7 @@ const PrivateRoute = ({ element: Component, allowedRoles = [], ...rest }) => {
           if (profileError.response?.status === 401) {
             const retryToken = await refreshToken();
             if (retryToken) {
-              profileResponse = await api.get('/api/profile/', {
+              profileResponse = await api.get(`${getBaseURL()}/api/profile/`, {
                 headers: { Authorization: `Bearer ${retryToken}` },
               });
             } else {
@@ -236,7 +237,7 @@ console.log(authState)
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.post(
-        "https://talintzbackend-production.up.railway.app/api/send_email_verification_code/",
+        `${getBaseURL()}/api/send_email_verification_code/`,
         {},
         {
           headers: {
@@ -261,7 +262,7 @@ console.log(authState)
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.post(
-        "https://talintzbackend-production.up.railway.app/api/verify_email_code/",
+        `${getBaseURL()}/api/verify_email_code/`,
         { code },
         {
           headers: {
@@ -287,7 +288,7 @@ console.log(authState)
     try {
       const accessToken = Cookies.get("accessToken");
       await axios.post(
-        "https://talintzbackend-production.up.railway.app/api/send_email_verification_code/",
+        `${getBaseURL()}/api/send_email_verification_code/`,
         {},
         {
           headers: {

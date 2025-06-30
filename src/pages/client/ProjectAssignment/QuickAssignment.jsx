@@ -17,6 +17,7 @@ import {
 import moment from 'moment';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import {getBaseURL} from '../../../config/axios';
 
 const QuickAssignment = ({ 
   project, 
@@ -75,7 +76,7 @@ const QuickAssignment = ({
       
       // Step 1: Mark bid as under_review (internal state change)
       const reviewResponse = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/client/mark_bid_under_review/`,
+        `${getBaseURL()}/api/client/mark_bid_under_review/`,
         { 
           bid_id: bid.id,
           project_complexity: 'entry'
@@ -86,7 +87,7 @@ const QuickAssignment = ({
       if (reviewResponse.data.status === 'success') {
         // Step 2: Create project assignment invitation
         const invitationResponse = await axios.post(
-          `https://talintzbackend-production.up.railway.app/api/client/invitations/create_project_assignment/`,
+          `${getBaseURL()}/api/client/invitations/create_project_assignment/`,
           { 
             bid_id: bid.id,
             message: `Congratulations! You have been selected for quick assignment to the project "${project.title}". Please review the terms and accept the assignment within 24 hours.`,

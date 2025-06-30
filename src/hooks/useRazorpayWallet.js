@@ -1,10 +1,10 @@
-import api from '../config/axios';
+import api,{getBaseURL} from '../config/axios';
 
 export const useRazorpayWallet = () => {
   const startWalletDeposit = async (amount, onSuccess, onError) => {
     try {
       // 1. Create order on backend
-      const res = await api.post('/api/finance/wallet/create-order/', { amount });
+      const res = await api.post(`${getBaseURL()}/api/finance/wallet/create-order/`, { amount });
       const { order_id, amount: orderAmount, currency, razorpay_key } = res.data;
 
       // 2. Open Razorpay Checkout
@@ -18,7 +18,7 @@ export const useRazorpayWallet = () => {
         handler: async function (response) {
           // 3. Verify payment on backend
           try {
-            await api.post('/api/finance/wallet/verify-payment/', {
+            await api.post(`${getBaseURL()}/api/finance/wallet/verify-payment/`, {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,

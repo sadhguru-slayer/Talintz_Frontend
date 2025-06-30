@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { debounce } from 'lodash';
 import { Chart, ArcElement, Legend } from 'chart.js';
 Chart.register(ArcElement, Legend);
+import {getBaseURL} from '../../../config/axios';
 
 // Update the project metrics data to match Talintz model
 const projectMetrics = {
@@ -599,7 +600,7 @@ const DashboardOverview = () => {
         
         // Add cache control headers
         const response = await axios.get(
-          `https://talintzbackend-production.up.railway.app/api/client/dashboard_overview`,
+          `${getBaseURL()}/api/client/dashboard_overview`,
       {            headers: { 
               Authorization: `Bearer ${accessToken}`,
               'Cache-Control': 'max-age=300' // Cache for 5 minutes

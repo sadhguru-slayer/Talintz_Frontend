@@ -17,7 +17,7 @@ import {
   UserAddOutlined
 } from '@ant-design/icons';
 import { FaLock, FaUserPlus, FaGraduationCap } from 'react-icons/fa';
-
+import {getBaseURL} from '../../../config/axios';
 const { TabPane } = Tabs;
 
 const LoginModal = ({ isVisible, onClose, onSuccess }) => {
@@ -29,7 +29,7 @@ const LoginModal = ({ isVisible, onClose, onSuccess }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("https://talintzbackend-production.up.railway.app/api/login/", {
+      const response = await axios.post(`${getBaseURL()}/api/login/`, {
         username,
         password
       });
@@ -185,7 +185,7 @@ const NotAuthProfile = ({userId, role, editable}) => {
     useEffect(() => {
       const fetchProfileDetails = async () => {
         try {
-          const response = await axios.get('https://talintzbackend-production.up.railway.app/api/client/get_unauth_profile_data', {
+          const response = await axios.get(`${getBaseURL()}/api/client/get_unauth_profile_data`, {
             params: { userId: userId },
           });
            

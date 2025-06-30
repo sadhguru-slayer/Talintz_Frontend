@@ -25,7 +25,7 @@ import QuickAssignment from './ProjectAssignment/QuickAssignment';
 import StandardAssignment from './ProjectAssignment/StandardAssignment';
 import PremiumAssignment from './ProjectAssignment/PremiumAssignment';
 import TierDetermination from './ProjectAssignment/TierDetermination';
-
+import {getBaseURL} from '../../config/axios';
 const { Option } = Select;
 
 const formatText = (text) => {
@@ -71,7 +71,7 @@ const PostedProjectForBidsPage = ({ userId, role }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `https://talintzbackend-production.up.railway.app/api/client/get_project/${projectId}`,
+          `${getBaseURL()}/api/client/get_project/${projectId}`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -129,7 +129,7 @@ const PostedProjectForBidsPage = ({ userId, role }) => {
     setBidsLoading(true);
     try {
       const response = await axios.get(
-        `https://talintzbackend-production.up.railway.app/api/client/get_bids_on_project/${parseInt(projectId)}`,
+        `${getBaseURL()}/api/client/get_bids_on_project/${parseInt(projectId)}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get('accessToken')}`,
@@ -504,7 +504,7 @@ const PostedProjectForBidsPage = ({ userId, role }) => {
       }
 
       const response = await axios.post(
-        `https://talintzbackend-production.up.railway.app/api/client/${endpoints[action]}`,
+        `${getBaseURL()}/api/client/${endpoints[action]}`,
         { 
           bid_id: bidId,
           project_complexity: complexityLevel,

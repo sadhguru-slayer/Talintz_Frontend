@@ -18,6 +18,7 @@ import FHeader from "../../components/freelancer/FHeader";
 import FSider from "../../components/freelancer/FSider";
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import {getBaseURL} from '../../config/axios';
 
 const ReferralsPage = ({ role, userId, isAuthenticated, isEditable }) => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -49,7 +50,7 @@ const ReferralsPage = ({ role, userId, isAuthenticated, isEditable }) => {
     try {
       const accessToken = Cookies.get("accessToken");
       const response = await axios.get(
-        "https://talintzbackend-production.up.railway.app/api/referrals/user-data/",
+        `${getBaseURL()}/api/referrals/user-data/`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

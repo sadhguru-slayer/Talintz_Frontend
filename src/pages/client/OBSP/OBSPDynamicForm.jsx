@@ -12,6 +12,8 @@ import {
   FileTextOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import {getBaseURL} from '../../../config/axios';
+
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
