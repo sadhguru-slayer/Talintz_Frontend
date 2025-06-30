@@ -40,15 +40,16 @@ const CustomCursor = () => {
         }}
         transition={{
           type: "spring",
-          mass: 0.3,
-          stiffness: 200,
-          damping: 20,
+          mass: 0.1,
+          stiffness: 300,
+          damping: 15,
         }}
       >
         <div className="w-3 h-3 bg-white rounded-full" />
       </motion.div>
 
-      {/* Cursor trail */}
+      {/* Cursor trail - Removed to eliminate shadow effect */}
+      {/* 
       <motion.div
         className="fixed pointer-events-none z-40"
         animate={{
@@ -66,6 +67,7 @@ const CustomCursor = () => {
       >
         <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#6366F1]/30 to-[#00D4AA]/30 blur-sm" />
       </motion.div>
+      */}
     </>
   );
 };
