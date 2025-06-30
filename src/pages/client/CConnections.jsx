@@ -30,7 +30,7 @@ const CConnections = ({ userId, role }) => {
 
   const handleMenuClick = (component) => {
     if (component !== 'connections') {
-      navigate('/client/dashboard', { state: { component } });
+      navigate('/client/homepage', { state: { component } });
     }
     setActiveComponent(component);
   };
@@ -45,7 +45,7 @@ const CConnections = ({ userId, role }) => {
     const fetchConnections = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${getBaseURL()}/api/client/get_connections`, {
+        const response = await axios.get(`${getBaseURL()}/api/get_connections`, {
           headers: {
             'Authorization': `Bearer ${Cookies.get('accessToken')}`,
           },
@@ -104,7 +104,7 @@ const CConnections = ({ userId, role }) => {
                   <Button
                     type="primary"
                     icon={<GlobalOutlined />}
-                    onClick={() => navigate('/client/connection-requests')}
+                    onClick={() => navigate('/client/connection_requests')}
                     className="bg-client-primary hover:bg-client-secondary text-text-light"
                   >
                     View Requests
@@ -164,7 +164,7 @@ const CConnections = ({ userId, role }) => {
                                 <Tooltip title="Send Message">
                                   <Button
                                     icon={<MessageOutlined />}
-                                    onClick={() => navigate('/client/messages/direct', { 
+                                    onClick={() => navigate('/client/chat', { 
                                       state: { userId: connection.user_id }
                                     })}
                                     className="bg-client-primary/10 text-client-primary hover:bg-client-primary 
@@ -185,7 +185,7 @@ const CConnections = ({ userId, role }) => {
                               <p className="text-text-secondary mb-4">You have no connections yet</p>
                               <Button
                                 type="primary"
-                                onClick={() => navigate('/client/browse-freelancers')}
+                                onClick={() => navigate('/client/find_talent')}
                                 className="bg-client-primary hover:bg-client-secondary"
                               >
                                 Browse Freelancers
