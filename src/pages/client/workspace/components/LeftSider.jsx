@@ -18,76 +18,28 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
       icon: <BarChartOutlined />,
       label: 'Overview',
       badge: null,
-      color: 'var(--client-accent)'
     },
     {
       key: 'milestones',
       icon: <AppstoreOutlined />,
       label: 'Milestones',
       badge: 2,
-      color: 'var(--status-warning)'
     },
     {
       key: 'payments',
       icon: <DollarOutlined />,
       label: 'Payments',
       badge: null,
-      color: 'var(--status-success)'
-    },
-    {
-      key: 'files',
-      icon: <FileOutlined />,
-      label: 'Files',
-      badge: 3,
-      color: 'var(--client-secondary)'
-    },
-    {
-      key: 'team',
-      icon: <TeamOutlined />,
-      label: 'Team',
-      badge: null,
-      color: 'var(--client-primary)'
-    },
-    {
-      key: 'chat',
-      icon: <MessageOutlined />,
-      label: 'Chat',
-      badge: 5,
-      color: 'var(--status-info)'
     }
   ];
 
   return (
     <motion.div 
-      className="flex flex-col h-full bg-client-secondary z-10"
+      className="flex flex-col h-full bg-client-secondary z-10 relative"
       initial={{ width: 200 }}
       animate={{ width: collapsed ? 50 : 200 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      {/* Collapse Button */}
-      <div className="h-16 flex items-center justify-end px-3 border-b border-client-border">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setCollapsed(!collapsed)}
-          className="text-white/60 hover:text-white text-xl transition-colors"
-        >
-          {collapsed ? (
-            <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M9 18l6-6-6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          ) : (
-            <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M15 18l-6-6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          )}
-        </motion.button>
-      </div>
-
       {/* Navigation Items */}
       <div className="py-2 space-y-1 overflow-y-auto">
         {navItems.map(item => (
@@ -101,7 +53,6 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
               background: 'var(--client-secondary)',
               color: 'white',
               borderRadius: '8px',
-              padding: '8px 12px',
               fontSize: '14px'
             }}
           >
@@ -109,7 +60,7 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
               whileHover={{ x: 3 }}
               onClick={() => setActiveSection(item.key)}
               className={`
-                flex items-center px-3 py-2 mx-1 cursor-pointer rounded-lg
+                flex items-center ${collapsed ? 'justify-center' : 'px-3'} py-2 mx-1 cursor-pointer rounded-lg
                 text-white/80 hover:text-white transition-all
                 ${activeSection === item.key ? 
                   'bg-client-accent/10' : 
@@ -121,16 +72,17 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
                 count={item.badge} 
                 offset={[-6, 4]}
                 style={{ 
-                  backgroundColor: item.color,
+                  backgroundColor: activeSection === item.key ? 'var(--client-accent)' : 'var(--client-secondary)',
                   boxShadow: `0 0 0 2px var(--client-secondary)`
                 }}
               >
                 <div 
-                  className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
-                  style={{ 
-                    backgroundColor: `${item.color}20`,
-                    color: item.color
-                  }}
+                  className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0
+                    ${activeSection === item.key ? 
+                      'bg-client-accent/20 text-client-accent' : 
+                      'bg-white/10 text-white/60'
+                    }
+                  `}
                 >
                   {item.icon}
                 </div>
@@ -161,7 +113,7 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
           <motion.div
             whileHover={{ x: 3 }}
             className={`
-              flex items-center px-3 py-2 mx-1 cursor-pointer rounded-lg
+              flex items-center ${collapsed ? 'justify-center' : 'px-3'} py-2 mx-1 cursor-pointer rounded-lg
               text-white/80 hover:text-white transition-all
               hover:bg-white/5
             `}
@@ -182,6 +134,37 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
           </motion.div>
         </Tooltip>
       </div>
+
+      {/* New Middle Edge Toggle Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setCollapsed(!collapsed)}
+        className="absolute top-1/2 -right-3 transform -translate-y-1/2
+                   w-6 h-6 rounded-full bg-client-secondary
+                   flex items-center justify-center
+                   text-white/60 hover:text-white
+                   shadow-lg border border-client-border
+                   z-50 transition-colors"
+      >
+        <div className="flex items-center justify-center w-full h-full">
+          <svg 
+            width="12" 
+            height="12" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor"
+            className={`transform transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`}
+          >
+            <path 
+              d="M15 18l-6-6 6-6" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      </motion.button>
     </motion.div>
   );
 };
