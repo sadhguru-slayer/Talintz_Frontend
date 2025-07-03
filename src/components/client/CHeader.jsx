@@ -491,85 +491,85 @@ const CHeader = ({ isAuthenticated = true, userId, sidebarCollapsed = true }) =>
                   onChange={handleSearchInput}
                 />
                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 text-sm" />
-              </div>
 
-              {/* Search Results Dropdown - Minimal */}
-              <AnimatePresence>
-                {showResults && searchTerm.length >= 2 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute z-[100] top-full left-1/2 -translate-x-1/2 bg-client-primary mt-2 rounded-xl border border-white/10 overflow-hidden w-full max-w-md shadow-2xl backdrop-blur-xl"
-                  >
-                    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
-                      {/* Users Section */}
-                      {searchResults.users.length > 0 && (
-                        <div className="p-3">
-                          <h3 className="text-xs font-medium text-white/50 mb-2 uppercase tracking-wide">USERS</h3>
-                          <div className="space-y-1">
-                            {searchResults.users.map((user) => (
-                              <motion.div
-                                key={user.id}
-                                whileHover={{ x: 2 }}
-                                className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg cursor-pointer"
-                                onClick={() => navigate(`/${user.pathrole}/profile/${user.id}/view_profile`)}
-                              >
-                                {user.profile_picture ? (
-                                  <img 
-                                    src={`wss://talintzbackend-production.up.railway.app/${user.profile_picture}`} 
-                                    alt="" 
-                                    className="w-6 h-6 rounded-full object-cover border border-white/20"
-                                  />
-                                ) : (
-                                  <div className="w-6 h-6 rounded-full bg-client-accent/20 flex items-center justify-center">
-                                    <FaUserCircle className="text-client-accent text-xs" />
+                {/* Search Results Dropdown - Minimal */}
+                <AnimatePresence>
+                  {showResults && searchTerm.length >= 2 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute z-[100] top-full left-0 right-0 bg-client-primary mt-2 rounded-xl border border-white/10 overflow-hidden shadow-2xl backdrop-blur-xl"
+                    >
+                      <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
+                        {/* Users Section */}
+                        {searchResults.users.length > 0 && (
+                          <div className="p-3">
+                            <h3 className="text-xs font-medium text-white/50 mb-2 uppercase tracking-wide">USERS</h3>
+                            <div className="space-y-1">
+                              {searchResults.users.map((user) => (
+                                <motion.div
+                                  key={user.id}
+                                  whileHover={{ x: 2 }}
+                                  className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg cursor-pointer"
+                                  onClick={() => navigate(`/${user.pathrole}/profile/${user.id}/view_profile`)}
+                                >
+                                  {user.profile_picture ? (
+                                    <img 
+                                      src={`wss://talintzbackend-production.up.railway.app/${user.profile_picture}`} 
+                                      alt="" 
+                                      className="w-6 h-6 rounded-full object-cover border border-white/20"
+                                    />
+                                  ) : (
+                                    <div className="w-6 h-6 rounded-full bg-client-accent/20 flex items-center justify-center">
+                                      <FaUserCircle className="text-client-accent text-xs" />
+                                    </div>
+                                  )}
+                                  <div>
+                                    <p className="font-medium text-white text-sm">{user.username}</p>
+                                    <p className="text-xs text-white/50 capitalize">{user.role}</p>
                                   </div>
-                                )}
-                                <div>
-                                  <p className="font-medium text-white text-sm">{user.username}</p>
-                                  <p className="text-xs text-white/50 capitalize">{user.role}</p>
-                                </div>
-                              </motion.div>
-                            ))}
+                                </motion.div>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Projects Section */}
-                      {searchResults.projects.length > 0 && (
-                        <div className="p-3 border-t border-white/10">
-                          <h3 className="text-xs font-medium text-white/50 mb-2 uppercase tracking-wide">PROJECTS</h3>
-                          <div className="space-y-1">
-                            {searchResults.projects.map((project) => (
-                              <motion.div
-                                key={project.id}
-                                whileHover={{ x: 2 }}
-                                className="p-2 hover:bg-white/5 rounded-lg cursor-pointer"
-                              >
-                                <p className="font-medium text-white text-sm">{project.title}</p>
-                                <div 
-                                  className="text-xs text-white/50 line-clamp-1"
-                                  dangerouslySetInnerHTML={{ 
-                                    __html: DOMPurify.sanitize(project.description) 
-                                  }}
-                                />
-                              </motion.div>
-                            ))}
+                        {/* Projects Section */}
+                        {searchResults.projects.length > 0 && (
+                          <div className="p-3 border-t border-white/10">
+                            <h3 className="text-xs font-medium text-white/50 mb-2 uppercase tracking-wide">PROJECTS</h3>
+                            <div className="space-y-1">
+                              {searchResults.projects.map((project) => (
+                                <motion.div
+                                  key={project.id}
+                                  whileHover={{ x: 2 }}
+                                  className="p-2 hover:bg-white/5 rounded-lg cursor-pointer"
+                                >
+                                  <p className="font-medium text-white text-sm">{project.title}</p>
+                                  <div 
+                                    className="text-xs text-white/50 line-clamp-1"
+                                    dangerouslySetInnerHTML={{ 
+                                      __html: DOMPurify.sanitize(project.description) 
+                                    }}
+                                  />
+                                </motion.div>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* No Results */}
-                      {!searchResults.users.length && !searchResults.projects.length && (
-                        <div className="p-6 text-center">
-                          <p className="text-white/50 text-sm">No results found</p>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                        {/* No Results */}
+                        {!searchResults.users.length && !searchResults.projects.length && (
+                          <div className="p-6 text-center">
+                            <p className="text-white/50 text-sm">No results found</p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Actions Section - Minimal */}
