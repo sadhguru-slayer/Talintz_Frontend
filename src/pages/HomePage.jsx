@@ -6,7 +6,7 @@ import axios from 'axios';
 import { verifyToken, refreshToken } from '../utils/auth';
 import { FaShieldAlt, FaBolt, FaProjectDiagram, FaChartLine, FaUsers, FaClock, FaCode, FaGithub, FaSlack, FaTrello, FaJira, FaBuilding, FaGlobe, FaFigma, FaAws } from 'react-icons/fa';
 import bgImage from '/herobg.png';
-import CustomCursor from '../components/ui/CustomCursor';
+// import CustomCursor from '../components/ui/CustomCursor';
 import {getBaseURL} from '../config/axios';
 const HomePage = () => {
   const navigate = useNavigate();
@@ -174,7 +174,7 @@ const HomePage = () => {
 
   return (
     <div className="relative min-h-screen bg-brand-dark homepage">
-      {isDesktop && <CustomCursor />}
+      {/* {isDesktop && <CustomCursor />} */}
       {/* Hero Section with Enhanced Parallax */}
       <div className="relative min-h-screen !overflow-hidden">
         {/* Background with enhanced parallax */}

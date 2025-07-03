@@ -10,7 +10,7 @@ html {
   
 
 /* Add these cursor-related styles scoped to homepage */
-.homepage * {
+/* .homepage * {
   cursor: none !important;
 }
 
@@ -21,7 +21,7 @@ html {
   .homepage .custom-cursor {
     display: none !important;
   }
-}
+} */
 
 /* Ensure smooth cursor movement */
 html {

@@ -34,7 +34,6 @@ import CConnectionRequests from "./pages/client/CConnectionRequests";
 import FConnections from "./pages/freelancer/FConnections";
 import FConnectionRequests from "./pages/freelancer/FConnectionRequests";
 import CWallet from "./pages/client/CWallet";
-import FreelancerProjectWorkSpace from "./pages/freelancer/ProjectWorkSpace";
 import OBSPLayout from "./pages/freelancer/OBSP/OBSPLayout";
 import ListOfObsps from "./pages/freelancer/OBSP/ListOfObsps";
 import ObspDetails from "./pages/freelancer/OBSP/ObspDetails";
@@ -81,11 +80,6 @@ const clientRoutes = [
     path: "connections",
     component: lazy(() => import("./pages/client/CConnections")),
     allowedRoles: ["client"],
-  },
-  {
-    path: "dashboard/projects/workspace/:projectId",
-    component: lazy(() => import('./pages/client/ProjectWorkSpace')),
-    allowedRoles: ['client']
   },
   {
     path: "notifications",
@@ -326,11 +320,6 @@ const dashboardRoutes = [
     component: lazy(() => import("./pages/freelancer/dashboard/ProjectDetailPage")),
     allowedRoles: ["freelancer"],
   },
-  {
-    path: "dashboard/projects/workspace/:projectId",
-    component: lazy(() => import("./pages/freelancer/ProjectWorkSpace")),
-    allowedRoles: ["freelancer", "student"],
-  },
 ];
 
 // Create a separate array for client dashboard routes
@@ -363,6 +352,16 @@ const clientDashboardRoutes = [
   {
     path: "upcoming-events",
     component: lazy(() => import("./pages/client/dashboard/UpcomingEvents")),
+    allowedRoles: ["client"],
+  },
+  {
+    path: "workspace/:workspaceId",
+    component: lazy(() => import("./pages/client/ProjectWorkSpace")),
+    allowedRoles: ["client"],
+  },
+  {
+    path: "workspaces/:workspaceId",
+    component: lazy(() => import("./pages/client/workspace/WorkspaceLayout")),
     allowedRoles: ["client"],
   },
 ];
@@ -895,6 +894,28 @@ const App = () => {
                     />
                   }
                 />
+                <Route
+                  path="workspace/:workspaceId"
+                  element={
+                    <PrivateRoute
+                      element={lazy(() =>
+                        import("./pages/client/ProjectWorkSpace")
+                      )}
+                      allowedRoles={["client"]}
+                    />
+                  }
+                />
+                <Route
+                  path="workspaces/:workspaceId"
+                  element={
+                    <PrivateRoute
+                      element={lazy(() =>
+                        import("./pages/client/workspace/WorkspaceLayout")
+                      )}
+                      allowedRoles={["client"]}
+                    />
+                  }
+                />
               </Route>
 
               {/* Client Connection Routes */}
@@ -1006,16 +1027,8 @@ const App = () => {
                 <Route path="projects/:id" element={<ProjectDetailPage />} />
               </Route>
 
-              {/* Separate workspace route */}
-                <Route 
-                path="dashboard/projects/workspace/:projectId"
-                element={
-                  <PrivateRoute
-                    element={FreelancerProjectWorkSpace}
-                    allowedRoles={["freelancer", "student"]}
-                />
-                }
-              />
+
+
 
               <Route
                 path="wallet"

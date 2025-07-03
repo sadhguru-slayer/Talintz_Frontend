@@ -67,6 +67,8 @@ const FreelancerProjectWorkSpace = ({ userId, role,isAuthenticated, isEditable }
     return () => window.removeEventListener('resize', handleResize);
   }, [mobileSiderVisible]);
 
+
+  console.log("HIii")
   const [activeComponent, setActiveComponent] = useState('');
 
   const handleMenuClick = (component) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CHeader from '../../components/client/CHeader';
 import CSider from '../../components/client/CSider';
-import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet, useMatch } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 
 import { BiddingOverview, Notifications, ProjectManagementPage, ProjectStatusOverview, UpcomingEvents, WeeklyBiddingActivity } from '../freelancer/dashboard';
@@ -16,6 +16,7 @@ const CDashboard = ({ userId, role }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isWorkspaceRoute = useMatch('/client/dashboard/workspaces/:id');
   
   const [activeComponent, setActiveComponent] = useState('overview');
   const [activeProfileComponent, setActiveProfileComponent] = useState('');
@@ -73,17 +74,19 @@ const CDashboard = ({ userId, role }) => {
         <div className={`
           flex-1 overflow-auto
           `}>
-          <div className="px-6 py-2">
-        <ReferralTab
-        role="client"
-          placement="dashboard"
-          userStats={{
-            referralCount: 0,
-            totalEarnings: 0,
-            referralCode: null
-          }}
-          />    
-          </div>
+          {!isWorkspaceRoute && (
+            <div className="px-6 py-2">
+              <ReferralTab
+                role="client"
+                placement="dashboard"
+                userStats={{
+                  referralCount: 0,
+                  totalEarnings: 0,
+                  referralCode: null
+                }}
+              />    
+            </div>
+          )}
           <Outlet />
         </div>
       </div>

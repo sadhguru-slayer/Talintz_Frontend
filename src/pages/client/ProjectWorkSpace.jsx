@@ -208,19 +208,8 @@ const ProjectWorkSpace = ({ userId, role }) => {
 
   // Render main workspace content
   return (
-    <div className="flex h-screen bg-gradient-to-br from-client-primary via-client-secondary/10 to-client-bg-dark">
-      <CSider
-        userId={userId}
-        role={role}
-        dropdown={true}
-        collapsed={true} 
-      />
-
       <div className={`flex-1 flex flex-col overflow-hidden `}>
-        <CHeader userId={userId} />
-    
-        <div className={` ${isMobile ? 'ml-0' : 'ml-14'} flex-1 overflow-auto p-4 md:p-6`}>
-
+        <div className={`  flex-1 overflow-auto p-4 md:p-6`}>
           {/* Project Header */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative overflow-hidden rounded-2xl mb-6 shadow-xl">
             <div className="absolute inset-0 bg-gradient-to-br from-client-primary via-client-primary/80 to-client-bg-dark"></div>
@@ -423,120 +412,120 @@ const ProjectWorkSpace = ({ userId, role }) => {
 
 
 
+          <style jsx global>{`
+          .cred-font {
+            font-family: 'Montserrat', 'Inter', 'Segoe UI', Arial, sans-serif;
+            letter-spacing: 0.02em;
+          }
+          .cred-balance-shadow {
+            box-shadow: 0 4px 32px 0 rgba(0,0,0,0.18), 0 1.5px 4px 0 rgba(0,0,0,0.10);
+          }
+          .cred-btn-secondary {
+            background: var(--client-secondary);
+            color: #fff;
+            border: none;
+            border-radius: 9999px;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+            transition: all 0.3s ease;
+          }
+          .cred-btn-secondary:hover {
+            background: var(--client-secondary-dark);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.15);
+            transform: translateY(-2px) scale(1.03);
+          }
+          .cred-btn-accent {
+            background: var(--client-accent);
+            color: #fff;
+            border: none;
+            border-radius: 9999px;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+            transition: all 0.3s ease;
+          }
+          .cred-btn-accent:hover {
+            background: var(--client-accent-dark);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.15);
+            transform: translateY(-2px) scale(1.03);
+          }
+          .cred-pill {
+            display: inline-block;
+            padding: 0.5em 1.2em;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+          }
+          .cred-pill-credit {
+            background: var(--status-success);
+            color: #fff;
+          }
+          .cred-pill-debit {
+            background: var(--status-error);
+            color: #fff;
+          }
+          .cred-tab-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--text-light);
+          }
+          .custom-tabs .ant-tabs-nav {
+            margin: 0 !important;
+            padding: ${isMobile ? '12px 16px 0' : '16px 24px 0'} !important;
+            background: transparent !important;
+          }
+          .custom-tabs .ant-tabs-tab {
+            margin: 0 ${isMobile ? '4px' : '8px'} 0 0 !important;
+            padding: ${isMobile ? '10px 20px' : '14px 32px'} !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.13) !important;
+            border-radius: 18px 18px 0 0 !important;
+            transition: all 0.3s cubic-bezier(.4,2,.6,1) !important;
+            color: var(--text-light) !important;
+            font-weight: 600 !important;
+          }
+          .custom-tabs .ant-tabs-tab-active {
+            background: var(--client-secondary) !important;
+            color: #fff !important;
+            border-color: var(--client-accent) !important;
+            box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
+          }
+          .custom-tabs .ant-tabs-ink-bar {
+            background: var(--client-accent) !important;
+            height: 4px !important;
+            border-radius: 2px !important;
+          }
+          .ant-card, .ant-card-body {
+            background: transparent !important;
+            border: none !important;
+          }
+          @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+          }
+          @keyframes float-delayed {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+          }
+          .animate-float {
+            animation: float 6s ease-in-out infinite;
+          }
+          .animate-float-delayed {
+            animation: float-delayed 8s ease-in-out infinite;
+          }
+  
+          .ant-tabs-nav-list{
+            flex-wrap:wrap !important;
+            gap:0.25rem;
+            
+        `}</style>
 
     </div>
     
 
-      <style jsx global>{`
-        .cred-font {
-          font-family: 'Montserrat', 'Inter', 'Segoe UI', Arial, sans-serif;
-          letter-spacing: 0.02em;
-        }
-        .cred-balance-shadow {
-          box-shadow: 0 4px 32px 0 rgba(0,0,0,0.18), 0 1.5px 4px 0 rgba(0,0,0,0.10);
-        }
-        .cred-btn-secondary {
-          background: var(--client-secondary);
-          color: #fff;
-          border: none;
-          border-radius: 9999px;
-          box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
-          transition: all 0.3s ease;
-        }
-        .cred-btn-secondary:hover {
-          background: var(--client-secondary-dark);
-          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.15);
-          transform: translateY(-2px) scale(1.03);
-        }
-        .cred-btn-accent {
-          background: var(--client-accent);
-          color: #fff;
-          border: none;
-          border-radius: 9999px;
-          box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
-          transition: all 0.3s ease;
-        }
-        .cred-btn-accent:hover {
-          background: var(--client-accent-dark);
-          box-shadow: 0 8px 32px 0 rgba(0,0,0,0.15);
-          transform: translateY(-2px) scale(1.03);
-        }
-        .cred-pill {
-          display: inline-block;
-          padding: 0.5em 1.2em;
-          border-radius: 9999px;
-          font-weight: 700;
-          font-size: 1rem;
-          letter-spacing: 0.03em;
-          box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
-        }
-        .cred-pill-credit {
-          background: var(--status-success);
-          color: #fff;
-        }
-        .cred-pill-debit {
-          background: var(--status-error);
-          color: #fff;
-        }
-        .cred-tab-label {
-          font-size: 1.1rem;
-          font-weight: 600;
-          letter-spacing: 0.02em;
-          color: var(--text-light);
-        }
-        .custom-tabs .ant-tabs-nav {
-          margin: 0 !important;
-          padding: ${isMobile ? '12px 16px 0' : '16px 24px 0'} !important;
-          background: transparent !important;
-        }
-        .custom-tabs .ant-tabs-tab {
-          margin: 0 ${isMobile ? '4px' : '8px'} 0 0 !important;
-          padding: ${isMobile ? '10px 20px' : '14px 32px'} !important;
-          background: rgba(255, 255, 255, 0.08) !important;
-          border: 1.5px solid rgba(255, 255, 255, 0.13) !important;
-          border-radius: 18px 18px 0 0 !important;
-          transition: all 0.3s cubic-bezier(.4,2,.6,1) !important;
-          color: var(--text-light) !important;
-          font-weight: 600 !important;
-        }
-        .custom-tabs .ant-tabs-tab-active {
-          background: var(--client-secondary) !important;
-          color: #fff !important;
-          border-color: var(--client-accent) !important;
-          box-shadow: 0 4px 24px 0 rgba(0,0,0,0.10);
-        }
-        .custom-tabs .ant-tabs-ink-bar {
-          background: var(--client-accent) !important;
-          height: 4px !important;
-          border-radius: 2px !important;
-        }
-        .ant-card, .ant-card-body {
-          background: transparent !important;
-          border: none !important;
-        }
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
-        }
-        @keyframes float-delayed {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-          100% { transform: translateY(0px); }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float-delayed 8s ease-in-out infinite;
-        }
-
-        .ant-tabs-nav-list{
-          flex-wrap:wrap !important;
-          gap:0.25rem;
-          
-      `}</style>
-    </div>
+    
   );
 };
 
