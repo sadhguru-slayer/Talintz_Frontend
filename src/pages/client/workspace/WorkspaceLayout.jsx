@@ -19,7 +19,6 @@ import Payments from './components/content/Payments';
 import RightPanel from './components/RightPanel';
 import ChatPanel from './components/panels/ChatPanel';
 
-const { Sider, Content } = Layout;
 const { Text } = Typography;
 
 const WorkspaceLayout = () => {

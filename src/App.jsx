@@ -354,13 +354,13 @@ const clientDashboardRoutes = [
     component: lazy(() => import("./pages/client/dashboard/UpcomingEvents")),
     allowedRoles: ["client"],
   },
+  // {
+  //   path: "workspace/:workspaceId",
+  //   component: lazy(() => import("./pages/client/ProjectWorkSpace")),
+  //   allowedRoles: ["client"],
+  // },
   {
     path: "workspace/:workspaceId",
-    component: lazy(() => import("./pages/client/ProjectWorkSpace")),
-    allowedRoles: ["client"],
-  },
-  {
-    path: "workspaces/:workspaceId",
     component: lazy(() => import("./pages/client/workspace/WorkspaceLayout")),
     allowedRoles: ["client"],
   },
@@ -894,7 +894,7 @@ const App = () => {
                     />
                   }
                 />
-                <Route
+                {/* <Route
                   path="workspace/:workspaceId"
                   element={
                     <PrivateRoute
@@ -904,9 +904,9 @@ const App = () => {
                       allowedRoles={["client"]}
                     />
                   }
-                />
+                /> */}
                 <Route
-                  path="workspaces/:workspaceId"
+                  path="workspace/:workspaceId"
                   element={
                     <PrivateRoute
                       element={lazy(() =>
