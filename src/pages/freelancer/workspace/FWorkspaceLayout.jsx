@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Typography, Tooltip, Badge } from 'antd';
+import { Layout, Typography, Tooltip, Badge, Result, Button } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -33,7 +33,26 @@ const FWorkspaceLayout = () => {
   const [isPanelMaximized, setIsPanelMaximized] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
   
-
+  if (isMobile) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-freelancer-primary p-4">
+        <Result
+          status="warning"
+          title="Workspace Unavailable on Mobile"
+          subTitle="Please use a desktop browser to access your workspace."
+          extra={
+            <Button 
+              type="primary" 
+              href="/freelancer/dashboard" 
+              className="bg-freelancer-accent"
+            >
+              Return to Dashboard
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
 
   // Right Sider Items
   const rightNavItems = [
