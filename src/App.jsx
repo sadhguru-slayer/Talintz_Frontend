@@ -54,6 +54,9 @@ import { EyeOutlined, EyeInvisibleOutlined, CloseOutlined } from '@ant-design/ic
 import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 
+import FWorkspaceLayout from "./pages/freelancer/workspace/FWorkspaceLayout";
+import CWorkspaceLayout from "./pages/client/workspace/WorkspaceLayout";
+
 // Move this function to the top, before any component definitions
 const getEffectiveRole = (role) => {
   return role === "student" ? "freelancer" : role;
@@ -196,10 +199,11 @@ const freelancerRoutes = [
     allowedRoles: ["freelancer"],
   },
   {
-    path: "referrals",
-    component: lazy(() => import("./pages/common/ReferralsPage")),
-    allowedRoles: ["freelancer", "student"],
-  },
+      path: "referrals",
+      component: lazy(() => import("./pages/common/ReferralsPage")),
+      allowedRoles: ["freelancer", "student"],
+    },
+    
 ];
 
 // Create a separate array for OBSP routes (similar to dashboard routes)
@@ -311,7 +315,7 @@ const dashboardRoutes = [
   {
     path: "upcoming-events",
     component: lazy(() =>
-      import("./pages/client/dashboard/UpcomingEvents")
+      import("./pages/freelancer/workspace/FWorkspaceLayout")
     ),
     allowedRoles: ["freelancer"],
   },
@@ -909,9 +913,7 @@ const App = () => {
                   path="workspace/:workspaceId"
                   element={
                     <PrivateRoute
-                      element={lazy(() =>
-                        import("./pages/client/workspace/WorkspaceLayout")
-                      )}
+                      element={CWorkspaceLayout}
                       allowedRoles={["client"]}
                     />
                   }
@@ -1017,14 +1019,7 @@ const App = () => {
                   />
                 }
               >
-                <Route index element={<FreelancerAnalyticsPage />} />
-                <Route path="freelancer-analytics" element={<FreelancerAnalyticsPage />} />
-                <Route path="projects" element={<ProjectManagementPage />} />
-                <Route path="project-management" element={<ProjectManagementPage />} />
-                <Route path="earnings" element={<Earnings />} />
-                <Route path="bidding-overview" element={<BiddingOverview />} />
-                <Route path="upcoming-events" element={<UpcomingEvents />} />
-                <Route path="projects/:id" element={<ProjectDetailPage />} />
+                
               </Route>
 
 

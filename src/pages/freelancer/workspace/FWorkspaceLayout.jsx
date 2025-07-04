@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Typography, Tooltip, Badge } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,8 +9,8 @@ import {
   RocketOutlined, WarningOutlined, FullscreenExitOutlined
 } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
-import CHeader from '../../../components/client/CHeader';
-import CSider from '../../../components/client/CSider';
+import FHeader from '../../../components/freelancer/FHeader';
+import FSider from '../../../components/freelancer/FSider';
 import LeftSider from './components/LeftSider';
 import RightSider from './components/RightSider';
 import OverviewContent from './components/content/OverviewContent';
@@ -24,7 +24,8 @@ import Settings from './components/content/Settings';
 
 const { Text } = Typography;
 
-const CWorkspaceLayout = () => {
+const FWorkspaceLayout = () => {
+  const { workspaceId } = useParams();
   const [collapsed, setCollapsed] = useState(false);
   const [activeSection, setActiveSection] = useState('overview');
   const [isChatExpanded, setIsChatExpanded] = useState(false);
@@ -32,6 +33,8 @@ const CWorkspaceLayout = () => {
   const [isPanelMaximized, setIsPanelMaximized] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
   
+
+
   // Right Sider Items
   const rightNavItems = [
     {
@@ -73,7 +76,7 @@ const CWorkspaceLayout = () => {
   };
 
   return (
-    <div className="flex h-full max-h-screen bg-client-primary workspace-layout">
+    <div className="flex h-full max-h-screen bg-freelancer-primary workspace-layout">
       <div className="flex-1 flex overflow-hidden">
         {/* Replaced Left Workspace Sider with new component */}
         <LeftSider 
@@ -85,7 +88,7 @@ const CWorkspaceLayout = () => {
 
         {/* Center Content */}
         <motion.div
-          className={`flex-1 flex flex-col ${isPanelMaximized && activePanel === 'chat' ? '' : 'overflow-auto'} bg-client-bg-DEFAULT`}
+          className={`flex-1 flex flex-col ${isPanelMaximized && activePanel === 'chat' ? '' : 'overflow-auto'} bg-freelancer-bg-DEFAULT`}
           initial={{ marginLeft: 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
           style={{ maxHeight: '800px' }}
@@ -98,7 +101,7 @@ const CWorkspaceLayout = () => {
               exit={{ opacity: 0, y: -20 }}
               
             >
-              <div className="">
+              <div className="bg-freelancer-bg-card">
                 {isPanelMaximized ? (
                   <div className="h-full relative">
                     {activePanel === 'chat' && <Chat isPanelMaximized={isPanelMaximized}/>}
@@ -108,7 +111,7 @@ const CWorkspaceLayout = () => {
                       onClick={() => {
                         setIsPanelMaximized(false);
                       }}
-                      className="absolute top-4 right-4 p-2 w-10 h-10 bg-client-accent rounded-[999px]"
+                      className="absolute top-4 right-4 p-2 w-10 h-10 bg-freelancer-accent rounded-[999px]"
                       title="Minimize"
                     >
                       <FullscreenExitOutlined />
@@ -146,4 +149,4 @@ const CWorkspaceLayout = () => {
   );
 };
 
-export default CWorkspaceLayout;
+export default FWorkspaceLayout;

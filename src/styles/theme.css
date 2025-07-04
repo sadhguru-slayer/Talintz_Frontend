@@ -38,6 +38,7 @@
   --freelancer-accent: theme('colors.freelancer.accent');
   --freelancer-bg: theme('colors.freelancer.bg.DEFAULT');
   --freelancer-bg-card: theme('colors.freelancer.bg.card');
+  --freelancer-bg-grey: theme('colors.freelancer.bg.grey');
 }
 
 

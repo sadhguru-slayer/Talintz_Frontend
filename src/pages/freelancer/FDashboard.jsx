@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
@@ -14,6 +14,7 @@ import FreelancerAnalyticsPage from './dashboard/FreelancerAnalyticsPage';
 import Earnings from './dashboard/Earnings';
 import ProjectDetailPage from './dashboard/ProjectDetailPage';
 import ReferralTab from '../../components/ReferralTab';
+import FWorkspaceLayout from './workspace/FWorkspaceLayout';
 
 // File upload constants based on Starter Tier
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -26,7 +27,14 @@ const FDashboard = ({ userId, role, isAuthenticated, isEditable }) => {
 
   // Extract component from URL pathname
   const getComponentFromPath = () => {
-    const path = location.pathname.split('/').pop();
+
+    const segments = location.pathname.split('/').filter(Boolean); // Remove empty strings
+    const lastSegment = segments[segments.length - 1]; // e.g., "12"
+    const secondLastSegment = segments[segments.length - 2]; // e.g., "workspace"
+  
+    if (secondLastSegment === 'workspace') {
+      return 'workspace'; // Handle workspace route
+    }
     const componentMap = {
       'projects': 'projects',
       'earnings': 'earnings',
@@ -34,11 +42,11 @@ const FDashboard = ({ userId, role, isAuthenticated, isEditable }) => {
       'project-status-overview': 'project-status-overview',
       'upcoming-events': 'upcoming-events',
       'freelancer-analytics': 'freelancer-analytics',
-      'dashboard': 'freelancer-analytics'
+      'dashboard': 'freelancer-analytics',
+      'workspace': 'workspace'
     };
-    return componentMap[path] || 'freelancer-analytics';
+    return componentMap[lastSegment] || 'freelancer-analytics';
   };
-
   const [state, setState] = useState({
     activeComponent: getComponentFromPath(),
     activeProfileComponent: 'view_profile',
@@ -134,7 +142,7 @@ const FDashboard = ({ userId, role, isAuthenticated, isEditable }) => {
           />
         </div>
         
-        <div className="flex-1 min-h-full p-4 pb-16 overflow-y-auto bg-freelancer-primary">
+        <div className="flex-1 h-full !overflow-hidden overflow-y-auto bg-freelancer-primary">
           
             <ErrorBoundary>
             <ReferralTab
@@ -156,6 +164,7 @@ const FDashboard = ({ userId, role, isAuthenticated, isEditable }) => {
                   <Route path="project-status-overview" element={<ProjectStatusOverview />} />
                   <Route path="upcoming-events" element={<UpcomingEvents />} />
                   <Route path="projects/:id" element={<ProjectDetailPage />} />
+                  <Route path="workspace/:workspaceId" element={<FWorkspaceLayout />} />
                 </Routes>
               </Suspense>
             </ErrorBoundary>

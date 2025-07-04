@@ -91,6 +91,7 @@ export default {
           orange: '#F59E0B',     // Orange accent from design
           purple: '#8B5CF6',     // Purple variant
           bg: {
+            grey: '#252A3A',
             DEFAULT: '#0F0F23',  // Dark gradient background
             card: '#1A1B2E',     // Card background
             gradient: 'linear-gradient(135deg, #0F0F23 0%, #1A1B2E 100%)', // Gradient background

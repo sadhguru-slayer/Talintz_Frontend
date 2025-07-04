@@ -88,7 +88,7 @@ const WorkspaceSection = () => {
   ];
 
   const handleWorkspaceClick = (workspaceId) => {
-    navigate(`/freelancer/dashboard/projects/workspace/${workspaceId}`);
+    navigate(`/freelancer/dashboard/workspace/${workspaceId}`);
   };
 
   return (
