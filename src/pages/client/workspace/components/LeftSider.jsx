@@ -30,7 +30,8 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
       icon: <DollarOutlined />,
       label: 'Payments',
       badge: null,
-    }
+    },
+    
   ];
 
   return (
@@ -112,10 +113,12 @@ const LeftSider = ({ collapsed, setCollapsed, activeSection, setActiveSection })
         >
           <motion.div
             whileHover={{ x: 3 }}
+            onClick={() => setActiveSection('settings')}
             className={`
               flex items-center ${collapsed ? 'justify-center' : 'px-3'} py-2 mx-1 cursor-pointer rounded-lg
               text-white/80 hover:text-white transition-all
               hover:bg-white/5
+              ${activeSection === 'settings' ? 'bg-client-accent/10' : ''}
             `}
           >
             <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 bg-white/10 text-white/60">

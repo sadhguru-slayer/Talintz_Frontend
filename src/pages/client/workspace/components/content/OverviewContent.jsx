@@ -13,7 +13,7 @@ const OverviewContent = () => {
   const { project, team, recentMessages, files, payments } = overviewData;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-4">
       {/* Project Summary */}
       <div className="bg-client-secondary/80 border border-client-border rounded-xl p-6 shadow-card">
         <div className="flex items-center justify-between mb-4">

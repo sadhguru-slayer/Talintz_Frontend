@@ -10,13 +10,21 @@ import {
   FullscreenExitOutlined
 } from '@ant-design/icons';
 import ChatPanel from './panels/ChatPanel';
+import RevisionPanel from './panels/RevisionPanel';
+import NotificationsPanel from './panels/NotificationPanel';
 
-const RightPanel = ({ isOpen, onClose, activePanel, onMaximize }) => {
+const RightPanel = ({ isOpen, onClose, activePanel, onMaximize, isPanelMaximized }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const dragRef = useRef(null);
   const workspaceRef = useRef(null);
+
+  useEffect(() => {
+    if (!isPanelMaximized && isMaximized) {
+      setIsMaximized(false);
+    }
+  }, [isPanelMaximized]);
 
   // Function to ensure panel stays within bounds when maximizing
   const adjustPositionWithinBounds = () => {
@@ -176,7 +184,7 @@ const RightPanel = ({ isOpen, onClose, activePanel, onMaximize }) => {
 
               {/* Content */}
               {!isMinimized && (
-                <div className="p-4 h-[calc(100%-2.5rem)] overflow-y-auto">
+                <div className=" h-[calc(100%-2.5rem)] overflow-y-auto">
                   {getPanelContent()}
                 </div>
               )}
@@ -189,29 +197,8 @@ const RightPanel = ({ isOpen, onClose, activePanel, onMaximize }) => {
 };
 
 
-const RevisionPanel = () => (
-  <div className="space-y-4">
-    <div className="bg-client-primary/40 rounded-lg p-4">
-      <h3 className="text-white font-medium mb-2">Raise a Revision Request</h3>
-      <textarea 
-        className="w-full bg-client-primary/40 border border-client-border 
-                   rounded-lg p-3 text-white resize-none"
-        rows={4}
-        placeholder="Describe the changes needed..."
-      />
-      <button className="mt-2 px-4 py-2 bg-client-accent text-white rounded-lg">
-        Submit Request
-      </button>
-    </div>
-  </div>
-);
 
-const NotificationsPanel = () => (
-  <div className="space-y-2">
-    {/* Notifications list */}
-    <div className="text-white">Notifications content...</div>
-  </div>
-);
+
 
 const QuickAccessPanel = () => (
   <div className="space-y-4">

@@ -30,7 +30,7 @@ const Payments = () => {
   const { summary, milestonePayments, transactions } = overviewData.payments;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-4">
       {/* Payment Overview Box */}
       <div className="bg-client-secondary/80 border border-client-border rounded-xl p-6 shadow-card">
         <div className="flex items-center gap-3 mb-6">

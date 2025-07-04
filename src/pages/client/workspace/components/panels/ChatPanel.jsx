@@ -7,12 +7,13 @@ import {
   CalendarOutlined,
   BellOutlined,
   CheckCircleOutlined,
-  EditOutlined
+  EditOutlined,
+  MessageOutlined
 } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import { chatData } from '../config/data';
 
-const ChatPanel = () => {
+const ChatPanel = ({ maxHeight, isPanelMaximized }) => {
   const [message, setMessage] = useState('');
 
   const formatTime = (timestamp) => {
@@ -87,9 +88,15 @@ const ChatPanel = () => {
   };
 
   return (
-    <div className="flex flex-col h-full -m-4">
+    <div className="flex flex-col h-full" style={{ maxHeight: maxHeight || '70vh' }}>
 
-
+{/* Header */}
+<div className="flex items-center justify-between px-4 py-3 border-b border-client-border bg-client-primary/40">
+  <div className="flex items-center gap-2">
+    <MessageOutlined className="text-client-accent" />
+    <h3 className="text-sm font-semibold text-white">Project Chat</h3>
+  </div>
+</div>
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-3">
         {chatData.messages.map(message => (
@@ -98,7 +105,7 @@ const ChatPanel = () => {
             className={`flex gap-2 ${message.userId === chatData.currentUser.id ? 'flex-row-reverse' : ''}`}
           >
             {/* Avatar */}
-            <div className="w-7 h-7 rounded-full bg-client-accent/20 flex-shrink-0 flex items-center justify-center text-white text-xs">
+            <div className={`w-7 h-7 rounded-full bg-client-accent/20 flex-shrink-0 flex items-center justify-center text-white ${isPanelMaximized ? 'text-base' : 'text-xs'}`}>
               {message.userName[0]}
             </div>
 
@@ -106,13 +113,13 @@ const ChatPanel = () => {
             <div className={`flex flex-col ${message.userId === chatData.currentUser.id ? 'items-end' : ''}`}>
               {/* User Info */}
               <div className="flex items-center gap-1 mb-0.5">
-                <span className="text-[10px] text-white/40">
+                <span className={`text-[10px] text-white/40 ${isPanelMaximized ? 'text-base' : 'text-xs'}`}>
                   {formatTime(message.timestamp)}
                 </span>
-                <span className="text-[11px] font-sans text-white">
+                <span className={`text-[11px] font-sans text-white ${isPanelMaximized ? 'text-base' : 'text-xs'}`}>
                   {message.userName}
                 </span>
-                <span className="text-[10px] text-client-accent">
+                <span className={`text-[10px] text-client-accent ${isPanelMaximized ? 'text-base' : 'text-xs'}`}>
                   {message.userRole}
                 </span>
               </div>

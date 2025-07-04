@@ -29,12 +29,7 @@ const RightSider = ({ activePanelType, onItemClick }) => {
       label: 'Status Updates',
       badge: 1
     },
-    {
-      key: 'quickAccess',
-      icon: <RocketOutlined />,
-      label: 'Quick Access',
-      badge: null
-    }
+    
   ];
 
   return (

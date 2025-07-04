@@ -17,7 +17,10 @@ import OverviewContent from './components/content/OverviewContent';
 import Milestones from './components/content/Milestones';
 import Payments from './components/content/Payments';
 import RightPanel from './components/RightPanel';
-import ChatPanel from './components/panels/ChatPanel';
+import Chat from './components/content/Chat';
+import Revision from './components/content/Revision';
+import Notification from './components/content/Notification';
+import Settings from './components/content/Settings';
 
 const { Text } = Typography;
 
@@ -59,25 +62,33 @@ const WorkspaceLayout = () => {
   ];
 
   const handleRightSiderClick = (panelType) => {
+    setIsPanelMaximized(false);
     setActivePanel(panelType);
   };
 
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+    setIsPanelMaximized(false);
+    setActivePanel(null);
+  };
+
   return (
-    <div className="flex h-full bg-client-primary workspace-layout">
+    <div className="flex h-full max-h-screen bg-client-primary workspace-layout">
       <div className="flex-1 flex overflow-hidden">
         {/* Replaced Left Workspace Sider with new component */}
         <LeftSider 
           collapsed={collapsed}
           setCollapsed={setCollapsed}
           activeSection={activeSection}
-          setActiveSection={setActiveSection}
+          setActiveSection={handleSectionChange}
         />
 
         {/* Center Content */}
         <motion.div
-          className="flex-1 flex flex-col overflow-auto bg-client-bg-DEFAULT"
+          className={`flex-1 flex flex-col ${isPanelMaximized && activePanel === 'chat' ? '' : 'overflow-auto'} bg-client-bg-DEFAULT`}
           initial={{ marginLeft: 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
+          style={{ maxHeight: '800px' }}
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -85,16 +96,20 @@ const WorkspaceLayout = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="p-6"
+              
             >
-              <div className="bg-client-secondary/40 backdrop-blur-2xl rounded-xl border border-client-border p-6 shadow-lg">
+              <div className="">
                 {isPanelMaximized ? (
-                  <div className="h-full p-4 bg-client-primary">
-                    {activePanel === 'chat' && <ChatPanel />}
-                    {activePanel === 'revision' && <RevisionPanel />}
+                  <div className="h-full relative">
+                    {activePanel === 'chat' && <Chat isPanelMaximized={isPanelMaximized}/>}
+                    {activePanel === 'revision' && <Revision isPanelMaximized={isPanelMaximized}/>}
+                    {activePanel === 'notifications' && <Notification isPanelMaximized={isPanelMaximized}/>}
                     <button 
-                      onClick={() => setIsPanelMaximized(false)}
-                      className="absolute top-4 right-4 p-2 bg-client-accent rounded-lg"
+                      onClick={() => {
+                        setIsPanelMaximized(false);
+                      }}
+                      className="absolute top-4 right-4 p-2 w-10 h-10 bg-client-accent rounded-[999px]"
+                      title="Minimize"
                     >
                       <FullscreenExitOutlined />
                     </button>
@@ -104,6 +119,7 @@ const WorkspaceLayout = () => {
                     {activeSection === 'overview' && <OverviewContent />}
                     {activeSection === 'milestones' && <Milestones />}
                     {activeSection === 'payments' && <Payments />}
+                    {activeSection === 'settings' && <Settings />}
                   </>
                 )}
               </div>
@@ -123,6 +139,7 @@ const WorkspaceLayout = () => {
           activePanel={activePanel}
           onClose={() => setActivePanel(null)}
           onMaximize={setIsPanelMaximized}
+          isPanelMaximized={isPanelMaximized}
         />
       </div>
     </div>

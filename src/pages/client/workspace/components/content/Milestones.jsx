@@ -35,7 +35,7 @@ const Milestones = () => {
   const [showDisputeModal, setShowDisputeModal] = useState(false);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-4 ">
       {milestones.map((milestone, idx) => {
         const isOpen = openIdx === idx;
         const isCurrent = ["Submitted", "In Progress", "Revision"].includes(milestone.status);
@@ -234,12 +234,58 @@ const Milestones = () => {
             {/* Dispute Modal */}
             {isOpen && showDisputeModal && (
               <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-                <div className="bg-client-secondary p-6 rounded-xl w-full max-w-md">
-                  <h3 className="text-lg font-semibold text-white mb-2">Raise a Dispute</h3>
-                  <textarea className="w-full rounded p-2 bg-white/10 text-white border border-client-border mb-2" placeholder="Describe your concern..." rows={3} />
+                <div className="bg-client-secondary p-6 rounded-xl w-full max-w-md border border-client-border shadow-card">
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <span className="inline-block bg-red-500/20 text-red-500 rounded-full px-2 py-0.5 text-xs font-semibold">🚩</span>
+                    Raise a Dispute
+                  </h3>
+                  {/* 🚩 Milestone Auto-selected */}
+                  <div className="mb-3">
+                    <label className="block text-white/80 font-semibold mb-1">Milestone</label>
+                    <div className="bg-client-primary/40 border border-client-border rounded px-3 py-2 text-white/90">
+                      {milestone.title}
+                    </div>
+                  </div>
+                  {/* 📝 Issue Description */}
+                  <div className="mb-3">
+                    <label className="block text-white/80 font-semibold mb-1">Issue Description <span className="text-red-400">*</span></label>
+                    <textarea
+                      className="w-full rounded p-2 bg-white/10 text-white border border-client-border"
+                      placeholder="Describe your concern in at least 30 words..."
+                      rows={4}
+                      minLength={150} // ~30 words
+                      required
+                    />
+                    <div className="text-xs text-white/50 mt-1">Minimum 30 words required.</div>
+                  </div>
+                  {/* 📎 Attach Proof (Optional) */}
+                  <div className="mb-3">
+                    <label className="block text-white/80 font-semibold mb-1">Attach Proof (Optional)</label>
+                    <input type="file" className="w-full bg-client-primary/40 border border-client-border rounded px-2 py-1 text-white" />
+                  </div>
+                  {/* 📅 Deadline Passed? */}
+                  <div className="mb-3 flex items-center gap-2">
+                    <input type="checkbox" id="deadline-passed" className="accent-client-accent" />
+                    <label htmlFor="deadline-passed" className="text-white/80">Milestone deadline has passed with no response</label>
+                  </div>
+                  {/* 📬 Freelancer Response Note */}
+                  <div className="mb-4 flex items-center gap-2">
+                    <span className="inline-block bg-blue-500/20 text-blue-400 rounded-full px-2 py-0.5 text-xs font-semibold">📬</span>
+                    <span className="text-xs text-white/70">Freelancer will get 48h to respond before we step in</span>
+                  </div>
+                  {/* 🚨 Confirm Button */}
                   <div className="flex justify-end gap-2">
-                    <button onClick={() => setShowDisputeModal(false)} className="px-4 py-1 rounded bg-white/10 text-white">Cancel</button>
-                    <button className="px-4 py-1 rounded bg-red-500 text-white font-semibold">Submit Dispute</button>
+                    <button
+                      onClick={() => setShowDisputeModal(false)}
+                      className="px-4 py-1 rounded bg-white/10 text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-4 py-1 rounded bg-red-500 text-white font-semibold"
+                    >
+                      Escalate to Talintz Support
+                    </button>
                   </div>
                 </div>
               </div>

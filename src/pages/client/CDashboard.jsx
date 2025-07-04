@@ -75,7 +75,6 @@ const CDashboard = ({ userId, role }) => {
           flex-1 overflow-auto
           `}>
           {!isWorkspaceRoute && (
-            <div className="px-6 py-2">
               <ReferralTab
                 role="client"
                 placement="dashboard"
@@ -84,8 +83,8 @@ const CDashboard = ({ userId, role }) => {
                   totalEarnings: 0,
                   referralCode: null
                 }}
-              />    
-            </div>
+                className="mx-6 my-2"
+              /> 
           )}
           <Outlet />
         </div>
