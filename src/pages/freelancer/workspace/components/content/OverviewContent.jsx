@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
   UserOutlined, 
   CalendarOutlined, 
@@ -9,6 +9,9 @@ import {
   InfoCircleOutlined 
 } from '@ant-design/icons';
 import overviewData from "../../utils/data";
+import Cookies from "js-cookie";
+import { getBaseURL } from "../../../../../config/axios";
+import { useParams } from "react-router-dom";
 
 const statusBadge = (status) => {
   const statusConfig = {
@@ -28,7 +31,21 @@ const statusBadge = (status) => {
 
 const OverviewContent = () => {
   const { project, team, payments } = overviewData;
-
+  const params = useParams();
+  const workspace_id = params.workspaceId;
+useEffect(() => {
+  const fetchOverview = async () => {
+    const accessToken = Cookies.get('accessToken');
+      const response = await fetch(`${getBaseURL()}/api/workspace/freelancer/overview/${parseInt(workspace_id)}/`, {
+  headers: {
+    'Authorization': `Bearer ${accessToken}`
+  }
+});
+const data = await response.json();
+console.log(data)
+  };
+  fetchOverview();
+}, []);
   return (
     <div className="space-y-10 p-4 max-w-4xl mx-auto">
       {/* === Project Title & Status === */}

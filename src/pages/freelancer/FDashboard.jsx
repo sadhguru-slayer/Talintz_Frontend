@@ -142,7 +142,7 @@ const FDashboard = ({ userId, role, isAuthenticated, isEditable }) => {
           />
         </div>
         
-        <div className="flex-1 h-full !overflow-hidden overflow-y-auto bg-freelancer-primary">
+        <div className="flex-1 h-full  overflow-y-auto bg-freelancer-primary">
           
             <ErrorBoundary>
             <ReferralTab
