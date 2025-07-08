@@ -18,90 +18,31 @@ import {getBaseURL} from '../../../config/axios';
 const { Option } = Select;
 
 // Simplified WorkspaceTab without animations
-const WorkspaceTab = ({ selectedProject }) => (
+const WorkspaceTab = ({ workspaces = [], navigate }) => (
   <div className="space-y-6">
-    {/* Ongoing Projects Section */}
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-white">Ongoing Projects</h3>
-      <div className="grid gap-4">
-        {selectedProject?.ongoingProjects?.map((project) => (
+    <h3 className="text-lg font-semibold text-white">All Workspaces</h3>
+    <div className="grid gap-4">
+      {workspaces.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          <FaBriefcase className="text-4xl text-gray-300 mb-4" />
+          <p className="text-white/60 text-lg">No workspaces found.</p>
+        </div>
+      ) : (
+        workspaces.map(ws => (
           <div
-            key={project.id}
-            className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-4 hover:bg-white/10 transition-colors duration-200"
+            key={ws.id}
+            className="cursor-pointer bg-white/5 rounded-lg p-4 mb-3 hover:bg-client-accent/10 transition"
+            onClick={() => navigate(`/client/dashboard/workspace/${ws.id}`)}
           >
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <h4 className="text-white font-medium">{project.title}</h4>
-                <div className="flex items-center gap-2 mt-1">
-                  <Tag className="bg-client-accent/20 text-client-accent border-0">
-                    {project.type}
-                  </Tag>
-                  <span className="text-white/60 text-sm">
-                    Due: {project.deadline}
-                  </span>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-white/80 text-sm mb-1">{project.status}</div>
-                <div className="text-white/60 text-xs">Updated {project.lastUpdate}</div>
-              </div>
+            <div className="flex items-center gap-3">
+              <span className="font-bold text-white">{ws.title || 'Untitled Workspace'}</span>
+              <span className="text-xs text-client-accent bg-client-accent/10 px-2 py-1 rounded">{ws.type === 'obsp' ? 'OBSP' : 'Project'}</span>
+              <span className="text-xs text-white/60 capitalize">{ws.status}</span>
             </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-white/60">Progress</span>
-                <span className="text-white">{project.progress}%</span>
-              </div>
-              <div className="w-full bg-white/10 rounded-full h-1.5">
-                <div
-                  className="h-full rounded-full bg-client-accent"
-                  style={{ width: `${project.progress}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="mt-3 flex items-center gap-2">
-              <TeamOutlined className="text-white/60" />
-              <div className="flex -space-x-2">
-                {project.team.map((member, index) => (
-                  <div
-                    key={index}
-                    className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-xs text-white"
-                  >
-                    {member.split(' ')[0][0]}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="text-xs text-white/40 mt-1">Created: {new Date(ws.created_at).toLocaleDateString()}</div>
           </div>
-        ))}
-      </div>
-    </div>
-
-    {/* Recent Updates Section */}
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-white">Recent Updates</h3>
-      <div className="space-y-3">
-        {selectedProject?.recentUpdates?.map((update) => (
-          <div
-            key={update.id}
-            className="bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-3 hover:bg-white/10 transition-colors duration-200"
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-client-accent/20 flex items-center justify-center flex-shrink-0">
-                <UserOutlined className="text-client-accent" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-white text-sm">
-                  <span className="font-medium">{update.user}</span> updated {update.project}
-                </p>
-                <p className="text-white/60 text-sm mt-1">{update.update}</p>
-                <span className="text-white/40 text-xs mt-1 block">{update.time}</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+        ))
+      )}
     </div>
   </div>
 );
@@ -116,7 +57,7 @@ const getTabItems = (selectedProject) => [
       </span>
     ),
     key: 'workspace',
-    children: <WorkspaceTab selectedProject={selectedProject} />
+    children: <WorkspaceTab workspaces={selectedProject?.workspaces || []} navigate={selectedProject?.navigate || (() => {})} />
   },
   {
     label: (
@@ -194,6 +135,7 @@ const PostedProjects = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('projects'); // 'projects' or 'workspace'
+  const [workspaces, setWorkspaces] = useState([]);
   
   const pageSize = 4;
   const location = useLocation();
@@ -491,6 +433,19 @@ const PostedProjects = () => {
     }
   }, [location.state, projects]);
 
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      const accessToken = Cookies.get('accessToken');
+      const response = await fetch(`${getBaseURL()}/api/client/workspaces/`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
+      const data = await response.json();
+      console.log(data)
+      setWorkspaces(data); // useState for workspaces
+    };
+    fetchWorkspaces();
+  }, []);
+
   return (
     <div className="flex-1 overflow-auto p-4 md:p-6 bg-client-bg">
       {/* Header Card - Simplified */}
@@ -684,7 +639,7 @@ const PostedProjects = () => {
               )}
             </div>
           ) : (
-            <WorkspaceTab selectedProject={selectedProject} />
+            <WorkspaceTab workspaces={workspaces} navigate={navigate} />
           )}
         </div>
       </div>
