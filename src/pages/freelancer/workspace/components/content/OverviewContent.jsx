@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   UserOutlined, 
   CalendarOutlined, 
@@ -8,44 +8,73 @@ import {
   DownloadOutlined,
   InfoCircleOutlined 
 } from '@ant-design/icons';
-import overviewData from "../../utils/data";
 import Cookies from "js-cookie";
 import { getBaseURL } from "../../../../../config/axios";
 import { useParams } from "react-router-dom";
 
-const statusBadge = (status) => {
+const statusBadge = (statusRaw) => {
+  if (!statusRaw) return null;
+  // Normalize status: lowercase, replace underscores with spaces
+  const status = statusRaw.replace(/_/g, " ").toLowerCase();
+  // Capitalize each word for display
+  const prettyStatus = status
+    .split(" ")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
   const statusConfig = {
-    "In Progress": { color: "bg-yellow-400 text-gray-900", icon: "🔄" },
-    "Pending Client": { color: "bg-blue-400 text-white", icon: "⏳" },
-    "Awaiting Revision": { color: "bg-orange-400 text-white", icon: "✏️" },
-    "QA Phase": { color: "bg-purple-400 text-white", icon: "🔍" },
-    "Closed": { color: "bg-green-500 text-white", icon: "✅" }
+    "pending":         { color: "bg-gray-200 text-gray-800", icon: "⏳" },
+    "in progress":     { color: "bg-blue-100 text-blue-800", icon: "🚧" },
+    "under review":    { color: "bg-blue-100 text-blue-800", icon: "🔍" },
+    "approved":        { color: "bg-green-100 text-green-800", icon: "✅" },
+    "completed":       { color: "bg-green-200 text-green-900", icon: "🏁" },
+    "submitted":       { color: "bg-blue-50 text-blue-700", icon: "📤" },
+    "revision":        { color: "bg-orange-100 text-orange-800", icon: "✏️" },
+    "changes requested": { color: "bg-orange-100 text-orange-800", icon: "✏️" },
+    "disputed":        { color: "bg-red-100 text-red-800", icon: "⚠️" },
+    "qa phase":        { color: "bg-purple-100 text-purple-800", icon: "🧪" },
+    // Add more as needed
   };
-  const config = statusConfig[status] || statusConfig["In Progress"];
+
+  const config = statusConfig[status] || statusConfig["pending"];
+
   return (
-    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full ${config.color} font-semibold text-xs`}>
-      {config.icon} {status}
+    <span
+      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full ${config.color} font-semibold text-xs border border-gray-200`}
+    >
+      {config.icon} {prettyStatus}
     </span>
   );
 };
 
 const OverviewContent = () => {
-  const { project, team, payments } = overviewData;
+  const [overview, setOverview] = useState(null);
   const params = useParams();
   const workspace_id = params.workspaceId;
-useEffect(() => {
-  const fetchOverview = async () => {
-    const accessToken = Cookies.get('accessToken');
+
+  useEffect(() => {
+    const fetchOverview = async () => {
+      const accessToken = Cookies.get('accessToken');
       const response = await fetch(`${getBaseURL()}/api/workspace/freelancer/overview/${parseInt(workspace_id)}/`, {
-  headers: {
-    'Authorization': `Bearer ${accessToken}`
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      const data = await response.json();
+      setOverview(data);
+    };
+    fetchOverview();
+  }, [workspace_id]);
+
+  if (!overview) {
+    return (
+      <div className="text-white text-center py-10">Loading overview...</div>
+    );
   }
-});
-const data = await response.json();
-console.log(data)
-  };
-  fetchOverview();
-}, []);
+
+  // Destructure the data for easier access
+  const { project, team, payments } = overview;
+
   return (
     <div className="space-y-10 p-4 max-w-4xl mx-auto">
       {/* === Project Title & Status === */}
@@ -53,12 +82,14 @@ console.log(data)
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
           <div>
             <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-              {project.name}
-              <span className="text-xs px-2 py-1 bg-freelancer-accent/20 text-freelancer-accent rounded font-semibold tracking-wide">
-                OBSP
-              </span>
+              {project?.title}
+              {overview.type === "obsp" && (
+                <span className="text-xs px-2 py-1 bg-freelancer-accent/20 text-freelancer-accent rounded font-semibold tracking-wide">
+                  OBSP
+                </span>
+              )}
             </h1>
-            <div className="mt-3">{statusBadge(project.status)}</div>
+            <div className="mt-3">{statusBadge(project?.status)}</div>
           </div>
           <button className="flex items-center gap-2 px-4 py-2 bg-freelancer-accent hover:bg-freelancer-accent/90 text-white rounded-lg text-sm font-medium shadow">
             <DownloadOutlined /> Download Scope PDF
@@ -74,20 +105,19 @@ console.log(data)
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
           <div>
             <div className="text-sm text-white/60 mb-1">Level</div>
-            <div className="text-base text-white font-medium">Mid-Level OBSP</div>
+            <div className="text-base text-white font-medium">{project?.complexity_level}</div>
           </div>
           <div>
             <div className="text-sm text-white/60 mb-1">Industry</div>
-            <div className="text-base text-white font-medium">Tech / Creativity</div>
+            <div className="text-base text-white font-medium">{project?.category_name}</div>
           </div>
         </div>
         <div>
           <div className="text-sm text-white/60 mb-1">Key Deliverables</div>
           <ul className="list-disc list-inside text-white/90 space-y-1 ml-4">
-            <li>E-commerce website design</li>
-            <li>Product page templates (3 variants)</li>
-            <li>Checkout flow optimization</li>
-            <li>Mobile-responsive implementation</li>
+            {(project?.deliverables || []).map((d, i) => (
+              <li key={i}>{d}</li>
+            ))}
           </ul>
         </div>
       </section>
@@ -101,17 +131,19 @@ console.log(data)
           <div>
             <div className="text-sm text-white/60 mb-1">Project Start</div>
             <div className="text-base text-white flex items-center gap-1 font-medium">
-              <CalendarOutlined /> June 15, 2025
+              <CalendarOutlined /> {project?.start_date ? new Date(project.start_date).toLocaleDateString() : "N/A"}
             </div>
           </div>
           <div>
             <div className="text-sm text-white/60 mb-1">Current Phase</div>
-            <div className="text-base text-white font-medium">Design Preview</div>
+            <div className="text-base text-white font-medium">
+              {project?.milestones?.find(m => m.status === "in_progress")?.title || "N/A"}
+            </div>
           </div>
           <div>
             <div className="text-sm text-white/60 mb-1">Final Deadline</div>
             <div className="text-base text-white flex items-center gap-1 font-medium">
-              <CalendarOutlined /> July 15, 2025
+              <CalendarOutlined /> {project?.deadline ? new Date(project.deadline).toLocaleDateString() : "N/A"}
             </div>
           </div>
         </div>
@@ -125,15 +157,15 @@ console.log(data)
               </tr>
             </thead>
             <tbody>
-              {payments.milestonePayments.map((milestone) => (
+              {(project?.milestones || []).map((milestone) => (
                 <tr key={milestone.id} className="bg-freelancer-bg-grey rounded">
                   <td className="py-2 px-2 rounded-l">{milestone.title}</td>
                   <td className="py-2 text-center">
-                    {milestone.status === "Done" && <span className="text-green-400 font-semibold">✅ Approved</span>}
-                    {milestone.status === "Released" && <span className="text-yellow-300 font-semibold">🔄 Ongoing</span>}
-                    {milestone.status === "Locked" && <span className="text-blue-300 font-semibold">⏳ Pending</span>}
+                    {statusBadge(milestone.status)}
                   </td>
-                  <td className="py-2 px-2 text-right rounded-r">{milestone.date}</td>
+                  <td className="py-2 px-2 text-right rounded-r">
+                    {milestone.deadline ? new Date(milestone.deadline).toLocaleDateString() : "N/A"}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -152,8 +184,7 @@ console.log(data)
               <UserOutlined className="text-freelancer-accent" />
             </div>
             <div>
-              <div className="text-white font-medium text-lg">Bob Smith</div>
-              <div className="text-white/70 text-sm">Acme Corp</div>
+              <div className="text-white font-medium text-lg">{team?.[0]?.name || "Client"}</div>
             </div>
           </div>
           <div className="flex gap-3 mt-2 sm:mt-0">

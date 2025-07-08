@@ -140,7 +140,7 @@ const RightPanel = ({ isOpen, onClose, activePanel, onMaximize, isPanelMaximized
                   <DragOutlined className="text-white/40 cursor-move" />
                   <h2 className="text-sm font-medium text-white">
                     {activePanel === 'chat' && 'Project Chat'}
-                    {activePanel === 'revision' && 'Raise Revision'}
+                    {activePanel === 'revision' && 'Revisions'}
                     {activePanel === 'notifications' && 'Notifications'}
                     {activePanel === 'quickAccess' && 'Quick Access'}
                   </h2>
