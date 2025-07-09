@@ -10,12 +10,16 @@ import {
   ClockCircleOutlined, DollarOutlined, FileDoneOutlined,
   MessageOutlined, UserOutlined, CalendarOutlined, FlagOutlined,
   LinkOutlined, EnvironmentOutlined, GlobalOutlined, TagOutlined,
-  StarOutlined, TeamOutlined, FileTextOutlined, InfoCircleOutlined,
-  ArrowRightOutlined, LeftOutlined
+  StarOutlined, TeamOutlined, InfoCircleOutlined,
+  ArrowRightOutlined, LeftOutlined, ThunderboltOutlined, AppstoreOutlined
 } from "@ant-design/icons";
+import { AiOutlineFileDone } from "react-icons/ai";
 import { GrRevert } from "react-icons/gr";
 import { motion } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
+import Cookies from "js-cookie";
+import { getBaseURL } from "../../../config/axios";
+import DOMPurify from "dompurify";
 
 const ProjectDetailPage = () => {
   const { id } = useParams();
@@ -48,87 +52,17 @@ const ProjectDetailPage = () => {
     const fetchProjectDetails = async () => {
       setLoading(true);
       try {
-        if (location.state?.project) {
-          const projectWithDefaults = {
-            title: location.state.project.name || "Untitled Project",
-            client: location.state.project.client || "No Client",
-            deadline: location.state.project.deadline || "No deadline",
-            status: location.state.project.status || "Pending",
-            description: location.state.project.description || "No description available",
-            budget: location.state.project.budget || "N/A",
-            completionPercentage: location.state.project.completionPercentage || 0,
-            isCollaborative: location.state.project.isCollaborative || false,
-            milestones: location.state.project.milestones || [],
-            messages: location.state.project.messages || [],
-            type: location.state.project.type || "N/A",
-            experienceLevel: location.state.project.experienceLevel || "N/A",
-            currentBids: location.state.project.currentBids || 0,
-            clientDetails: location.state.project.clientDetails || {
-              name: "No Name",
-              rating: 0,
-              location: "No Location",
-              memberSince: "N/A",
-              totalProjects: 0,
-              completedProjects: 0
-            },
-            skills: location.state.project.skills || [],
-            biddingHistory: location.state.project.biddingHistory || []
-          };
-          setProject(projectWithDefaults);
-        } else {
-          const mockProject = {
-            title: "Untitled Project",
-            client: "No Client",
-            deadline: "No deadline",
-            status: "Pending",
-            budget: "N/A",
-            description: "No description available",
-            completionPercentage: 0,
-            isCollaborative: false,
-            milestones: [],
-            messages: [],
-            type: "N/A",
-            experienceLevel: "N/A",
-            currentBids: 0,
-            clientDetails: {
-              name: "No Name",
-              rating: 0,
-              location: "No Location",
-              memberSince: "N/A",
-              totalProjects: 0,
-              completedProjects: 0
-            },
-            skills: [
-              "React.js",
-              "Node.js",
-              "UI/UX Design",
-              "Responsive Design",
-              "JavaScript",
-              "HTML5",
-              "CSS3",
-              "Web Development"
-            ],
-            biddingHistory: [
-              {
-                id: 1,
-                freelancer: "John Doe",
-                amount: "$3,500",
-                date: "2024-03-15",
-                status: "Pending",
-                proposal: "I have extensive experience in web development and can deliver a high-quality website within the specified timeline."
-              },
-              {
-                id: 2,
-                freelancer: "Jane Smith",
-                amount: "$4,200",
-                date: "2024-03-14",
-                status: "Pending",
-                proposal: "Specialized in modern web design with a focus on user experience and performance optimization."
-              }
-            ]
-          };
-          setProject(mockProject);
-        }
+        const token = Cookies.get('accessToken');
+        const res = await fetch(`${getBaseURL()}/api/freelancer/project-details/${id}/`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Failed to fetch project details");
+        const data = await res.json();
+        console.log(data)
+        setProject(data);
       } catch (error) {
         console.error("Error fetching project details:", error);
         notification.error({
@@ -146,7 +80,7 @@ const ProjectDetailPage = () => {
     } else {
       navigate('/freelancer/dashboard/projects');
     }
-  }, [id, location.state, navigate]);
+  }, [id, navigate]);
   
   const handleOpenModal = () => {
     setIsModalVisible(true);
@@ -240,7 +174,7 @@ const ProjectDetailPage = () => {
   };
 
   const handleConfirmChange = () => {
-    if (!link && files.length === 0) {
+    if (!link && files?.length === 0) {
       notification.error({
         message: "No Attachments",
         description: "Please add a link or upload at least one file.",
@@ -287,7 +221,7 @@ const ProjectDetailPage = () => {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  const daysRemaining = calculateDaysRemaining(project.deadline);
+  const daysRemaining = calculateDaysRemaining(project?.deadline);
 
   return (
     <div className="p-6 !bg-freelancer-primary min-h-screen">
@@ -316,71 +250,164 @@ const ProjectDetailPage = () => {
                 </Button>
               </div>
             </div>
+            <div className="flex flex-wrap gap-4 mt-4 bg-white/5 border border-white/10 rounded-lg p-4 shadow-sm">
+  <div className="flex items-center gap-2 min-w-[120px]">
+    <DollarOutlined className="text-freelancer-accent" />
+    <span className="text-xs text-white/60">Budget</span>
+    <span className="font-semibold text-white ml-1">
+      ₹{project?.budget ? Number(project.budget).toLocaleString() : "N/A"}
+    </span>
+  </div>
+  <div className="flex items-center gap-2 min-w-[120px]">
+    <ThunderboltOutlined className="text-yellow-400" />
+    <span className="text-xs text-white/60">Complexity</span>
+    <span className="font-semibold text-white ml-1 capitalize">{project?.complexity_level ?? "N/A"}</span>
+  </div>
+  <div className="flex items-center gap-2 min-w-[140px]">
+    <CalendarOutlined className="text-freelancer-accent" />
+    <span className="text-xs text-white/60">Deadline</span>
+    <span className="font-semibold text-white ml-1">
+      {project?.deadline ? new Date(project.deadline).toLocaleDateString() : "N/A"}
+    </span>
+  </div>
+  <div className="flex items-center gap-2 min-w-[120px]">
+    <AppstoreOutlined className="text-freelancer-accent" />
+    <span className="text-xs text-white/60">Domain</span>
+    <span className="font-semibold text-white ml-1">{project?.domain?.name ?? "N/A"}</span>
+  </div>
+  <div className="flex items-center gap-2 min-w-[120px]">
+    <ClockCircleOutlined className="text-freelancer-accent" />
+    <span className="text-xs text-white/60">Pricing</span>
+    <span className="font-semibold text-white ml-1">
+      {project?.pricing_strategy === "hourly" ? "Hourly" : "Fixed"}
+    </span>
+  </div>
+  <div className="flex items-center gap-2 min-w-[100px]">
+    <TagOutlined className="text-blue-400" />
+    <span className="text-xs text-white/60">Status</span>
+    <Tag className="capitalize text-xs ml-1" color="blue">{project?.status}</Tag>
+  </div>
+</div>
           </div>
         </div>
       </Card>
 
-      <div className="max-w-6xl mx-auto px-4">
-        <Row gutter={[24, 24]}>
+      <div className="max-w-6xl mx-auto">
+        <Row gutter={[10, 10]}>
           <Col xs={24} md={16}>
             <motion.div variants={itemVariants} className="space-y-6">
               <Card className="bg-freelancer-bg-card border border-white/10 rounded-xl shadow-lg">
                 <h2 className="text-xl font-semibold text-white mb-4">Project Overview</h2>
-                <p className="text-text-light leading-relaxed">
-                {project.description}
-              </p>
+                <div
+                  className="text-text-light leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project?.description ?? "") }}
+                />
                 <Divider />
                 <div className="flex flex-wrap gap-2">
-                  {project.skills.map((skill, idx) => (
+                  {project?.skills_required?.map((skill, idx) => (
                     <Tag
                       key={idx}
                       className="px-3 py-1 text-sm bg-freelancer-primary/20 text-freelancer-primary border-freelancer-primary/30"
                     >
-                      {skill}
+                      {skill.name}
                     </Tag>
                   ))}
                 </div>
               </Card>
 
               <Card className="bg-freelancer-bg-card border border-white/10 rounded-xl shadow-lg">
-                <h2 className="text-xl font-semibold text-white mb-4">Bidding History</h2>
-                {project.biddingHistory.length === 0 ? (
+                <h2 className="text-xl font-semibold text-white mb-4">Your Bid History</h2>
+                {(!project?.bidding_history || project?.bidding_history.length === 0) ? (
                   <Alert
-                    message="No bids have been placed yet."
+                    message="You have not placed any bids on this project yet."
+                    type="info"
+                    showIcon
+                    className="mb-4"
+                  />
+                ) : (
+                  <div className="space-y-4">
+                    {project.bidding_history.map((bid) => (
+                      <Card
+                        key={bid.id}
+                        className="bg-white/5 border border-white/10 rounded-lg shadow flex flex-col md:flex-row md:items-center md:justify-between"
+                        bodyStyle={{ padding: 16 }}
+                      >
+                        <div className="flex-1 flex flex-col md:flex-row md:items-center gap-2">
+                          <Tag color={bid.state === "accepted" ? "green" : bid.state === "submitted" ? "blue" : "orange"} className="capitalize text-xs">
+                            {bid.state}
+                          </Tag>
+                          <span className="text-white/80 text-sm">
+                            <DollarOutlined className="mr-1 text-freelancer-accent" />
+                            {bid.total_value} {bid.currency}
+                          </span>
+                          {bid.bid_type && (
+                            <span className="text-xs text-white/60 bg-freelancer-accent/10 px-2 py-1 rounded ml-2">
+                              {bid.bid_type.replace('_', ' ')}
+                            </span>
+                          )}
+                          {bid.hourly_rate && (
+                            <span className="text-xs text-white/60 ml-2">
+                              Hourly: ₹{bid.hourly_rate}/hr
+                            </span>
+                          )}
+                          {bid.estimated_hours && (
+                            <span className="text-xs text-white/60 ml-2">
+                              Est. Hours: {bid.estimated_hours}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs text-white/60">
+                            Placed: {bid.created_at ? new Date(bid.created_at).toLocaleDateString() : "N/A"}
+                          </span>
+                          <span className="text-xs text-white/60">
+                            {bid.proposed_start && bid.proposed_end
+                              ? `Duration: ${new Date(bid.proposed_start).toLocaleDateString()} - ${new Date(bid.proposed_end).toLocaleDateString()}`
+                              : ""}
+                          </span>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </Card>
+
+              <Card className="bg-freelancer-bg-card border border-white/10 rounded-xl shadow-lg">
+                <h2 className="text-xl font-semibold text-white mb-4">Milestones</h2>
+                {project?.milestones?.length === 0 ? (
+                  <Alert
+                    message="No milestones have been added yet."
                     type="info"
                     showIcon
                     className="mb-4"
                   />
                 ) : (
                   <Timeline>
-                    {project.biddingHistory.map((bid) => (
+                    {project?.milestones?.map((milestone, idx) => (
                       <Timeline.Item
-                        key={bid.id}
-                        color={bid.status === "Accepted" ? "green" : bid.status === "Pending" ? "blue" : "red"}
-                        dot={
-                          bid.status === "Accepted" ? <CheckCircleOutlined /> :
-                          bid.status === "Pending" ? <ClockCircleOutlined /> :
-                          <ExclamationCircleOutlined />
-                        }
+                        key={milestone.id || idx}
+                        color={milestone.status === "Completed" ? "green" : milestone.status === "Ongoing" ? "blue" : "gray"}
+                        
                       >
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                      <div>
-                            <span className="font-semibold text-freelancer-accent">{bid.freelancer}</span>
-                            <span className="ml-2 text-white/80">{bid.amount}</span>
-                            <Tag className="ml-2" color={bid.status === "Accepted" ? "green" : bid.status === "Pending" ? "blue" : "red"}>
-                              {bid.status}
-                        </Tag>
-                      </div>
+                          <div>
+                            <span className="font-semibold text-freelancer-accent">{milestone.title}</span>
+                            <Tag className="ml-2 capitalize" color={milestone.status === "Completed" ? "green" : milestone.status === "Ongoing" ? "blue" : "default"}>
+                              {milestone.status}
+                            </Tag>
+                            <span className="ml-2 text-white/80">
+                              Amount: ₹{milestone.amount}
+                            </span>
+                          </div>
                           <div className="text-white/60 text-sm mt-1 md:mt-0">
-                            {bid.date}
+                            Due: {milestone.due_date ? new Date(milestone.due_date).toLocaleDateString() : "N/A"}
                           </div>
                         </div>
-                        <div className="text-white/80 mt-1">{bid.proposal}</div>
                       </Timeline.Item>
                     ))}
                   </Timeline>
-              )}
-            </Card>
+                )}
+              </Card>
             </motion.div>
           </Col>
           
@@ -390,48 +417,40 @@ const ProjectDetailPage = () => {
                 <h2 className="text-xl font-semibold text-white mb-4">Client Details</h2>
                 <div className="flex items-center gap-3 mb-2">
                   <Avatar size={48} icon={<UserOutlined />} />
-                <div>
-                    <div className="font-semibold text-white">{project.clientDetails.name}</div>
-                    <Rate disabled allowHalf value={project.clientDetails.rating} className="text-freelancer-accent" />
+                  <div>
+                    <Link
+                      to={`/client/profile/${project?.client?.id}/view_profile/`}
+                      className="font-semibold text-freelancer-accent hover:underline"
+                    >
+                      {project?.client?.username}
+                    </Link>
                   </div>
                 </div>
-                <div className="text-white/80 text-sm mb-1">
-                  <span className="font-semibold">Location:</span> {project.clientDetails.location}
-              </div>
-                <div className="text-white/80 text-sm mb-1">
-                  <span className="font-semibold">Member Since:</span> {project.clientDetails.memberSince}
-                </div>
-                <div className="text-white/80 text-sm mb-1">
-                  <span className="font-semibold">Total Projects:</span> {project.clientDetails.totalProjects}
-                </div>
-                <div className="text-white/80 text-sm">
-                  <span className="font-semibold">Completed Projects:</span> {project.clientDetails.completedProjects}
-                </div>
+               
               </Card>
 
               <Card className="bg-freelancer-bg-card border border-white/10 rounded-xl shadow-lg">
                 <h2 className="text-xl font-semibold text-white mb-4">Alerts</h2>
-                <Alert
-                  message="This project is open for bidding. Submit your proposal before the deadline."
-                  type="info"
-                  showIcon
-                  className="mb-2"
-                />
-                <Alert
-                  message="You have not placed a bid on this project yet."
-                  type="warning"
-                  showIcon
-                />
+                {project?.workspace_id && project?.status === "ongoing" && (
+                  <div className="bg-green-100 border border-green-300 rounded-lg p-4 mb-6 flex flex-col gap-2 items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <InfoCircleOutlined className="text-green-600 text-xl" />
+                      <span className="text-green-800 font-medium">
+                        Workspace is available for this project. Please navigate to your workspace to continue collaboration and project management.
+                      </span>
+                    </div>
+                    <Button
+                      type="primary"
+                      className="bg-freelancer-accent ml-6"
+                      onClick={() => navigate(`/freelancer/dashboard/workspace/${project.workspace_id}`)}
+                    >
+                      Go to Workspace
+                    </Button>
+                  </div>
+                )}
             </Card>
 
-              <Card className="bg-freelancer-bg-card border border-white/10 rounded-xl shadow-lg">
-                <h2 className="text-xl font-semibold text-white mb-4">Recommendations</h2>
-                <ul className="list-disc pl-5 text-white/80">
-                  <li>Highlight relevant experience in your proposal.</li>
-                  <li>Offer a competitive bid based on the average.</li>
-                  <li>Communicate promptly if the client reaches out.</li>
-                </ul>
-            </Card>
+              
             </motion.div>
           </Col>
         </Row>

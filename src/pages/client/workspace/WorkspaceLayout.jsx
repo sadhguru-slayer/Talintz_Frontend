@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Typography, Tooltip, Badge, Result, Button } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,6 +21,7 @@ import Chat from './components/content/Chat';
 import Revision from './components/content/Revision';
 import Notification from './components/content/Notification';
 import Settings from './components/content/Settings';
+import axios from '../../../config/axios'; // Adjust path as needed
 
 const { Text } = Typography;
 
@@ -31,6 +32,20 @@ const CWorkspaceLayout = () => {
   const [activePanel, setActivePanel] = useState(null);
   const [isPanelMaximized, setIsPanelMaximized] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const { workspaceId } = useParams();
+  const [workspaceType, setWorkspaceType] = useState(null);
+
+  useEffect(() => {
+    async function fetchWorkspaceType() {
+      try {
+        const res = await axios.get(`/api/workspace/workspace_type/${workspaceId}/`);
+        setWorkspaceType(res.data.type);
+      } catch (err) {
+        setWorkspaceType(null);
+      }
+    }
+    fetchWorkspaceType();
+  }, [workspaceId]);
   
   if (isMobile) {
     return (
@@ -62,12 +77,12 @@ const CWorkspaceLayout = () => {
       badge: 3, // Unread messages
       onClick: () => setIsChatExpanded(!isChatExpanded)
     },
-    {
+    ...(workspaceType === 'obsp' ? [{
       key: 'revision',
       icon: <WarningOutlined />,
       label: 'Raise Revision',
       badge: null
-    },
+    }] : []),
     {
       key: 'notifications',
       icon: <BellOutlined />,
@@ -152,6 +167,7 @@ const CWorkspaceLayout = () => {
         <RightSider 
           activePanelType={activePanel}
           onItemClick={handleRightSiderClick}
+          workspaceType={workspaceType}
         />
 
         {/* Right Panel */}

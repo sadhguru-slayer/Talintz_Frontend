@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Routes, Route, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, Outlet, useMatch } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
@@ -24,6 +24,7 @@ const FDashboard = ({ userId, role, isAuthenticated, isEditable }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isWorkspaceRoute = useMatch('/freelancer/dashboard/workspace/:workspaceId');
 
   // Extract component from URL pathname
   const getComponentFromPath = () => {
@@ -145,15 +146,18 @@ const FDashboard = ({ userId, role, isAuthenticated, isEditable }) => {
         <div className="flex-1 h-full  overflow-y-auto bg-freelancer-primary">
           
             <ErrorBoundary>
-            <ReferralTab
-          placement="dashboard"
-          userStats={{
-            referralCount: 0,
-            totalEarnings: 0,
-            referralCode: null
-          }}
-          className="mb-2"
-          />
+            {!isWorkspaceRoute && (
+              <ReferralTab
+                role="freelancer"
+                placement="dashboard"
+                userStats={{
+                  referralCount: 0,
+                  totalEarnings: 0,
+                  referralCode: null
+                }}
+                className="mx-6 my-2"
+              /> 
+            )}
               <Suspense fallback={<LoadingComponent variant="dashboard" role="freelancer" className="bg-violet-200 animate-pulse" />}>
                 <Routes>
                   <Route index element={<FreelancerAnalyticsPage />} />

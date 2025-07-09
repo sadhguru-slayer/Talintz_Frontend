@@ -21,7 +21,8 @@ import Chat from './components/content/Chat';
 import Revision from './components/content/Revision';
 import Notification from './components/content/Notification';
 import Settings from './components/content/Settings';
-
+import axios from '../../../config/axios'; // Adjust path as needed
+import { getBaseURL } from "../../../config/axios";
 const { Text } = Typography;
 
 const FWorkspaceLayout = () => {
@@ -33,6 +34,21 @@ const FWorkspaceLayout = () => {
   const [isPanelMaximized, setIsPanelMaximized] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
   
+  const [workspaceType, setWorkspaceType] = useState(null);
+
+  useEffect(() => {
+    async function fetchWorkspaceType() {
+      try {
+        const res = await fetch(`${getBaseURL()}/api/workspace_type/${workspaceId}/`);
+        setWorkspaceType(res.data.type);
+      } catch (err) {
+        setWorkspaceType(null);
+      }
+    }
+    fetchWorkspaceType();
+  }, [workspaceId]);
+  
+
   if (isMobile) {
     return (
       <div className="flex items-center justify-center h-screen bg-freelancer-primary p-4">

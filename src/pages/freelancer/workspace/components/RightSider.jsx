@@ -8,7 +8,7 @@ import {
   RocketOutlined
 } from '@ant-design/icons';
 
-const RightSider = ({ activePanelType, onItemClick }) => {
+const RightSider = ({ activePanelType, onItemClick,workspaceType }) => {
   // Right Sider Items
   const rightNavItems = [
     {
@@ -17,12 +17,12 @@ const RightSider = ({ activePanelType, onItemClick }) => {
       label: 'Project Chat',
       badge: 3,
     },
-    {
+    ...(workspaceType === 'obsp' ? [{
       key: 'revision',
       icon: <WarningOutlined />,
-      label: 'Revision',
+      label: 'Raise Revision',
       badge: null
-    },
+    }] : []),
     {
       key: 'notifications',
       icon: <BellOutlined />,

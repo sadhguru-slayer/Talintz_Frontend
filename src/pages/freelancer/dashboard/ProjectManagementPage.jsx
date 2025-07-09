@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Table, Input, Select, Tabs, Tag, Pagination, Card, Alert, Timeline } from 'antd';
+import { Modal, Button, Table, Input, Select, Tabs, Tag, Pagination, Card, Alert, Timeline, Avatar, Tooltip } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { SearchOutlined, CalendarOutlined, UserOutlined, LeftOutlined, RightOutlined, CrownOutlined, ProjectOutlined, AppstoreOutlined, CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { FaEye, FaBriefcase, FaClock, FaCheckCircle } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
 import '../../../assets/css/ProjectManagementPage.css';
+import { getBaseURL } from "../../../config/axios";
+import Cookies from "js-cookie";
+import DOMPurify from "dompurify";
 
 const { Option } = Select;
 
@@ -54,38 +57,8 @@ const tabItems = [
   },
 ];
 
-const WorkspaceSection = () => {
+const WorkspaceSection = ({ workspaces }) => {
   const navigate = useNavigate();
-  
-  // Mock data for workspaces (active projects)
-  const workspaces = [
-    {
-      id: 1,
-      name: 'Website Redesign',
-      client: 'ABC Corp',
-      lastActivity: '2 hours ago',
-      unreadMessages: 3,
-      sharedFiles: 5,
-      progress: 65,
-      members: [
-        { name: 'John Doe', role: 'Client', avatar: 'JD' },
-        { name: 'You', role: 'Freelancer', avatar: 'YO' }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Mobile App Development',
-      client: 'AppWorks',
-      lastActivity: '1 day ago',
-      unreadMessages: 0,
-      sharedFiles: 8,
-      progress: 45,
-      members: [
-        { name: 'Sarah Smith', role: 'Client', avatar: 'SS' },
-        { name: 'You', role: 'Freelancer', avatar: 'YO' }
-      ]
-    }
-  ];
 
   const handleWorkspaceClick = (workspaceId) => {
     navigate(`/freelancer/dashboard/workspace/${workspaceId}`);
@@ -93,104 +66,57 @@ const WorkspaceSection = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 mb-4">
           <AppstoreOutlined className="text-2xl text-freelancer-accent" />
           <h2 className="text-xl font-semibold text-freelancer-text-primary">Your Workspaces</h2>
-        </div>
-        <Tag
-          icon={<CrownOutlined />}
-          className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 px-4 py-1 rounded-full"
-        >
-          Premium
-        </Tag>
       </div>
-
       <div className="grid grid-cols-1 gap-4">
-        {workspaces.map((workspace) => (
+        {workspaces.map((ws) => (
           <Card 
-            key={workspace.id}
-            className="bg-freelancer-bg-card border border-white/10 hover:border-freelancer-accent/30 transition-all duration-300 cursor-pointer"
-            onClick={() => handleWorkspaceClick(workspace.id)}
+            key={ws.id}
+            className="bg-freelancer-bg-card border border-white/10 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+            onClick={() => handleWorkspaceClick(ws.id)}
           >
-            <div className="flex flex-col md:flex-row gap-6">
-              {/* Project Info */}
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-freelancer-text-primary">{workspace.name}</h3>
-                    <p className="text-freelancer-text-secondary">Client: {workspace.client}</p>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <div className="text-lg font-bold text-freelancer-text-primary">{ws.title}</div>
+                <Tag color="purple" className="capitalize text-sm">{ws.type}</Tag>
+              </div>
+              <div className="flex flex-wrap gap-6 mt-1 text-sm">
+                <span>
+                  <span className="font-medium text-text-muted">Status:</span>
+                  <span className="text-text-light"> {ws.status}</span>
+                </span>
+                <span>
+                  <span className="font-medium text-text-muted">Budget:</span>
+                  <span className="text-text-light"> {ws.budget}</span>
+                </span>
+                <span>
+                  <CalendarOutlined className="mr-1 text-freelancer-accent" />
+                  <span className="font-medium text-text-muted">Deadline:</span>
+                  <span className="text-text-light">
+                    {ws.deadline ? new Date(ws.deadline).toLocaleDateString() : "-"}
+                  </span>
+                </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-freelancer-text-secondary">Progress</span>
-                    <div className="w-24 h-2 bg-freelancer-bg-card rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-freelancer-accent rounded-full"
-                        style={{ width: `${workspace.progress}%` }}
-                      />
-                    </div>
-                    <span className="text-sm text-freelancer-text-secondary">{workspace.progress}%</span>
-                  </div>
-                </div>
-
-                {/* Members */}
-                <div className="mt-4 flex items-center gap-2">
-                  {workspace.members.map((member, index) => (
-                    <div 
-                      key={index}
-                      className="flex items-center gap-2 bg-freelancer-primary/50 px-3 py-1 rounded-full"
-                    >
-                      <div className="w-6 h-6 rounded-full bg-freelancer-accent/20 flex items-center justify-center text-xs text-freelancer-accent">
-                        {member.avatar}
+              <div className="mt-2">
+                <div className="font-semibold text-sm text-freelancer-text-primary mb-1">Participants:</div>
+                <div className="flex flex-wrap gap-3 items-center">
+                  {ws.participants.map((p) => (
+                    <Tooltip key={p.id} title={`${p.username} (${p.role})`}>
+                      <div className="flex flex-col items-center mr-2">
+                        <Avatar
+                          size={40}
+                          src={p.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.username)}`}
+                          className="border border-freelancer-accent/30 shadow"
+                        />
+                        <span className="text-xs text-freelancer-text-secondary mt-1 font-medium max-w-[60px] truncate text-center">{p.username}</span>
+                        <span className="text-[10px] text-freelancer-accent/80">{p.role}</span>
                       </div>
-                      <span className="text-sm text-freelancer-text-secondary">{member.name}</span>
-                      <span className="text-xs text-freelancer-text-secondary/70">({member.role})</span>
-                    </div>
+                    </Tooltip>
                   ))}
                 </div>
               </div>
-
-              {/* Quick Actions */}
-              <div className="flex flex-col gap-3 min-w-[200px]">
-                <Button
-                  icon={<FaClock className="mr-2" />}
-                  className="flex items-center justify-center text-freelancer-accent border border-freelancer-accent/30 bg-freelancer-accent/5 hover:bg-freelancer-accent/10"
-                >
-                  Track Time
-                </Button>
-                <Button
-                  icon={<FaBriefcase className="mr-2" />}
-                  className="flex items-center justify-center text-freelancer-accent border border-freelancer-accent/30 bg-freelancer-accent/5 hover:bg-freelancer-accent/10"
-                >
-                  Share Files
-                </Button>
-                <Button
-                  icon={<UserOutlined className="mr-2" />}
-                  className="flex items-center justify-center text-freelancer-accent border border-freelancer-accent/30 bg-freelancer-accent/5 hover:bg-freelancer-accent/10"
-                >
-                  Chat
-                  {workspace.unreadMessages > 0 && (
-                    <span className="ml-2 px-2 py-0.5 bg-freelancer-accent text-white text-xs rounded-full">
-                      {workspace.unreadMessages}
-                    </span>
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            {/* Activity Bar */}
-            <div className="mt-4 pt-4 border-t border-freelancer-border flex items-center justify-between text-sm text-freelancer-text-secondary">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <FaBriefcase className="text-freelancer-accent" />
-                  {workspace.sharedFiles} files shared
-                </span>
-                <span className="flex items-center gap-1">
-                  <UserOutlined className="text-freelancer-accent" />
-                  {workspace.members.length} members
-                </span>
-              </div>
-              <span>Last activity: {workspace.lastActivity}</span>
             </div>
           </Card>
         ))}
@@ -201,6 +127,7 @@ const WorkspaceSection = () => {
 
 const ProjectManagementPage = () => {
   const [projects, setProjects] = useState([]);
+  const [workspaces, setWorkspaces] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
@@ -215,15 +142,43 @@ const ProjectManagementPage = () => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
-    const mockProjects = [
-      { id: 1, name: 'Website Redesign', deadline: '2024-12-31', status: 'Ongoing', client: 'ABC Corp', description: 'Complete website overhaul with modern design', skills: [], biddingHistory: [] },
-      { id: 2, name: 'App Development', deadline: '2024-12-20', status: 'Pending', client: 'XYZ Ltd', description: 'Native mobile app for iOS and Android', skills: [], biddingHistory: [] },
-      { id: 3, name: 'SEO Optimization', deadline: '2024-12-25', status: 'Completed', client: 'Tech Solutions', description: 'Improve search engine rankings', skills: [], biddingHistory: [] },
-      { id: 4, name: 'Mobile App Development', deadline: '2024-11-15', status: 'Ongoing', client: 'AppWorks', description: 'Cross-platform mobile application', skills: [], biddingHistory: [] },
-      { id: 5, name: 'E-commerce Platform', deadline: '2025-01-05', status: 'Pending', client: 'RetailPro', description: 'Full-featured online store', skills: [], biddingHistory: [] },
-    ];
-    setProjects(mockProjects);
-    setFilteredProjects(mockProjects);
+    const token = Cookies.get('accessToken');
+
+    // Fetch assigned projects
+    const fetchAssignedProjects = async () => {
+      try {
+        const res = await fetch(`${getBaseURL()}/api/freelancer/assigned-projects/`, {
+          credentials: "include",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        setProjects(data); // <-- set state
+        setFilteredProjects(data); // <-- set filtered state
+      } catch (err) {
+        console.error("Error fetching assigned projects:", err);
+      }
+    };
+
+    // Fetch freelancer workspaces
+    const fetchFreelancerWorkspaces = async () => {
+      try {
+        const res = await fetch(`${getBaseURL()}/api/freelancer/workspaces/`, {
+          credentials: "include",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        setWorkspaces(data); // <-- set state
+      } catch (err) {
+        console.error("Error fetching freelancer workspaces:", err);
+      }
+    };
+
+    fetchAssignedProjects();
+    fetchFreelancerWorkspaces();
   }, []);
 
   const getStatusColor = (status) => {
@@ -257,69 +212,45 @@ const ProjectManagementPage = () => {
 
   const columns = [
     {
-      title: <span className="text-freelancer-text-secondary font-semibold">Project Name</span>,
-      dataIndex: 'name',
-      key: 'name',
-      render: (text, record) => (
-        <div className="space-y-1">
-          <div className="font-semibold text-freelancer-text-primary">{text}</div>
-          <div className="text-sm text-freelancer-text-secondary">{record.description}</div>
-        </div>
+      title: "Project Title",
+      dataIndex: "title",
+      key: "title",
+      render: (text) => <span className="font-semibold">{text}</span>,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Deadline",
+      dataIndex: "deadline",
+      key: "deadline",
+      render: (date) => <span>{date}</span>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => <Tag>{status}</Tag>,
+    },
+    {
+      title: "Client",
+      dataIndex: "client",
+      key: "client",
+      render: (client) => (
+        <span>
+          {client.username} <span className="text-xs text-gray-400">(ID: {client.id})</span>
+        </span>
       ),
     },
     {
-      title: <span className="text-freelancer-text-secondary font-semibold">Deadline</span>,
-      dataIndex: 'deadline',
-      key: 'deadline',
-      render: (date) => (
-        <div className="flex items-center gap-2 text-freelancer-text-secondary">
-          <CalendarOutlined className="text-freelancer-accent" />
-          <span className="font-medium">{date}</span>
-        </div>
-      ),
-    },
-    {
-      title: <span className="text-freelancer-text-secondary font-semibold">Status</span>,
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => {
-        const { color, bg, text } = getStatusColor(status);
-        return (
-          <Tag
-            style={{ 
-              background: color, 
-              color: '#fff', 
-              border: 0, 
-              borderRadius: '9999px', 
-              padding: '0.25rem 1rem',
-              fontWeight: 500
-            }}
-            className={`${bg} ${text} font-medium text-xs`}
-          >
-            {status}
-          </Tag>
-        );
-      },
-    },
-    {
-      title: <span className="text-freelancer-text-secondary font-semibold">Actions</span>,
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
-        <div className="flex gap-3">
-          <Button
-            icon={<FaEye className="mr-1" />}
-            onClick={() => openDetails(record)}
-            className="flex items-center justify-center px-4 py-2 rounded-lg border border-freelancer-accent/30 text-freelancer-accent bg-freelancer-accent/5 hover:bg-freelancer-accent/10 hover:border-freelancer-accent/50 font-medium transition-all duration-300"
-          >
-            Preview
-          </Button>
-          <Button
-            onClick={() => handleViewDetails(record.id, record)}
-            className="flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-freelancer-accent to-freelancer-accent/80 text-white border-0 font-medium hover:from-freelancer-accent/90 hover:to-freelancer-accent/70 transition-all duration-300 shadow-lg shadow-freelancer-accent/20"
-          >
+        <Button onClick={() => handleViewDetails(record.id, record)}>
             View Details
           </Button>
-        </div>
       ),
     },
   ];
@@ -368,48 +299,59 @@ const ProjectManagementPage = () => {
     currentPage * pageSize
   );
 
+  const MAX_DESC_LENGTH = 120;
+
   const ProjectCard = ({ project }) => {
-    const { color, bg, text } = getStatusColor(project.status);
+    // Slice and sanitize description
+    let desc = project.description || "";
+    let isLong = desc.length > MAX_DESC_LENGTH;
+    let slicedDesc = isLong ? desc.slice(0, MAX_DESC_LENGTH) + "..." : desc;
+    let safeDesc = DOMPurify.sanitize(slicedDesc);
+
     return (
-      <div className="bg-freelancer-bg-card rounded-xl border border-white/10 p-6 shadow-lg flex flex-col gap-4">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-lg font-semibold text-freelancer-text-primary">{project.name}</h3>
-            <p className="text-freelancer-text-secondary text-sm mt-1">{project.description}</p>
+      <Card
+        className="bg-freelancer-bg-card border border-white/10 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
+        style={{ marginBottom: 16 }}
+      >
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <div className="text-lg font-bold text-freelancer-text-primary">{project?.title}</div>
+            <Tag color="blue" className="capitalize text-sm">{project.status}</Tag>
           </div>
-          <Tag
-            style={{ background: color, color: '#fff', border: 0, borderRadius: '9999px', padding: '0.25rem 1rem' }}
-            className={`${bg} ${text} font-medium text-xs`}
-          >
-            {project.status}
-          </Tag>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex items-center text-freelancer-text-secondary">
-            <CalendarOutlined className="mr-2 text-freelancer-accent" />
-            <span>{project.deadline}</span>
+          {/* Description as dangerous HTML with slicing */}
+          <div
+            className="text-freelancer-text-secondary text-sm mt-1"
+            style={{ minHeight:15, maxHeight: 48, overflow: "hidden" }}
+            dangerouslySetInnerHTML={{ __html: safeDesc }}
+          />
+          <div className="flex flex-wrap justify-between items-center">
+          <div className="flex gap-6">
+            <span>
+              <CalendarOutlined className="mr-1 text-freelancer-accent" />
+              <span className="font-medium text-text-muted">Deadline:</span>
+              <span className="text-text-light">
+                {project.deadline ? new Date(project.deadline).toLocaleDateString() : "-"}
+              </span>
+            </span>
+            <span>
+              <UserOutlined className="mr-1 text-freelancer-accent" />
+              <span className="font-medium text-text-muted">Client:</span>
+              <span className="text-text-light"> {project.client.username}</span>
+            </span>
           </div>
-          <div className="flex items-center text-freelancer-text-secondary">
-            <UserOutlined className="mr-2 text-freelancer-accent" />
-            <span>{project.client}</span>
-          </div>
-        </div>
-        <div className="flex justify-end gap-3">
+            <div className="flex justify-end mt-3">
           <Button
-            icon={<FaEye className="mr-1" />}
-            onClick={() => openDetails(project)}
-            className="flex items-center justify-center px-4 py-2 rounded-lg border border-freelancer-accent/30 text-freelancer-accent bg-freelancer-accent/5 hover:bg-freelancer-accent/10 hover:border-freelancer-accent/50 font-medium transition-all duration-300"
-          >
-            Preview
-          </Button>
-          <Button
+              type="primary"
+              className="bg-freelancer-accent"
             onClick={() => handleViewDetails(project.id, project)}
-            className="flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-freelancer-accent to-freelancer-accent/80 text-white border-0 font-medium hover:from-freelancer-accent/90 hover:to-freelancer-accent/70 transition-all duration-300 shadow-lg shadow-freelancer-accent/20"
           >
             View Details
           </Button>
         </div>
       </div>
+
+        </div>
+      </Card>
     );
   };
 
@@ -461,24 +403,16 @@ const ProjectManagementPage = () => {
 
       {activeTab === 'projects' ? (
         <>
-          <Card className="bg-transparent rounded-2xl border border-white/10 shadow-lg">
-            <div className="hidden md:block">
-              <Table
-                dataSource={paginatedData}
-                columns={columns}
-                pagination={false}
-                rowKey="id"
-                className="project-table freelancer-table-primary"
-                rowClassName="transition-colors duration-200"
-                style={{ background: 'var(--freelancer-primary)' }}
-              />
+            <div className="space-y-4">
+            <div className="flex items-center gap-3 mb-4">
+        <ProjectOutlined className="text-2xl text-freelancer-accent" />
+        <h2 className="text-xl font-semibold text-freelancer-text-primary">Your Projects</h2>
             </div>
-            <div className="block md:hidden space-y-4">
               {paginatedData.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
-          </Card>
+      
 
           <div className="mt-6 flex justify-center">
             <Pagination
@@ -494,7 +428,7 @@ const ProjectManagementPage = () => {
           </div>
         </>
       ) : (
-        <WorkspaceSection />
+        <WorkspaceSection workspaces={workspaces} />
       )}
 
       <Modal

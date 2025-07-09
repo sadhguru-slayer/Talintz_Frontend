@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IoIosArrowRoundForward } from "react-icons/io";
+import { IoIosArrowRoundForward,IoIosRemoveCircleOutline  } from "react-icons/io";
 import {
   CalendarOutlined,
   CheckCircleOutlined,
@@ -15,11 +15,16 @@ import {
   CommentOutlined,
   DollarOutlined,
   EyeOutlined,
+  QuestionCircleOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { getBaseURL } from "../../../../../config/axios";
 import { message } from "antd";
+import { Tooltip } from "antd";
+import { motion, AnimatePresence } from 'framer-motion';  // Added for animations
+import { X as CloseIcon } from 'lucide-react';  // Assuming lucide-react is installed; add if needed
 
 // Status badge with icon and color
 const statusBadge = (statusRaw) => {
@@ -78,7 +83,8 @@ const Milestones = () => {
   const [milestonesData, setMilestonesData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [openIdx, setOpenIdx] = useState(-1); // Initialize with -1
+  const [openIdx, setOpenIdx] = useState(-1); // For milestones
+  const [openBoxes, setOpenBoxes] = useState({});  // New state for boxes
   const params = useParams();
   const workspace_id = params.workspaceId;
 
@@ -90,6 +96,14 @@ const Milestones = () => {
   const [uploadNote, setUploadNote] = useState("");
   const [noteContent, setNoteContent] = useState("");
   const [noteSubmitting, setNoteSubmitting] = useState(false);
+
+  // For "Send in a Box" modal
+  const [showSendBoxModal, setShowSendBoxModal] = useState(false);
+  const [boxFiles, setBoxFiles] = useState([]);
+  const [boxNote, setBoxNote] = useState("");
+  const [boxUploading, setBoxUploading] = useState(false);
+  const [boxTitle, setBoxTitle] = useState(""); // New state for title
+  const [boxDescription, setBoxDescription] = useState(""); // New state for description
 
   // At the top of your component
   const [historyPage, setHistoryPage] = useState({}); // {milestoneId: pageNumber}
@@ -233,13 +247,19 @@ const Milestones = () => {
     }
   };
 
-  // 3. Submit Deliverables
+  // 3. Submit Deliverables (for both upload and send in a box)
   const handleSubmitDeliverables = async () => {
     if (!selectedMilestone) return;
-    setUploading(true);
+    setUploading(true); // This state is for the main upload modal
+    setBoxUploading(true); // This state is for the send in a box modal
+
     const formData = new FormData();
     uploadFiles.forEach(f => formData.append("files", f));
     formData.append("note", uploadNote);
+
+    const boxFormData = new FormData();
+    boxFiles.forEach(f => boxFormData.append("files", f));
+    boxFormData.append("note", boxNote);
 
     try {
       const accessToken = Cookies.get('accessToken');
@@ -275,6 +295,7 @@ const Milestones = () => {
       message.error(err.message || "Error submitting deliverables");
     } finally {
       setUploading(false);
+      setBoxUploading(false);
     }
   };
 
@@ -370,7 +391,10 @@ const Milestones = () => {
                 </div>
                 {!isOpen && milestone.description && (
                   <p className="text-sm text-white/70 mt-1 truncate">
-                      {milestone.description.slice(0, 60)}{milestone.description.length > 60 ? "..." : ""}
+                      {milestone.description.length > 100 ? milestone.description.slice(0, 100) + '...' : milestone.description}
+                      {milestone.description.length > 100 && (
+                        <span className="text-xs text-white/40 ml-1">Click to view full details</span>
+                      )}
                   </p>
                 )}
               </div>
@@ -381,7 +405,7 @@ const Milestones = () => {
             {isOpen && (
                 <div className="p-6 pt-0 space-y-8 border-t border-white/10">
                   {/* 1. Milestone Overview */}
-                  <section>
+                  <section className="my-6">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-1">
                       <InfoCircleOutlined className="text-freelancer-accent" /> Overview
                   </h3>
@@ -392,61 +416,11 @@ const Milestones = () => {
                     <p className="text-xs text-white/40 mt-2">{sectionInfo.summary}</p>
                   </section>
 
-                  {/* 2. Deliverables */}
-                  <section>
-                    <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-1">
-                    <FileOutlined className="text-freelancer-accent" /> 
-                    {milestonesData.type === 'obsp' ? 'Expected Deliverables' : 'Your Submissions'}
-                  </h3>
-                  <p className="text-xs text-white/40 mb-2">
-                    {milestonesData.type === 'obsp' 
-                      ? 'What you need to deliver for this milestone'
-                        : sectionInfo.deliverables}
-                  </p>
-                  
-                  {milestonesData.type === 'obsp' ? (
-                    // Show expected deliverables for OBSP
-                    milestone.deliverables && milestone.deliverables.length > 0 ? (
-                      <ul className="space-y-2">
-                        {milestone.deliverables.map((deliverable, i) => (
-                          <ul className="list-inside space-y-2">
-  <li key={i} className="pl-2 flex items-center gap-3 text-white/90">
-  <IoIosArrowRoundForward className="text-freelancer-accent bg-freelancer-secondary/10 rounded-full"/>
-    <span>{deliverable}</span>
-    <span className="text-xs text-white/50">(Expected)</span>
-  </li>
-</ul>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className="text-white/60">No deliverables specified for this milestone.</div>
-                    )
-                  ) : (
-                    // Show actual submissions for regular projects
-                    milestone.deliverables && milestone.deliverables.length > 0 ? (
-                      <ul className="space-y-2">
-                        {milestone.deliverables.map((d, i) => (
-                          <li key={i} className="flex items-center gap-3 text-white/90">
-                            <FileOutlined className="text-freelancer-accent" />
-                            {d.type === "file" ? (
-                              <a href={d.url} className="underline" target="_blank" rel="noopener noreferrer">{d.name}</a>
-                            ) : (
-                              <a href={d.url} className="underline text-blue-400" target="_blank" rel="noopener noreferrer">{d.name}</a>
-                            )}
-                            <span className="text-xs text-white/50">Submitted: {d.submittedAt}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className="text-white/60">No submissions yet.</div>
-                    )
-                  )}
-                  </section>
 
                   {/* 3. Client Feedback (separate section) */}
                   {milestone.notes?.client_feedback?.length > 0 && (
                     <section className="mt-8 bg-white/5 border border-freelancer-accent/30 rounded-xl p-3 shadow-sm">
-                      <h4 className="text-base font-semibold text-freelancer-accent flex items-center gap-2 mb-3">
+                      <h4 className="text-sm font-semibold text-freelancer-accent flex items-center gap-2 mb-3">
                         <CommentOutlined /> Client Feedback
                       </h4>
                       <ul className="space-y-3">
@@ -489,7 +463,7 @@ const Milestones = () => {
 
                   {/* 4. Private Note (separate section) */}
                   <section className="mt-8 bg-white/5 border border-freelancer-border rounded-xl p-3 shadow-sm">
-                    <h4 className="text-base font-semibold text-freelancer-accent flex items-center gap-2 mb-3">
+                    <h4 className="text-sm font-semibold text-freelancer-accent flex items-center gap-2 mb-3">
                       <CommentOutlined /> Your Private Note
                     </h4>
                     <textarea
@@ -520,7 +494,7 @@ const Milestones = () => {
                       <EditOutlined className="text-freelancer-accent" /> Your Actions
                     </h3>
                     <p className="text-xs text-white/40 mb-2">{sectionInfo.actions}</p>
-                      <div className="flex gap-3 flex-wrap">
+                      <div className="flex gap-3 flex-wrap items-center">
                       {isInProgress && (
                         <button 
                           onClick={() => {
@@ -537,6 +511,18 @@ const Milestones = () => {
                           <EyeOutlined /> View Submission
                         </button>
                       )}
+                      {/* New "Send in a Box" button */}
+                      <Tooltip title="Send all required files and instructions for this milestone in one go.">
+                        <button
+                          onClick={() => {
+                            setSelectedMilestone(milestone);
+                            setShowSendBoxModal(true); // new state
+                          }}
+                          className="px-4 py-2 rounded bg-blue-600 text-white font-semibold flex items-center gap-1"
+                        >
+                          <InboxOutlined /> Send in a Box <QuestionCircleOutlined className="ml-1" />
+                        </button>
+                      </Tooltip>
                     </div>
                     {isInProgress && (
                       <div className="mt-2 text-xs text-white/60">
@@ -548,6 +534,154 @@ const Milestones = () => {
                     )}
                     </section>
                 )}
+                                  {/* Your Submissions Section */}
+                                  <section className="border border-white/50 rounded-xl p-4">
+                                    <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-1">
+                                      <FileOutlined className="text-freelancer-accent" /> 
+                                      Your Submissions
+                                    </h3>
+                                    <p className="text-xs text-white/40 mb-2">
+                                      View your submitted files and boxes for this milestone.
+                                    </p>
+                                    
+                                    {/* 1. Regular Submissions from data.submissions */}
+                                    {milestone.submissions && milestone.submissions.length > 0 ? (
+                                      <div className="space-y-2 mb-4">
+                                        <h4 className="text-sm font-semibold text-white/80 flex items-center gap-2 mb-2">
+                                          <FileOutlined className="text-freelancer-accent" /> Submitted Files
+                                        </h4>
+                                        <ul className="space-y-2">
+                                          {milestone.submissions.map((submission, idx) => (
+                                            <li key={idx} className="flex items-center gap-3 text-white/90">
+                                              {submission.type === "file" ? (
+                                                <a href={submission.url} className="underline" target="_blank" rel="noopener noreferrer">{submission.name}</a>
+                                              ) : (
+                                                <a href={submission.url} className="underline text-blue-400" target="_blank" rel="noopener noreferrer">{submission.name}</a>
+                                              )}
+                                              <span className="text-xs text-white/50">Submitted: {submission.submittedAt}</span>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    ) : (
+                                      <div className="text-white/60 mb-4">No regular submissions yet.</div>
+                                    )}
+                                    
+                                    {/* 2. Boxes: Merge optimistic boxes and API boxes */}
+                                    { (milestone.box_submissions && milestone.box_submissions.length > 0) || (milestone.boxes && milestone.boxes.length > 0) ? (
+                                      <div className="flex flex-col gap-3">
+                                        <h4 className="text-sm font-semibold text-freelancer-accent flex items-center gap-2 mb-2">
+                                          <InboxOutlined /> Your Boxes
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2">
+                                          {/* Combine boxes: optimistic (milestone.box_submissions) and API (milestone.boxes) */}
+                                          {[...(milestone.box_submissions || []), ...(milestone.boxes || [])].map((box, idx) => (
+                                            <>
+                                              <div
+                                                key={box.id || idx}
+                                                className={`w-72 rounded-3xl bg-freelancer-bg-grey border border-x border-freelancer-bg-card shadow-sm text-white p-4 relative cursor-pointer hover:scale-[1.005] transition-transform ${box.status === 'approved' ? 'border-green-500' : ''}`}
+                                                onClick={() => setOpenBoxes(prev => ({ ...prev, [box.id || idx]: !prev[box.id || idx] }))}  // Toggle using box ID or index
+                                              >
+                                                <div className="flex justify-between items-start">
+                                                  <div>
+                                                    <p className="text-sm text-gray-300">Box Details</p>
+                                                    <h1 className="text-2xl font-bold mt-1 flex items-center gap-2">
+                                                      {box.title || `Box ${idx + 1}`}
+                                                      {statusBadge(box.status)}  {/* Add status badge here */}
+                                                    </h1>
+                                                  </div>
+                                                  <InboxOutlined className="text-freelancer-accent w-5 h-5 mt-1" />
+                                                </div>
+
+                                                <div className="mt-6 space-y-4">
+                                                  {box.files && box.files.length > 0 && (
+                                                    <div className="flex items-center space-x-3">
+                                                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-freelancer-accent text-white">
+                                                        {box.files.length} Files
+                                                      </span>
+                                                      {box.description && (
+                                                        <div>
+                                                          <span className="text-sm">
+                                                            {box.description.length > 100 ? box.description.slice(0, 100) + '...' : box.description}
+                                                          </span>
+                                                          {box.description.length > 100 && (
+                                                            <p className="text-xs text-gray-400 mt-1">Click to view full details</p>
+                                                          )}
+                                                        </div>
+                                                      )}
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              </div>
+
+                                              {/* Modal for each box */}
+                                              <AnimatePresence>
+                                                {openBoxes[box.id || idx] && (
+                                                  <motion.div
+                                                    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                  >
+                                                    <motion.div
+                                                      className="bg-freelancer-bg-grey text-white rounded-3xl p-8 w-[90%] max-w-md shadow-2xl relative"
+                                                      initial={{ scale: 0.8, opacity: 0 }}
+                                                      animate={{ scale: 1, opacity: 1 }}
+                                                      exit={{ scale: 0.8, opacity: 0 }}
+                                                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                                    >
+                                                      <button
+                                                        onClick={() => setOpenBoxes(prev => ({ ...prev, [box.id || idx]: false }))}
+                                                        className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                                                      >
+                                                        <CloseIcon size={20} />
+                                                      </button>
+
+                                                      <p className="text-sm text-gray-300">Box Details</p>
+                                                      <h1 className="text-2xl font-bold mt-1">{box.title || `Box ${idx + 1}`}</h1>
+                                                      {box.status === 'approved' && (
+                                                        <div className="text-green-500 font-semibold flex items-center gap-2 mt-1">
+                                                          <CheckCircleOutlined /> Approved  {/* Approved indicator in modal */}
+                                                        </div>
+                                                      )}
+                                                      {statusBadge(box.status)}  {/* Show status badge in modal */}
+
+                                                      <div className="mt-6 space-y-4">
+                                                        <p className="text-white/80">{box.description}</p>  {/* Full description in modal */}
+                                                        <ul className="space-y-2">
+                                                          {box.files.map((file, fidx) => (
+                                                            <li key={fidx} className="flex items-center space-x-3">
+                                                              <a href={file.url} className="underline text-freelancer-accent" target="_blank" rel="noopener noreferrer">{file.name}</a>
+                                                            </li>
+                                                          ))}
+                                                        </ul>
+
+                                                        {typeof box.status === 'string' && box.status !== 'approved' && (  
+                                                          
+                                                          <div className="mt-4 border-t border-white/20 pt-4">
+                                                            <h4 className="text-sm font-semibold text-freelancer-accent mb-2">Freelancer Actions</h4>
+                                                            {/* Add freelancer-specific actions here, e.g., resubmit if in 'revision' */}
+                                                            {box.status === 'revision' && (
+                                                              <button className="px-4 py-2 rounded bg-yellow-500 text-white font-semibold mr-2 hover:bg-yellow-600">
+                                                                Resubmit Box
+                                                              </button>
+                                                            )}
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    </motion.div>
+                                                  </motion.div>
+                                                )}
+                                              </AnimatePresence>
+                                            </>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className="text-white/60">No boxes submitted yet.</div>
+                                    )}
+                                  </section>
+
 
                   {/* 6. Payout Info */}
                   <section>
@@ -626,6 +760,7 @@ const Milestones = () => {
                     <div className="text-white/60">No history yet.</div>
                   )}
                   </section>
+
               </div>
             )}
 
@@ -667,6 +802,146 @@ const Milestones = () => {
                       disabled={uploading}
                     >
                       {uploading ? "Submitting..." : "Submit Work"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Send in a Box Modal */}
+            {isOpen && showSendBoxModal && selectedMilestone && selectedMilestone.id === milestone.id && (
+              <div className="fixed inset-0 bg-black/60 flex items-center justify-center  z-50">
+                <div className="bg-freelancer-bg-grey p-6 rounded-xl w-full max-w-lg max-h-[80vh] overflow-y-auto border border-freelancer-border shadow-2xl">
+                  <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                    <InboxOutlined className="text-freelancer-accent" /> Send in a Box
+                  </h3>
+                  <p className="text-white/70 mb-4 flex items-center text-xs gap-2">
+                    <QuestionCircleOutlined className="text-blue-400 " />
+                    Send all required files and instructions for this milestone in one go. You can send multiple Boxes if needed.
+                  </p>
+                  
+                  {/* New fields for title and description */}
+                  <div className="mb-4">
+                    <label className="block text-sm text-white/80 font-semibold mb-1">Box Title</label>
+                    <input
+                      type="text"
+                      className="w-full text-sm rounded p-2 bg-white/10 text-white border border-freelancer-border"
+                      placeholder="e.g., 'Milestone 1 Submission'"
+                      value={boxTitle}  // New state for title
+                      onChange={e => setBoxTitle(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm text-white/80 font-semibold mb-1">Description</label>
+                    <textarea
+                      className="w-full text-sm rounded p-2 bg-white/10 text-white border border-freelancer-border"
+                      placeholder="Add a description for this box..."
+                      rows={2}
+                      value={boxDescription}  // New state for description
+                      onChange={e => setBoxDescription(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="block text-sm text-white/80 font-semibold mb-1">Files</label>
+                    <div
+                      className="w-full border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-100/5 text-center text-white/70 cursor-pointer hover:bg-blue-100/10 transition"
+                      onClick={() => document.getElementById('box-file-input').click()}
+                    >
+                      <input
+                        id="box-file-input"
+                        type="file"
+                        multiple
+                        className="hidden"
+                        onChange={e => setBoxFiles(prevFiles => [...prevFiles, ...Array.from(e.target.files)])}
+                      />
+                        <span className="text-sm">Drag & drop files here, or <span className="underline text-blue-300">browse</span></span>
+                     
+                    </div>
+                    <div className="mt-2  grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {boxFiles.map((file, idx) => (
+                            <div key={idx} className="flex items-center justify-between gap-2 bg-blue-100/10 border border-blue-400/20 rounded-lg p-2 hover:bg-blue-100/20 transition">
+                              <span className="flex  items-center gap-2 text-blue-300 text-xs">
+                                <FileOutlined /> {file.name}
+                              </span>
+                              <IoIosRemoveCircleOutline 
+                                onClick={() => setBoxFiles(prevFiles => prevFiles.filter((_, i) => i !== idx))}
+                                className="text-red-400 hover:text-red-300 text-sm font-bold"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="block text-sm text-white/80 font-semibold mb-1">Instructions/Notes</label>
+                    <textarea
+                      className="w-full text-sm rounded p-2 bg-white/10 text-white border border-freelancer-border"
+                      placeholder="Add any instructions or notes for your client..."
+                      rows={3}
+                      value={boxNote}
+                      onChange={e => setBoxNote(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="flex justify-end gap-2">
+                    <button onClick={() => setShowSendBoxModal(false)} className="px-4 py-1 rounded bg-white/10 text-sm text-white">Cancel</button>
+                    <button
+                      className="px-4 py-1 rounded bg-blue-600 text-sm text-white font-semibold"
+                      onClick={async () => {
+                        setBoxUploading(true);
+                        const formData = new FormData();
+                        formData.append('attachment_type', 'box');  // Set to 'box'
+                        formData.append('type', milestonesData.type);  // 'obsp' or 'project'
+                        formData.append('title', boxTitle);  // New field
+                        formData.append('description', boxDescription);  // New field
+                        formData.append('milestone_id', selectedMilestone.id);
+                        boxFiles.forEach(file => formData.append('files', file));
+                        formData.append('note', boxNote);  // Existing note
+
+                        try {
+                          const accessToken = Cookies.get('accessToken');
+                          const milestoneType = milestonesData.type;
+                          const res = await fetch(
+                            `${getBaseURL()}/api/workspace/freelancer/workspace/${workspace_id}/milestone/${milestoneType}/${selectedMilestone.id}/submit/`,
+                            {
+                              method: 'POST',
+                              headers: { 'Authorization': `Bearer ${accessToken}` },
+                              body: formData,
+                            }
+                          );
+                          if (!res.ok) throw new Error('Submission failed');
+                          const data = await res.json();
+                          message.success("Box sent!");
+                          // Update local state as before
+                          updateMilestone(selectedMilestone.id, (m) => ({
+                            ...m,
+                            box_submissions: [
+                              ...(m.box_submissions || []),
+                              {
+                                id: data.box_id || Date.now(),  // Use backend response if available
+                                files: boxFiles.map(f => ({ name: f.name, url: "#" })),
+                                note: boxNote,
+                                title: boxTitle,
+                                description: boxDescription,
+                                submittedAt: new Date().toISOString(),
+                              }
+                            ]
+                          }));
+                          setShowSendBoxModal(false);
+                          setBoxFiles([]);
+                          setBoxNote("");
+                          setBoxTitle("");  // Reset new fields
+                          setBoxDescription("");
+                        } catch (err) {
+                          message.error(err.message || "Error sending box");
+                        } finally {
+                          setBoxUploading(false);
+                        }
+                      }}
+                      disabled={boxUploading || !boxTitle || boxFiles.length === 0}  // Disable if title or files are missing
+                    >
+                      {boxUploading ? "Sending..." : "Send Box"}
                     </button>
                   </div>
                 </div>

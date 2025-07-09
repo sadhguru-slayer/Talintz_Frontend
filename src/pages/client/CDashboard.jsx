@@ -16,7 +16,7 @@ const CDashboard = ({ userId, role }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const isWorkspaceRoute = useMatch('/client/dashboard/workspaces/:id');
+  const isWorkspaceRoute = useMatch('/client/dashboard/workspace/:workspaceId');
   
   const [activeComponent, setActiveComponent] = useState('overview');
   const [activeProfileComponent, setActiveProfileComponent] = useState('');
