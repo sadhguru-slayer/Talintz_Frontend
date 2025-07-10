@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FileOutlined, CheckCircleOutlined, ClockCircleOutlined, EditOutlined, CommentOutlined, DollarOutlined, HistoryOutlined, ExclamationCircleOutlined, InfoCircleOutlined, InboxOutlined } from '@ant-design/icons';
+import { FileOutlined, CheckCircleOutlined, CloseOutlined, ClockCircleOutlined, EditOutlined, CommentOutlined, DollarOutlined, HistoryOutlined, ExclamationCircleOutlined, InfoCircleOutlined, InboxOutlined } from '@ant-design/icons';
 import overviewData from "../../utils/data";
 import { useParams } from "react-router-dom";
 import { getBaseURL } from "../../../../../config/axios";
@@ -15,6 +15,7 @@ import { UploadOutlined } from '@ant-design/icons'; // Assuming UploadOutlined i
 import moment from 'moment'; // Assuming moment is imported
 import { InputNumber } from 'antd'; // Assuming InputNumber is imported
 import { useMemo } from 'react';
+import api from '../../../../../config/axios';  // Import the API instance if not already imported
 
 const statusColor = status =>
   status === "Completed"
@@ -104,32 +105,32 @@ const Milestones = () => {
   };
 
   // Define fetchMilestones at the component level
-  const fetchMilestones = async () => {
-    try {
-      setLoading(true);
-      const accessToken = Cookies.get('accessToken');
-      const response = await fetch(`${getBaseURL()}/api/workspace/client/milestones/${parseInt(workspace_id)}/`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
+    const fetchMilestones = async () => {
+      try {
+        setLoading(true);
+        const accessToken = Cookies.get('accessToken');
+        const response = await fetch(`${getBaseURL()}/api/workspace/client/milestones/${parseInt(workspace_id)}/`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data)
+        const data = await response.json();
+        console.log(data)
       setDataType(data.type);
-      setMilestones(data.milestones || []);
+        setMilestones(data.milestones || []);
       setLoading(false);  // Ensure loading is reset
       return data.milestones;  // Return the data for use in other functions
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
       return [];  // Return an empty array on error to avoid undefined issues
-    }
-  };
+      }
+    };
 
   useEffect(() => {
 
@@ -148,6 +149,7 @@ const Milestones = () => {
     }
   }, [openIdx, milestones]);
 
+  // Updated handleApprove function to use api.post
   const handleApprove = async () => {
     if (!milestones || !milestones[openIdx]) {
       message.error('No milestone selected or available.');
@@ -156,27 +158,24 @@ const Milestones = () => {
     
     try {
       const accessToken = Cookies.get('accessToken');
-      const url = `${getBaseURL()}/api/workspace/client/milestone/${milestones[openIdx].id}/approve/`;
-      const response = await fetch(url, {
-        method: 'POST',
+      const url = `${getBaseURL()}/api/workspace/client/workspace/${parseInt(workspace_id)}/milestone/${parseInt(milestones[openIdx].id)}/accept/`;  // Relative path, assuming api is configured with baseURL
+      const response = await api.post(url, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        data: {  // Axios uses 'data' instead of 'body'
           feedback: feedback,
           extensionDays: milestones[openIdx].type === 'obsp' && extensionDays > 0 ? extensionDays : undefined,
-        }),
+        },
       });
-      const data = await response.json();
-      if (data.success) {
-        message.success(data.message);
+      
+      if (response.data.success) {  // Assuming the backend returns { success: true, message: '...' }
+        message.success(response.data.message);
         setShowApproveModal(false);
-        // Refetch milestones
-        const updatedMilestones = await fetchMilestones();  // Ensure this function is defined
+        const updatedMilestones = await fetchMilestones();  // Keep this as is, or update if needed
         setMilestones(updatedMilestones);
       } else {
-        message.error('Error: ' + data.error);
+        message.error('Error: ' + response.data.error);
       }
     } catch (err) {
       message.error('Failed to approve milestone: ' + err.message);
@@ -191,14 +190,14 @@ const Milestones = () => {
     
     try {
       const accessToken = Cookies.get('accessToken');
-      const url = `${getBaseURL()}/api/workspace/client/milestone/${milestones[openIdx].id}/dispute/`;
-      const response = await fetch(url, {
+      const url = `${getBaseURL()}/api/workspace/client/workspace/${parseInt(workspace_id)}/milestone/${parseInt(milestones[openIdx].id)}/raise-dispute/`;
+      const response = await api.post(url, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        data: {
           type: activeDisputeTab === 'details' ? 'details' : 'instructions',
           details: activeDisputeTab === 'details' ? disputeDetails.description : null,
           files: activeDisputeTab === 'details' ? disputeDetails.files.map(f => ({
@@ -207,9 +206,9 @@ const Milestones = () => {
             uid: f.uid,
             status: 'done',
           })) : [],
-        }),
+        },
       });
-      const data = await response.json();
+      const data = await response.data;
       if (data.success) {
         message.success(data.message);
         setShowDisputeModal(false);
@@ -754,7 +753,7 @@ const Milestones = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <ClockCircleOutlined className="text-green-400" />
                       <span>Extend Deadline</span>
-                    </div>
+                  </div>
                     <InputNumber
                       min={1}
                       placeholder="Days to extend"
@@ -777,7 +776,7 @@ const Milestones = () => {
                     onChange={(e) => setFeedback(e.target.value)}
                     className="rounded-xl bg-freelancer-primary backdrop-blur-sm text-text-light border-white/10 text-sm"
                   />
-                </div>
+                  </div>
                 
                 <div className="flex gap-3 justify-center">
                   <Button
@@ -797,198 +796,260 @@ const Milestones = () => {
                   >
                     Cancel
                   </Button>
-                </div>
-              </div>
+                  </div>
+                  </div>
             </Modal>
 
             {/* Dispute Modal */}
             <Modal
-              title={
-                <div className="flex items-center gap-2 text-sm mb-2">
-                  <ExclamationCircleOutlined className="text-red-500" />
-                  <span className="text-white text-lg">Raise Dispute</span>
-                </div>
+  title={
+    <div className="flex items-center gap-2 text-sm mb-2">
+      <ExclamationCircleOutlined className="text-red-500" />
+      <span className="text-white text-lg font-semibold">Raise Dispute</span>
+    </div>
+  }
+  open={showDisputeModal}
+  onCancel={() => setShowDisputeModal(false)}
+  footer={null}
+  width={600}  // Increased width for a more spacious modal
+  className="custom-modal"
+>
+  <div className="space-y-6">
+    <div className="text-center">
+      <div className="text-6xl mb-4">⚠️</div>
+      <p className="text-text-light mb-6 text-sm">
+        Raising a dispute will notify the freelancer and may lead to review. This action cannot be undone.
+      </p>
+    </div>
+
+    {/* Tabs for Instructions and Details */}
+    <Tabs
+      activeKey={activeDisputeTab}
+      onChange={setActiveDisputeTab}
+      className="custom-tabs text-sm"
+      centered
+    >
+      <TabPane tab="Instructions" key="instructions">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-6 text-sm text-text-light"
+        >
+          <p>Follow these steps:</p>
+          <ul className="flex flex-col items-start list-disc pl-5">
+            <li>Explain the issue clearly.</li>
+            <li>Attach evidence if available.</li>
+            <li>Submit for review.</li>
+          </ul>
+        </motion.div>
+      </TabPane>
+      <TabPane tab="Details" key="details">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-6 text-left text-sm"
+        >
+          {/* Milestone Name Input */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-text-light font-semibold">Milestone Name</label>
+            <Input
+              placeholder="Milestone Name"
+              value={milestones[openIdx]?.title || ''}
+              readOnly
+              className="rounded-xl bg-freelancer-primary backdrop-blur-sm border-white/10 text-sm"
+            />
+          </div>
+
+          {/* Description Textarea */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-text-light font-semibold">Describe the Problem</label>
+            <TextArea
+              rows={4}
+              placeholder="Describe the problem"
+              onChange={(e) =>
+                setDisputeDetails({ ...disputeDetails, description: e.target.value })
               }
-              open={showDisputeModal}
-              onCancel={() => setShowDisputeModal(false)}
-              footer={null}
-              width={500}
-              className="custom-modal"  // For global CSS overrides
+              className="rounded-xl bg-freelancer-primary backdrop-blur-sm border-white/10 text-sm"
+            />
+          </div>
+
+          {/* Upload Files Section */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-text-light font-semibold">Upload Files</label>
+            <AntUpload
+              beforeUpload={() => false}
+              onChange={(info) => {
+                const uniqueFiles = info.fileList.filter((file, index, self) =>
+                  index === self.findIndex((f) => f.uid === file.uid)
+                );
+                setDisputeDetails({ ...disputeDetails, files: uniqueFiles });
+              }}
+              multiple
+              className="text-sm text-left !text-text-muted"
             >
-              <div className="text-center">
-                <div className="text-6xl mb-4">⚠️</div>
-                <p className="text-text-light mb-6 text-sm">
-                  Raising a dispute will notify the freelancer and may lead to review. This action cannot be undone.
-                </p>
-                
-                <Tabs activeKey={activeDisputeTab} onChange={setActiveDisputeTab} className="custom-tabs text-sm">
-                  <TabPane tab="Instructions" key="instructions">
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="space-y-6 text-sm text-text-light"
+              <Button
+                icon={<UploadOutlined />}
+                className="w-full text-sm bg-freelancer-primary/20 border-white/10 flex items-center justify-center py-2 px-4 rounded-xl text-text-light hover:bg-freelancer-primary/30"
+              >
+                Select Files
+              </Button>
+            </AntUpload>
+          </div>
+        </motion.div>
+      </TabPane>
+    </Tabs>
+
+ <div className="mt-4 text-sm text-text-light border border-yellow-500/20 bg-yellow-500/10 p-4 rounded-xl">
+  <p className="text-yellow-400 font-semibold text-base mb-3">
+    Before submitting, consider alternatives to avoid disputes:
+  </p>
+  <div className="flex flex-row gap-3 items-center">
+    {/* Extend Deadline Option */}
+    <div className="relative flex items-center">
+      <Button
+        onClick={() => setIsExtendInputVisible(true)}
+        className="bg-yellow-500 text-white text-sm font-medium flex items-center gap-1 px-3 py-1 rounded-lg shadow-none hover:bg-yellow-400 transition"
+        disabled={isExtendInputVisible}
+        style={{ minWidth: 0, height: 36 }}
+      >
+        <ClockCircleOutlined style={{ fontSize: 16 }} />
+        Extend Deadline
+      </Button>
+      {isExtendInputVisible && (
+        <div
+          className="absolute left-0 top-12 z-20 min-w-[260px] max-w-xs bg-client-bg-card  rounded-2xl shadow-xl p-4 flex flex-col gap-3"
+          style={{
+            boxShadow: "0 4px 24px 0 rgba(255, 193, 7, 0.10)",
+            backdropFilter: "blur(6px)",
+          }}
+        >
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-yellow-600 font-semibold text-xs flex items-center gap-1">
+              <ClockCircleOutlined /> Extend Deadline
+            </span>
+            <Button
+              onClick={() => {
+                setIsExtendInputVisible(false);
+                setExtensionInput(0);
+              }}
+              size="small"
+              icon={<CloseOutlined />}
+              className="text-yellow-500 hover:text-yellow-400 px-2 py-0 border-none bg-transparent"
+              style={{ height: 24, fontSize: 12, boxShadow: "none" }}
+            />
+          </div>
+          {/* Help/Instruction Text */}
+          <div className="text-xs text-gray-600 flex items-start gap-2 bg-yellow-50 rounded-lg px-2 py-1">
+            <InfoCircleOutlined className="mt-0.5 text-yellow-400" />
+            <span>
+              Need more time? Propose a new deadline for this milestone.<br />
+              <b>Maximum allowed: {calculateMaxExtensionDays()} days</b>
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              min={1}
+              max={calculateMaxExtensionDays()}
+              placeholder="Days"
+              onChange={e => {
+                const value = parseInt(e.target.value, 10);
+                const maxDays = calculateMaxExtensionDays();
+                if (!isNaN(value)) {
+                  const cappedValue = Math.min(Math.max(value, 1), maxDays);
+                  setExtensionInput(cappedValue);
+                  if (value > maxDays) {
+                    message.warning(`Maximum extension is ${maxDays} days.`);
+                  }
+                } else {
+                  setExtensionInput('');
+                }
+              }}
+              value={extensionInput}
+              className="w-20 rounded-lg bg-yellow-100 border border-yellow-200 text-xs px-2 py-1 focus:ring-2 focus:ring-yellow-400"
+              style={{ height: 28 }}
+            />
+            <span className="text-xs text-gray-500">days</span>
+          </div>
+          {extensionInput > 0 && milestones[openIdx]?.due && (
+            <span className="text-xs text-green-600 font-medium">
+              <CheckCircleOutlined className="mr-1 text-green-400" />
+              New Due: {moment(milestones[openIdx].due).add(extensionInput, 'days').format('MMM DD, YYYY')}
+            </span>
+          )}
+          <Button
+            type="primary"
+            size="small"
+            className="bg-yellow-500 hover:bg-yellow-400 text-xs font-semibold mt-1 rounded-lg shadow-none"
+            style={{ width: "100%", height: 32, letterSpacing: 0.2 }}
+            disabled={!extensionInput || extensionInput < 1}
+            onClick={async () => {
+              // Call your extension API here
+              setIsExtendInputVisible(false);
+              setExtensionInput(0);
+              message.success("Extension request submitted!");
+            }}
+          >
+            Submit Extension
+          </Button>
+        </div>
+      )}
+    </div>
+
+    {/* Add Revision Option for OBSP milestones */}
+    {dataType === 'obsp' && (
+      <Button
+        onClick={() => {
+          message.info('Requesting revision...');
+          // Add revision logic here
+        }}
+        className="bg-blue-500 text-white text-sm font-medium flex items-center gap-1 px-3 py-1 rounded-lg shadow-none hover:bg-blue-400 transition"
+        style={{ minWidth: 0, height: 36 }}
+      >
+        <EditOutlined style={{ fontSize: 16 }} />
+        Add Revision
+      </Button>
+    )}
+  </div>
+  <p className="text-xs text-text-light mt-3 italic">
+    Extensions are for genuine delays. Abusing this (e.g., extending and disputing) may lead to restrictions.
+  </p>
+                  </div>
+
+  {/* Buttons for Submit and Cancel */}
+  <div className="flex gap-6 justify-start mt-8">
+    <Button
+      type="primary"
+      size="large"
+      onClick={handleRaiseDispute}
+      className="bg-red-500 hover:bg-red-600 border-none text-sm font-medium shadow-lg transition-all duration-200 ease-in-out w-full"
+      icon={<ExclamationCircleOutlined />}
+      disabled={isExtendInputVisible}  // Disable submit if extension input is visible
+    >
+      Submit Dispute
+    </Button>
+
+    <Button
+      size="large"
+                      onClick={() => setShowDisputeModal(false)}
+      className="bg-gray-500 hover:bg-gray-600 border-none text-sm font-medium shadow-lg transition-all duration-200 ease-in-out w-full"
                     >
-                      <p>Follow these steps:</p>
-                      <ul className="flex flex-col items-start list-disc pl-5">
-                        <li>Explain the issue clearly.</li>
-                        <li>Attach evidence if available.</li>
-                        <li>Submit for review.</li>
-                      </ul>
-                    </motion.div>
-                  </TabPane>
-                  <TabPane tab="Details" key="details">
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="space-y-4 text-left text-sm"  // Changed to text-left for overall alignment
-                    >
-                      {/* Milestone Name Input - Auto-filled and compact, now left-aligned */}
-                      <div className="flex flex-col space-y-1">
-                        <label className="text-text-light font-semibold text-left">Milestone Name</label>
-                        <Input
-                          placeholder="Milestone Name"
-                          value={milestones[openIdx]?.title || ''}
-                          readOnly
-                          className="rounded-xl bg-freelancer-primary backdrop-blur-sm border-white/10 text-sm text-left"
-                        />
-                      </div>
+                      Cancel
+    </Button>
+                  </div>
 
-                      {/* Description Textarea - Compact with reduced spacing, now left-aligned */}
-                      <div className="flex flex-col space-y-1">
-                        <label className="text-text-light font-semibold text-left">Describe the Problem</label>
-                        <TextArea
-                          rows={3}
-                          placeholder="Describe the problem"
-                          onChange={(e) => setDisputeDetails({ ...disputeDetails, description: e.target.value })}
-                          className="rounded-xl bg-freelancer-primary backdrop-blur-sm border-white/10 text-sm text-left"
-                        />
-                      </div>
 
-                      {/* Upload Files Section - Neat alignment with minimal gaps, now left-aligned */}
-                      <div className="flex flex-col space-y-1">
-                        <label className="text-text-light font-semibold text-left">Upload Files</label>
-                        <AntUpload
-                          beforeUpload={() => false}
-                          onChange={(info) => {
-                            const uniqueFiles = info.fileList.filter((file, index, self) =>
-                              index === self.findIndex(f => f.uid === file.uid)
-                            );
-                            setDisputeDetails({ ...disputeDetails, files: uniqueFiles });
-                          }}
-                          multiple
-                          className="text-sm text-left !text-text-muted"
-                        >
-                          <Button 
-                            icon={<UploadOutlined />} 
-                            className="w-full text-sm bg-freelancer-primary/20 border-white/10 flex items-start justify-start py-2 px-4 rounded-xl text-text-light hover:bg-freelancer-primary/30"  // Added justify-start
-                          >
-                            Select Files
-                          </Button>
-                        </AntUpload>
 
-                      </div>
 
-                     
-                    </motion.div>
-                  </TabPane>
-                </Tabs>
-                
-                {/* Added: Options to reduce disputes with emphasis */}
-                <div className="mt-4 space-y-2 text-sm text-text-light border border-yellow-500/20 bg-yellow-500/10 p-4 rounded-xl">
-                <p className="text-yellow-400 font-semibold">Before submitting, consider alternatives to avoid disputes:</p>
-                <div className="flex gap-2">
-                      <div className="flex flex-col space-y-2 mt-4">
-                        <div className="flex items-start gap-3">
-                          <Button
-                            onClick={() => setIsExtendInputVisible(true)}  // Toggle visibility on click
-                            className="bg-yellow-500 text-white text-sm"
-                          >
-                            Extend Deadline
-                          </Button>
-                          
-                          {isExtendInputVisible && (
-                            <div className="flex flex-col space-y-1 w-full">
-                              {/* Replaced InputNumber with Input (type="number") to hide arrows and restrict to numbers */}
-                              <Input
-                                type="number"  // Restricts input to numbers only
-                                min={1}
-                                max={calculateMaxExtensionDays()}  // Enforces the maximum value dynamically
-                                placeholder="Days to extend"
-                                onChange={(e) => {
-                                  const value = parseInt(e.target.value, 10);
-                                  const maxDays = calculateMaxExtensionDays();
-                                  if (!isNaN(value)) {
-                                    const cappedValue = Math.min(Math.max(value, 1), maxDays);  // Enforce min and max
-                                    setExtensionInput(cappedValue);
-                                    if (value > maxDays) {
-                                      message.warning(`Maximum extension is ${maxDays} days.`);
-                                    }
-                                  } else {
-                                    setExtensionInput('');  // Clear input if non-numeric value is entered
-                                  }
-                                }}
-                                value={extensionInput}
-                                className="no-arrows w-24 rounded-xl bg-freelancer-primary backdrop-blur-sm border-white/10 text-sm text-left"  // Added 'no-arrows' class to hide spinners
-                              />
-                              
-                              {extensionInput > 0 && milestones[openIdx]?.due && (
-                                <p className="text-sm text-text-light">
-                                  New Due Date: {moment(milestones[openIdx].due).add(extensionInput, 'days').format('MMM DD, YYYY')}
-                                  {extensionInput > calculateMaxExtensionDays() && (
-                                    <span className="text-red-500 ml-2"> (Exceeds maximum allowed)</span>
-                                  )}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        
-                        {isExtendInputVisible && (
-                          <p className="text-xs text-text-light text-left">
-                            Note: Maximum extension is half the time to the next milestone. Current max: {calculateMaxExtensionDays()} days.
-                          </p>
-                        )}
-                      </div>
-                  {milestones[openIdx]?.type === 'obsp' && (
-                      <Button
-                        onClick={() => {
-                          message.info('Requesting revision...');
-                          // Add revision logic here
-                        }}
-                        className="bg-blue-500 text-white text-sm"
-                      >
-                        Add Revision
-                      </Button>
-                      )}
-                    </div>
-                </div>
-                
-                <div className="flex gap-3 justify-start mt-4 text-left">  // Changed justify-center to justify-start
-                  <Button
-                    type="primary"
-                    size="large"
-                    onClick={handleRaiseDispute}
-                    className="bg-red-500 hover:bg-red-600 border-none text-sm text-left"
-                    icon={<ExclamationCircleOutlined />}
-                  >
-                    Submit Dispute
-                  </Button>
-                  <Button
-                    size="large"
-                    onClick={() => setShowDisputeModal(false)}
-                    className="bg-gray-500 hover:bg-gray-600 border-none text-sm text-left"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-                
-                <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-sm">
-                  <p className="text-yellow-400">
-                    💡 <strong>Tip:</strong> Consider discussing with the freelancer first if possible.
-                  </p>
+    {/* Tip Section */}
+    <div className="mt-6 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-sm">
+      <p className="text-yellow-400">
+        💡 <strong>Tip:</strong> Consider discussing with the freelancer first if possible.
+      </p>
                 </div>
               </div>
-            </Modal>
+</Modal>
+
           </div>
         );
       })}

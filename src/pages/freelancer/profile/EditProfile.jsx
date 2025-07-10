@@ -111,6 +111,26 @@ const EditProfile = () => {
   const [saveSuccessMessage, setSaveSuccessMessage] = useState('');
   const [autoNextTimer, setAutoNextTimer] = useState(null);
 
+  // Add new state for all available skills
+  const [allSkills, setAllSkills] = useState([]);
+
+  // Fetch all skills from the backend when the component mounts
+  useEffect(() => {
+    const fetchAllSkills = async () => {
+      try {
+        const accessToken = Cookies.get('accessToken');
+        const response = await axios.get(`${getBaseURL()}/api/skills/`, {  // Assuming an endpoint like /api/core/skills/ exists
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        setAllSkills(response.data);  // Assuming the response is an array of skill objects, e.g., [{id: 1, name: 'React'}, ...]
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+        message.error('Failed to load skills');
+      }
+    };
+    fetchAllSkills();
+  }, []);
+
   // Fetch profile data based on active tab
   const fetchProfileData = async (tab) => {
     setTabLoading(true);
@@ -1148,14 +1168,19 @@ const EditProfile = () => {
                         <Col span={24}>
                           <Form.Item label={<span><FaCode className="mr-2" /> Skills</span>} name="skills">
                             <Select 
-                              mode="tags"
+                              mode="tags"  // Allows users to add new tags dynamically
+                              showSearch  // Enables search functionality to improve performance with large lists
+                              filterOption={(input, option) =>  // Custom filter for better matching
+                                option.children.toLowerCase().includes(input.toLowerCase())
+                              }
                               className="bg-freelancer-primary backdrop-blur-sm text-text-light border-white/10"
-                              placeholder="Enter your skills"
+                              placeholder="Select or add your skills"
                             >
-                              <Option value="React">React</Option>
-                              <Option value="Node.js">Node.js</Option>
-                              <Option value="Python">Python</Option>
-                              <Option value="AWS">AWS</Option>
+                              {allSkills.map(skill => (
+                                <Option key={skill.id} value={skill.name}>
+                                  {skill.name}
+                                </Option>
+                              ))}
                             </Select>
                           </Form.Item>
                         </Col>
