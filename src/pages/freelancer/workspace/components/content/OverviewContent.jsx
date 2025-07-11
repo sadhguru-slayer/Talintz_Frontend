@@ -13,6 +13,9 @@ import { getBaseURL } from "../../../../../config/axios";
 import { useParams } from "react-router-dom";
 
 const statusBadge = (statusRaw) => {
+  if (typeof statusRaw !== 'string') {
+    return <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-200 text-gray-800 font-semibold text-xs">Unknown Status</span>;
+  }
   if (!statusRaw) return null;
   // Normalize status: lowercase, replace underscores with spaces
   const status = statusRaw.replace(/_/g, " ").toLowerCase();
@@ -61,6 +64,7 @@ const OverviewContent = () => {
         }
       });
       const data = await response.json();
+      console.log(data)
       setOverview(data);
     };
     fetchOverview();
@@ -113,12 +117,30 @@ const OverviewContent = () => {
           </div>
         </div>
         <div>
+        { project?.deliverables && (
+         <>
           <div className="text-sm text-white/60 mb-1">Key Deliverables</div>
           <ul className="list-disc list-inside text-white/90 space-y-1 ml-4">
             {(project?.deliverables || []).map((d, i) => (
               <li key={i}>{d}</li>
             ))}
           </ul>
+          </>
+          )}
+          <div>
+            <span className="block text-xs text-white/50 mb-1">Skills Required</span>
+            <ul className="list-disc list-inside text-white/80 text-sm">
+              {project?.skills_required?.required_skills?.length
+                ? project.skills_required.required_skills.map((s, i) => <li key={i}>{s}</li>)
+                : <li>No required skills</li>}
+              {project?.skills_required?.core_skills?.length
+                ? project.skills_required.core_skills.map((s, i) => <li key={i}>Core: {s}</li>)
+                : null}
+              {project?.skills_required?.optional_skills?.length
+                ? project.skills_required.optional_skills.map((s, i) => <li key={i}>Optional: {s}</li>)
+                : null}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -198,6 +220,45 @@ const OverviewContent = () => {
         </div>
       </section>
 
+      {/* === Client Selections / Review Phase Details === */}
+      {project?.client_selections && (
+        <section className="mt-8">
+          <h2 className="text-xl font-semibold text-white mb-4 tracking-tight flex items-center gap-2">
+            <InfoCircleOutlined className="text-freelancer-accent" /> Client Selections
+          </h2>
+          <div className="space-y-6">
+            {Object.entries(project?.client_selections || {}).map(([phaseKey, phaseData]) => (
+              <div key={phaseKey} className="bg-freelancer-bg-grey rounded-lg p-4 border border-white/10">
+                <h3 className="text-lg font-medium text-white mb-3 flex items-center gap-2">
+                  {phaseData?.phase_display || phaseKey}
+                </h3>
+                {phaseData?.selected_fields?.length > 0 ? (
+                  <ul className="space-y-2">
+                    {phaseData?.selected_fields?.map((field, index) => (
+                      <li key={index} className="flex justify-between items-center gap-4 p-3 bg-white/5 rounded-md">
+                        <div className="flex-1 flex items-center gap-2">
+                          {getFieldIcon(field?.field_label)} {/* Add dynamic icon based on field type */}
+                          <span className="text-white font-medium">{field?.field_label}: </span>
+                          <span className="text-white/80">{renderSelectedValue(field?.selected_value)}</span>
+                        </div>
+                        {field?.price_impact > 0 && (  // Highlight fields with price impact
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-freelancer-accent/20 text-freelancer-accent text-xs font-semibold">
+                            +₹{field?.price_impact}  {/* Updated to INR */}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-white/60 text-sm italic">No selections for this phase.</p>
+                )}
+              </div>
+            ))}
+          </div>
+
+        </section>
+      )}
+
       {/* === Freelancer Tips === */}
       <section>
         <div className="bg-blue-900/20 border border-blue-800 rounded-xl p-4 flex items-start gap-3 mt-8">
@@ -213,6 +274,34 @@ const OverviewContent = () => {
       </section>
     </div>
   );
+};
+
+const getFieldIcon = (fieldLabel) => {
+  if (fieldLabel?.toLowerCase().includes('file')) return <FileOutlined className="text-freelancer-accent text-sm" />;
+  if (fieldLabel?.toLowerCase().includes('price')) return <DownloadOutlined className="text-freelancer-accent text-sm" />;
+  if (fieldLabel?.toLowerCase().includes('email')) return <UserOutlined className="text-freelancer-accent text-sm" />;
+  return <InfoCircleOutlined className="text-freelancer-accent text-sm" />;  // Default icon
+};
+
+const renderSelectedValue = (value) => {
+  if (!value) return 'N/A';  // Handle null or undefined
+  if (typeof value === 'string' || typeof value === 'number') {
+    return value;  // Directly render strings or numbers
+  }
+  if (Array.isArray(value)) {
+    // For arrays (e.g., file uploads), map to a simple string or list
+    return value.map((item, idx) => {
+      if (item?.name) {  // Assuming file objects have a 'name' key
+        return item.name;  // Display file name
+      }
+      return JSON.stringify(item);  // Fallback for other arrays
+    }).join(', ');  // Join into a comma-separated string
+  }
+  if (typeof value === 'object') {
+    // For objects, extract and display a summary (e.g., key-value pairs)
+    return value.name || JSON.stringify(value, null, 2).substring(0, 50) + '...';  // Show name if available, or a truncated string
+  }
+  return String(value);  // Fallback for other types
 };
 
 export default OverviewContent;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Card, Col, Row, Button, Tag, Statistic, Modal, Divider, Typography, 
-  Radio, Space, Badge, Progress, Avatar, InputNumber, message, Select, Spin, Alert
+  Radio, Space, Badge, Progress, Avatar, InputNumber, message, Select, Spin, Alert, Tabs
 } from 'antd';
 import Cookies from 'js-cookie'
 import {getBaseURL} from '../../../config/axios';
@@ -23,10 +23,12 @@ import axios from 'axios';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 // Enhanced OBSP Card Component with Mobile Optimization
-const OBSPCard = ({ obsp, onViewDetails }) => {
+const OBSPCard = ({ obsp, onViewDetails, isPurchased }) => {
   const getCategoryColor = (category) => {
+    if (!category) return '#00D4AA';  // Default color if category is undefined
     switch (category) {
       case 'Web Development': return '#00D4AA';
       case 'Mobile Development': return '#6366F1';
@@ -41,6 +43,7 @@ const OBSPCard = ({ obsp, onViewDetails }) => {
   };
 
   const getCategoryIcon = (category) => {
+    if (!category) return <CodeOutlined />;  // Default icon if category is undefined
     switch (category) {
       case 'Web Development': return <CodeOutlined />;
       case 'Mobile Development': return <MobileOutlined />;
@@ -54,10 +57,14 @@ const OBSPCard = ({ obsp, onViewDetails }) => {
     }
   };
 
+  // Ensure obsp properties are defined
+  const category = obsp?.category || 'Unknown';
+  const categoryDisplay = obsp?.category_display || category;
+
   // Use the new price range structure
-  const minPrice = obsp.price_range?.min || 0;
-  const maxPrice = obsp.price_range?.max || 0;
-  const levelCount = obsp.level_count || 0;
+  const minPrice = obsp?.price_range?.min || 0;
+  const maxPrice = obsp?.price_range?.max || 0;
+  const levelCount = obsp?.level_count || 0;
 
   return (
     <motion.div
@@ -75,12 +82,12 @@ const OBSPCard = ({ obsp, onViewDetails }) => {
             <div 
               className="px-2 py-1 sm:px-4 sm:py-2 rounded-full text-xs font-bold text-white shadow-lg border border-white/20 backdrop-blur-sm"
               style={{ 
-                backgroundColor: getCategoryColor(obsp.category),
-                boxShadow: `0 4px 20px ${getCategoryColor(obsp.category)}40`
+                backgroundColor: `${getCategoryColor(category)}15`,
+                boxShadow: `0 4px 20px ${getCategoryColor(category)}40`
               }}
             >
-              <span className="hidden sm:inline">{obsp.category_display || obsp.category}</span>
-              <span className="sm:hidden">{(obsp.category_display || obsp.category).split(' ')[0]}</span>
+              <span className="hidden sm:inline">{categoryDisplay}</span>
+              <span className="sm:hidden">{(categoryDisplay.split(' ')[0] || 'Unknown')}</span>
             </div>
           </div>
 
@@ -89,27 +96,28 @@ const OBSPCard = ({ obsp, onViewDetails }) => {
             <div 
               className="p-3 sm:p-4 rounded-xl sm:rounded-2xl text-xl sm:text-2xl shadow-lg border border-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300"
               style={{ 
-                backgroundColor: `${getCategoryColor(obsp.category)}15`,
-                color: getCategoryColor(obsp.category),
-                boxShadow: `0 8px 32px ${getCategoryColor(obsp.category)}20`
+                backgroundColor: `${getCategoryColor(category)}15`,
+                color: getCategoryColor(category),
+                boxShadow: `0 8px 32px ${getCategoryColor(category)}20`
               }}
             >
-              {getCategoryIcon(obsp.category)}
+              {getCategoryIcon(category)}
             </div>
             <div className="flex-1 min-w-0">
               <Title level={4} className="!text-text-light mb-1 sm:mb-2 font-bold leading-tight group-hover:text-client-accent transition-colors duration-300 sm:text-lg lg:text-xl">
-                {obsp.title}
+                {obsp.title || 'Untitled'}
               </Title>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                 <Tag 
-                  color={getCategoryColor(obsp.category)} 
+                  color={getCategoryColor(category)} 
                   className="text-xs font-semibold border-0 shadow-sm w-fit"
                   style={{ 
-                    backgroundColor: `${getCategoryColor(obsp.category)}20`,
-                    color: getCategoryColor(obsp.category)
+                    backgroundColor: `${getCategoryColor(category)}20`,
+                    color: getCategoryColor(category)
                   }}
                 >
-                  {obsp.industry_display || obsp.industry.charAt(0).toUpperCase() + obsp.industry.slice(1)}
+                  <span className="hidden sm:inline">{categoryDisplay}</span>
+                  <span className="sm:hidden">{(categoryDisplay.split(' ')[0] || 'Unknown')}</span>
                 </Tag>
                 <div className="flex items-center gap-1 text-text-muted text-xs sm:text-sm">
                   <StarOutlined className="text-yellow-500" />
@@ -177,10 +185,146 @@ const OBSPCard = ({ obsp, onViewDetails }) => {
   );
 };
 
+// Enhanced PurchasedOBSPItem Component
+const PurchasedOBSPItem = ({ purchase }) => {
+  const navigate = useNavigate();
+  
+  // Format created_at as "Purchased on [date]" in IST
+  const formattedCreatedAt = purchase.created_at 
+    ? new Date(purchase.created_at).toLocaleDateString('en-IN', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        timeZone: 'Asia/Kolkata'  // Changed to IST
+      })
+    : 'N/A';
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="h-full"
+    >
+      <Card
+        className="h-full bg-gradient-to-br from-client-bg-card to-client-bg-card/80 border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer group"
+        bodyStyle={{ padding: "16px sm:20px lg:24px" }}
+      >
+        <div className="relative">
+          {/* Status Badge - Similar to Category Badge in OBSPCard */}
+          <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-10">
+            <div 
+              className="px-2 py-1 sm:px-4 sm:py-2 capitalize rounded-full text-xs font-bold text-white shadow-lg border border-white/20 backdrop-blur-sm"
+              style={{ 
+                backgroundColor: purchase.status === 'completed' ? '#10B981' : '#F59E0B',  
+                boxShadow: `0 4px 20px ${purchase.status === 'completed' ? '#10B98140' : '#F59E0B40'}`
+              }}
+            >
+              <span className="hidden sm:inline">{purchase.status || 'N/A'}</span>
+              <span className="sm:hidden">{(purchase.status || 'N/A').split(' ')[0]}</span>
+            </div>
+          </div>
+
+          {/* Header - Similar to OBSPCard, with added created_at */}
+          <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div 
+              className="p-3 sm:p-4 rounded-xl sm:rounded-2xl text-xl sm:text-2xl shadow-lg border border-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300"
+              style={{ 
+                backgroundColor: '#6366F120',
+                color: '#6366F1',
+                boxShadow: '0 8px 32px rgba(99, 102, 241, 0.2)'
+              }}
+            >
+              <FileTextOutlined />
+            </div>
+            <div className="flex-1 min-w-0">
+              <Title level={4} className="!text-text-light mb-1 sm:mb-2 font-bold leading-tight group-hover:text-client-accent transition-colors duration-300 sm:text-lg lg:text-xl">
+                {purchase.title || 'Untitled'}
+              </Title>
+              <div className="text-text-secondary text-xs sm:text-sm mb-2">
+                Purchased on {formattedCreatedAt}
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <Tag 
+                  color="#6366F1"
+                  className="text-xs capitalize font-semibold border-0 shadow-sm w-fit"
+                  style={{ backgroundColor: '#6366F120', color: '#6366F1' }}
+                >
+                  Level: {purchase.level || 'Unknown'}
+                </Tag>
+              </div>
+            </div>
+          </div>
+
+          {/* Features List */}
+          {purchase.features && purchase.features.length > 0 && (
+            <div className="mb-4 sm:mb-6">
+              <Title level={5} className="!text-text-light mb-2 font-semibold text-sm sm:text-base">
+                Features:
+              </Title>
+              <ul className="list-disc list-inside text-text-muted text-xs sm:text-sm pl-2">
+                {purchase.features.map((feature, index) => (
+                  <li key={index} className="mb-1">
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {/* Stats Grid - Like OBSPCard, with added deadline */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="text-center p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10">
+              <div className="text-text-light font-bold text-base sm:text-lg mb-1">
+                {purchase.milestones_count || 0}
+              </div>
+              <div className="text-text-secondary text-xs">
+                Milestones
+              </div>
+            </div>
+            <div className="text-center p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10">
+              <div className="text-text-light font-bold text-base sm:text-lg mb-1">
+                ₹{purchase.price || '0.00'}
+              </div>
+              <div className="text-text-secondary text-xs">
+                Total Price
+              </div>
+            </div>
+            <div className="text-center p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 col-span-2">
+              <div className="text-text-light font-bold text-base sm:text-lg mb-1">
+                {purchase.deadline || 'No deadline'}
+              </div>
+              <div className="text-text-secondary text-xs">
+                Last Milestone Deadline
+              </div>
+            </div>
+          </div>
+
+
+          {/* Action Button - Matching OBSPCard */}
+          <div className="pt-3 sm:pt-4 border-t border-white/10">
+            <Button 
+              type="primary" 
+              size="middle"
+              className="w-full bg-gradient-to-r from-client-accent to-client-accent/90 text-white border-none shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm sm:text-base"
+              onClick={() => navigate(`/client/obsp/purchased-details/${purchase.id}`)}
+              icon={<FileTextOutlined />}
+            >
+              <span className="sm:hidden">View</span>
+              <span className="hidden sm:inline">View Details</span>
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </motion.div>
+  );
+};
+
 const ObspPurchaseList = () => {
   const [selectedIndustry, setSelectedIndustry] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [obspData, setObspData] = useState([]);
+  const [obspData, setObspData] = useState([]);  // Available OBSPs
+  const [purchasedData, setPurchasedData] = useState([]);  // New state for purchased OBSPs
+  const [activeTab, setActiveTab] = useState('available');  // New state for tab management
   const [headerStats, setHeaderStats] = useState({
     total_obsps: 0,
     unique_industries: 0,
@@ -188,6 +332,7 @@ const ObspPurchaseList = () => {
     price_range: { min: 0, max: 0 }
   });
   const [loading, setLoading] = useState(true);
+  const [purchasedLoading, setPurchasedLoading] = useState(true);  // Separate loading for purchased data
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -277,9 +422,31 @@ const ObspPurchaseList = () => {
     }
   };
 
+  // Fetch purchased OBSPs
+  const fetchPurchasedData = async () => {
+    try {
+      setPurchasedLoading(true);
+      const token = Cookies.get('accessToken');
+      const response = await axios.get(`${getBaseURL()}/api/obsp/api/responses/`, {  // Assuming a new or existing endpoint for user's OBSPResponses
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data.success) {
+        setPurchasedData(response.data.data || []);  // Expect an array of purchased OBSPs
+      } else {
+        throw new Error(response.data.error || 'Failed to fetch purchased OBSPs');
+      }
+    } catch (err) {
+      setError(err.message || 'Error fetching purchased OBSPs');
+      message.error('Failed to load purchased OBSPs');
+    } finally {
+      setPurchasedLoading(false);
+    }
+  };
+
   // Load data on component mount
   useEffect(() => {
-    fetchObspData();
+    fetchObspData();  // Existing fetch
+    fetchPurchasedData();  // New fetch for purchased data
   }, []);
 
   // Handle refresh
@@ -510,51 +677,118 @@ const ObspPurchaseList = () => {
             </div>
           </motion.div>
 
-          {/* OBSP Packs Grid - Mobile Optimized */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="rounded-xl border border-white/10 bg-gradient-to-br from-client-secondary/40 to-client-bg-dark/30 backdrop-blur-xl shadow-xl"
-          >
-            <div className="p-4 sm:p-6">
-              {/* Section Header */}
-              <div className="mb-4 sm:mb-6">
-                <Title level={4} className="!text-text-light mb-2 font-semibold sm:text-lg">
-                  Available Service Packs
-                </Title>
-                <Text className="text-text-secondary text-sm sm:text-base">
-                  {filteredPacks.length} pack{filteredPacks.length !== 1 ? 's' : ''} found
-                </Text>
-              </div>
-
-              {filteredPacks.length > 0 ? (
-                <Row gutter={[16, 16]} className="sm:gutter-[24px]">
-                  {filteredPacks.map((pack, index) => (
-                    <Col xs={24} sm={24} lg={12} key={pack.id}>
-                      <OBSPCard 
-                        obsp={pack} 
-                        onViewDetails={handleViewDetails}
-                      />
-                    </Col>
-                  ))}
-                </Row>
-              ) : (
-                <div className="text-center py-12 sm:py-16">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-client-accent/20 border border-client-accent/30 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
-                    <FilterOutlined className="text-2xl sm:text-3xl text-client-accent" />
-                  </div>
-                  <Title level={5} className="text-text-light mb-3 font-semibold sm:text-lg">
-                    No OBSP Packs Found
+        {/* Add tabs for Available and Purchased */}
+        <Tabs 
+          activeKey={activeTab} 
+          onChange={setActiveTab} 
+          className="custom-tabs"
+          type={isMobile ? "line" : "card"}  // Responsive type, like in EditProfile
+          tabBarStyle={{
+            margin: 0,
+            padding: isMobile ? '12px 16px 0' : '16px 24px 0',
+            background: 'transparent',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <TabPane tab="Available OBSPs" key="available">
+            {/* OBSP Packs List */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="rounded-xl border border-white/10 bg-gradient-to-br from-client-secondary/40 to-client-bg-dark/30 backdrop-blur-xl shadow-xl"
+            >
+              <div className="p-4 sm:p-6">
+                {/* Section Header */}
+                <div className="mb-4 sm:mb-6">
+                  <Title level={4} className="!text-text-light mb-2 font-semibold sm:text-lg">
+                    Available Service Packs
                   </Title>
-                  <Text className="text-text-secondary text-sm sm:text-base leading-relaxed max-w-md mx-auto">
-                    Try adjusting your filters to see more options. You can select different industries or categories to explore available service packs.
+                  <Text className="text-text-secondary text-sm sm:text-base">
+                    {filteredPacks.length} pack{filteredPacks.length !== 1 ? 's' : ''} found
                   </Text>
                 </div>
-              )}
+
+                {filteredPacks.length > 0 ? (
+                  <Row gutter={[16, 16]} className="sm:gutter-[24px]">
+                    {filteredPacks.map((pack, index) => (
+                      <Col xs={24} sm={24} lg={12} key={pack.id}>
+                        <OBSPCard 
+                          obsp={pack} 
+                          onViewDetails={handleViewDetails}
+                        />
+                      </Col>
+                    ))}
+                  </Row>
+                ) : (
+                  <div className="text-center py-12 sm:py-16">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-client-accent/20 border border-client-accent/30 mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+                      <FilterOutlined className="text-2xl sm:text-3xl text-client-accent" />
+                    </div>
+                    <Title level={5} className="text-text-light mb-3 font-semibold sm:text-lg">
+                      No OBSP Packs Found
+                    </Title>
+                    <Text className="text-text-secondary text-sm sm:text-base leading-relaxed max-w-md mx-auto">
+                      Try adjusting your filters to see more options. You can select different industries or categories to explore available service packs.
+                    </Text>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </TabPane>
+          <TabPane tab="My Purchases" key="purchased">
+          <motion.div 
+          initial={{ opacity: 0, y: 20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="rounded-xl border border-white/10 bg-gradient-to-br from-client-secondary/40 to-client-bg-dark/30 backdrop-blur-xl shadow-xl"
+        >
+          <div className="p-4 sm:p-6">
+          {/* Section Header */}
+          <div className="mb-4 sm:mb-6">
+            <Title level={4} className="!text-text-light mb-2 font-semibold sm:text-lg">
+              Your Packs
+            </Title>
+            <Text className="text-text-secondary text-sm sm:text-base">
+              {purchasedData?.length} pack{purchasedData.length !== 1 ? 's' : ''} found
+            </Text>
+          </div>
+            {purchasedLoading ? (
+              <div className="text-center py-12">
+                <Spin size="large" className="mb-4" />
+                <Text className="text-text-light">Loading your purchases...</Text>
+              </div>
+            ) : error ? (
+              <Alert
+                message="Error Loading Purchases"
+                description={error}
+                type="error"
+                showIcon
+                className="mb-6"
+              />
+            ) : purchasedData.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                {purchasedData.map((purchase, index) => (
+                  <PurchasedOBSPItem key={purchase.id} purchase={purchase} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 rounded-full bg-client-accent/20 border border-client-accent/30 mx-auto mb-4 flex items-center justify-center">
+                  <CheckCircleOutlined className="text-2xl text-client-accent" />
+                </div>
+                <Title level={5} className="text-text-light mb-3">No Purchases Found</Title>
+                <Text className="text-text-secondary">You haven't purchased any OBSPs yet. Start by browsing available packs!</Text>
+              </div>
+            )}
             </div>
-          </motion.div>
+            </motion.div>
+
+          </TabPane>
+        </Tabs>
         </div>
+
+
       </div>
 
       {/* Enhanced CSS Styles with Mobile Optimizations */}
@@ -694,6 +928,45 @@ const ObspPurchaseList = () => {
         .ant-select,
         .ant-tag {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Tabs Styling - Matching EditProfile */
+        .custom-tabs .ant-tabs-nav {
+          margin: 0 !important;
+          padding: ${isMobile ? '12px 16px 0' : '16px 24px 0'} !important;
+          background: transparent !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .custom-tabs .ant-tabs-tab {
+          margin: 0 ${isMobile ? '4px' : '8px'} 0 0 !important;
+          padding: ${isMobile ? '8px 16px' : '12px 24px'} !important;
+          background: rgba(26, 27, 46, 0.4) !important; /* Glassmorphism background */
+          backdrop-filter: blur(12px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 12px 12px 0 0 !important;
+          color: var(--text-light) !important;
+          transition: all 0.3s ease !important;
+        }
+
+        .custom-tabs .ant-tabs-tab:hover {
+          background: rgba(26, 27, 46, 0.6) !important;
+          border-color: rgba(0, 212, 170, 0.5) !important; /* client-accent with opacity */
+        }
+
+        .custom-tabs .ant-tabs-tab-active {
+          background: rgba(0, 212, 170, 0.1) !important;
+          border-color: var(--client-accent) !important;
+          color: var(--client-accent) !important;
+        }
+
+        .custom-tabs .ant-tabs-tab-btn {
+          color: var(--text-light) !important;
+        }
+
+        /* Additional responsive adjustments */
+        .ant-tabs-tab {
+          font-size: ${isMobile ? '0.875rem' : '1rem'} !important;
         }
       `}</style>
     </div>

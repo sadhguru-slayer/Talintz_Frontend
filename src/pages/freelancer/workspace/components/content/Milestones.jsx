@@ -28,6 +28,7 @@ import { X as CloseIcon } from 'lucide-react';  // Assuming lucide-react is inst
 
 // Status badge with icon and color
 const statusBadge = (statusRaw) => {
+  statusRaw = statusRaw.status
   if (!statusRaw) return null;
   // Normalize status: lowercase, replace underscores with spaces
   const status = statusRaw.replace(/_/g, " ").toLowerCase();
@@ -353,7 +354,7 @@ const Milestones = () => {
       <section className="space-y-6">
       {milestones.map((milestone, idx) => {
         const isOpen = openIdx === idx;
-        const status = (milestone.status || "").toLowerCase();
+        const status = (milestone.status.status || "").toLowerCase();
         const isInProgress = status === "in progress" || status === "in_progress";
         const isCompleted = status === "completed";
         const isFuture = !isInProgress && !isCompleted;

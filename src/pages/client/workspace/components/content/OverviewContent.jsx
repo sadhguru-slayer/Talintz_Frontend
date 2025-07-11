@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { UserOutlined, CalendarOutlined, FileOutlined, CheckCircleOutlined, TeamOutlined, MessageOutlined, CreditCardOutlined } from '@ant-design/icons';
+  InfoCircleOutlined 
+import { UserOutlined, CalendarOutlined, FileOutlined, CheckCircleOutlined, TeamOutlined, MessageOutlined,
+  InfoCircleOutlined 
+  ,CreditCardOutlined } from '@ant-design/icons';
 import overviewData from "../../utils/data";
 import Cookies from "js-cookie";
 import { getBaseURL } from "../../../../../config/axios";
@@ -162,6 +165,44 @@ const ClientWorkspaceOverview = () => {
           </div>
       </div>
 
+                    {/* === Client Selections / Review Phase Details === */}
+      {projectdata?.client_selections && (
+        <section className="mt-8">
+          <h2 className="text-xl font-semibold text-white mb-4 tracking-tight flex items-center gap-2">
+            <InfoCircleOutlined className="text-client-accent" /> Client Selections
+          </h2>
+          <div className="space-y-6">
+            {Object.entries(projectdata?.client_selections || {}).map(([phaseKey, phaseData]) => (
+              <div key={phaseKey} className="bg-client-bg-grey rounded-lg p-4 border border-white/10">
+                <h3 className="text-lg font-medium text-white mb-3 flex items-center gap-2">
+                  {phaseData?.phase_display || phaseKey}
+                </h3>
+                {phaseData?.selected_fields?.length > 0 ? (
+                  <ul className="space-y-2">
+                    {phaseData?.selected_fields?.map((field, index) => (
+                      <li key={index} className="flex justify-between items-center gap-4 p-3 bg-white/5 rounded-md">
+                        <div className="flex-1 flex items-center gap-2">
+                          {getFieldIcon(field?.field_label)} {/* Add dynamic icon based on field type */}
+                          <span className="text-white font-medium">{field?.field_label}: </span>
+                          <span className="text-white/80">{renderSelectedValue(field?.selected_value)}</span>
+                        </div>
+                        {field?.price_impact > 0 && (  // Highlight fields with price impact
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-client-accent/20 text-client-accent text-xs font-semibold">
+                            +₹{field?.price_impact}  {/* Updated to INR */}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-white/60 text-sm italic">No selections for this phase.</p>
+                )}
+              </div>
+            ))}
+          </div>
+
+        </section>
+      )}
       {/* Milestones */}
       <div className="bg-client-secondary/80 border border-client-border rounded-xl p-6 shadow-card">
         <div className="flex items-center gap-3 mb-4">
@@ -276,4 +317,31 @@ const ClientWorkspaceOverview = () => {
   );
 };
 
+const getFieldIcon = (fieldLabel) => {
+  if (fieldLabel?.toLowerCase().includes('file')) return <FileOutlined className="text-client-accent text-sm" />;
+  if (fieldLabel?.toLowerCase().includes('price')) return <DownloadOutlined className="text-client-accent text-sm" />;
+  if (fieldLabel?.toLowerCase().includes('email')) return <UserOutlined className="text-client-accent text-sm" />;
+  return <InfoCircleOutlined className="text-client-accent text-sm" />;  // Default icon
+};
+
+const renderSelectedValue = (value) => {
+  if (!value) return 'N/A';  // Handle null or undefined
+  if (typeof value === 'string' || typeof value === 'number') {
+    return value;  // Directly render strings or numbers
+  }
+  if (Array.isArray(value)) {
+    // For arrays (e.g., file uploads), map to a simple string or list
+    return value.map((item, idx) => {
+      if (item?.name) {  // Assuming file objects have a 'name' key
+        return item.name;  // Display file name
+      }
+      return JSON.stringify(item);  // Fallback for other arrays
+    }).join(', ');  // Join into a comma-separated string
+  }
+  if (typeof value === 'object') {
+    // For objects, extract and display a summary (e.g., key-value pairs)
+    return value.name || JSON.stringify(value, null, 2).substring(0, 50) + '...';  // Show name if available, or a truncated string
+  }
+  return String(value);  // Fallback for other types
+};
 export default ClientWorkspaceOverview;

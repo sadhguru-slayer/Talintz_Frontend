@@ -10,6 +10,7 @@ import LoadingSpinner from '../../../components/LoadingComponent';
 
 const ObspPurchaseList = React.lazy(() => import('./ObspPurchaseList'));
 const ObspDetails = React.lazy(() => import('./ObspDetails'));
+const PurchaseDetails  = React.lazy(() => import('./PurchaseDetails'));
 
 const OBSPLayout = ({ userId, role }) => {
   
@@ -76,6 +77,10 @@ const OBSPLayout = ({ userId, role }) => {
               <Route 
                 path="/details/:id" 
                 element={<ObspDetails />} 
+              />
+              <Route 
+                path="/purchased-details/:obspResponseId" 
+                element={<PurchaseDetails  />} 
               />
             </Routes>
           </Suspense>

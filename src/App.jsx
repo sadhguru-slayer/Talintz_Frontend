@@ -40,6 +40,7 @@ import ObspDetails from "./pages/freelancer/OBSP/ObspDetails";
 import ClientOBSPLayout from "./pages/client/OBSP/OBSPLayout";
 import ClientObspPurchaseList from "./pages/client/OBSP/ObspPurchaseList";
 import ClientObspDetails from "./pages/client/OBSP/ObspDetails";
+import PurchaseDetails  from "./pages/client/OBSP/PurchaseDetails";
 // Lazy load components for better performance
 const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -840,6 +841,7 @@ const App = () => {
                     }
                   />
                 ))}
+                
 
               {/* Profile routes using CProfile */}
               <Route
@@ -869,6 +871,7 @@ const App = () => {
                 <Route index element={<Navigate to="list" replace />} />
                 <Route path="list" element={<ClientObspPurchaseList />} />
                 <Route path="details/:id" element={<ClientObspDetails />} />
+                <Route path="purchased-details/:obspResponseId" element={<PurchaseDetails />} />
               </Route>
 
               {/* Dashboard routes with shared layout */}
